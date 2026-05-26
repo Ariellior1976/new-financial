@@ -2,7 +2,7 @@ fastapi==0.111.0
 uvicorn==0.29.0
 pydantic==2.7.1
 yfinance==0.2.38
-google-generativeai==0.5.2
+google-generativeai>=0.7.2
 edge-tts==6.1.10
 apscheduler==3.10.4
 feedparser==6.0.11
