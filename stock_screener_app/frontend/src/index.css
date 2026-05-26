@@ -485,6 +485,7 @@ body {
     grid-template-columns: 1fr;
     height: auto;
     overflow-y: visible;
+    padding-bottom: 5rem;
   }
   
   body {

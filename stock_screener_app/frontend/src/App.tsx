@@ -216,7 +216,7 @@ function App() {
         setUniverseCount(universeRes.data.count);
         
         const res = await axios.get('http://127.0.0.1:8000/api/screener-results');
-        setResults(lang === 'he' ? mockHebrewData : res.data);
+        setResults(res.data);
 
         const ta100Res = await axios.get('http://127.0.0.1:8000/api/ta100');
         setTa100Results(ta100Res.data);
@@ -472,6 +472,10 @@ function App() {
             <div className="sidebar-item">
               <span className="sidebar-item-label">Healthcare</span>
               <span className="sidebar-item-value up">+0.8%</span>
+            </div>
+            <div className="sidebar-item">
+              <span className="sidebar-item-label">Defense (ביטחון)</span>
+              <span className="sidebar-item-value up">+1.5%</span>
             </div>
             <div className="sidebar-item">
               <span className="sidebar-item-label">Energy</span>
