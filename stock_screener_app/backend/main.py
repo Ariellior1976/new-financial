@@ -72,8 +72,9 @@ def chat_endpoint(request: ChatRequest):
         response = model.generate_content(prompt)
         return {"reply": response.text.strip()}
     except Exception as e:
-        print(f"Chat AI error: {e}")
-        return {"reply": "אירעה שגיאה בתקשורת מול ה-AI. אנא נסה שוב." if request.language == 'he' else "AI communication error. Please try again."}
+        err_msg = str(e)
+        print(f"Chat AI error: {err_msg}")
+        return {"reply": f"שגיאת תקשורת עם ה-AI: {err_msg}" if request.language == 'he' else f"AI communication error: {err_msg}"}
 
 @app.get("/api/ta100")
 def get_ta100_recommendations():
