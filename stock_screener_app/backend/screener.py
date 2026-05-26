@@ -229,12 +229,23 @@ def get_sector_deep_dives():
         if not med_stocks:
             med_stocks = [
                 {"symbol": "NVO", "name": "נובו נורדיסק", "change": "+2.40%"},
-                {"symbol": "LLY", "name": "אליי לילי", "change": "+1.15%"}
+                {"symbol": "LLY", "name": "אליי לילי", "change": "+1.15%"},
+                {"symbol": "PFE", "name": "פייזר (Pfizer)", "change": "-0.50%"},
+                {"symbol": "AMGN", "name": "אמג'ן (Amgen)", "change": "+0.80%"},
+                {"symbol": "VKTX", "name": "ויקינג תרפיוטיקס", "change": "+4.10%"}
             ]
         if not def_stocks:
             def_stocks = [
                 {"symbol": "ESLT", "name": "אלביט מערכות", "change": "+3.20%"},
-                {"symbol": "AVAV", "name": "AeroVironment", "change": "+5.40%"}
+                {"symbol": "NXSN", "name": 'נקסט ויז\'ן (כטב"מים)', "change": "+1.10%"},
+                {"symbol": "IMCO", "name": "אימקו", "change": "-0.30%"},
+                {"symbol": "THIR", "name": "עין שלישית (חיישנים)", "change": "+2.50%"},
+                {"symbol": "ISI", "name": "אימאג'סט (לוויינים)", "change": "+0.40%"},
+                {"symbol": "ARYT", "name": "ערית תעשיות", "change": "+1.80%"},
+                {"symbol": "RSL", "name": "אר.אס.אל (RSL)", "change": "-1.20%"},
+                {"symbol": "AVAV", "name": "AeroVironment", "change": "+5.40%"},
+                {"symbol": "KTOS", "name": 'Kratos (כטב"מי סילון)', "change": "+2.10%"},
+                {"symbol": "RTX", "name": 'Raytheon (טילים)', "change": "+0.90%"}
             ]
 
         if not model:

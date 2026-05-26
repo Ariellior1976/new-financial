@@ -61,26 +61,19 @@ class ChatRequest(BaseModel):
 @app.post("/api/chat")
 def chat_endpoint(request: ChatRequest):
     """
-    Mock AI Endpoint ready for MCP/Tool use integration.
+    Live AI Endpoint using Gemini.
     """
-    msg = request.message.lower()
-    
-    if request.language == 'he':
-        if 'טכנולוגיה' in msg or 'tech' in msg:
-            response = "זיהיתי מגמה מעניינת: מניות הטכנולוגיה מראות היום חוזקה יוצאת דופן. אנבידיה (NVDA) ופלאנטיר (PLTR) פרצו את ממוצע ה-30 שבועות עם מחזור מסחר גבוה במיוחד. האם תרצה שאסנן לך מניות טכנולוגיה נוספות עם מאפיינים דומים?"
-        elif 'פלנטיר' in msg or 'pltr' in msg:
-            response = "פלאנטיר (PLTR) מציגה נתונים פונדמנטליים מצוינים: צמיחת רווחים של 40% ברבעון האחרון ו-ROE של 18%. טכנית, היא בפריצה קלאסית של שלב 2 (Stage 2 Breakout). זו נראית כמו הזדמנות קנייה ברמת סיכון נמוכה."
-        else:
-            response = f"שאלת לגבי: '{request.message}'. בתור עוזר ה-AI שלך, אני מסוגל לגשת בזמן אמת למסד הנתונים שלנו הכולל מעל 500 מניות. זוהי גרסת הדגמה, ולכן התשובות כרגע מתוכנתות מראש. בגרסה המלאה, כאן תופיע תשובה חכמה המבוססת על ניתוח הנתונים המדויקים שביקשת!"
-    else:
-        if 'tech' in msg:
-            response = "I detected an interesting trend: Tech stocks are showing exceptional strength today. NVDA and PLTR broke out of their 30-week moving average on high volume. Would you like me to screen for more tech stocks with similar traits?"
-        elif 'pltr' in msg or 'palantir' in msg:
-            response = "Palantir (PLTR) shows excellent fundamentals: 40% EPS growth and 18% ROE. Technically, it's in a classic Stage 2 Breakout. This looks like a low-risk entry opportunity."
-        else:
-            response = f"You asked: '{request.message}'. As your AI Assistant, I can query our 500+ stock database in real time. This is a demo version, so answers are mocked. In the full version, a smart data-driven response will appear here!"
+    try:
+        from backend.screener import model
+        if not model:
+            return {"reply": "מפתח GEMINI_API_KEY חסר במערכת. ה-AI אינו זמין כרגע." if request.language == 'he' else "GEMINI_API_KEY is missing. AI is currently unavailable."}
             
-    return {"reply": response}
+        prompt = f"You are a professional financial AI assistant for a stock screener app. The user says: '{request.message}'. Reply professionally and concisely in {'Hebrew' if request.language == 'he' else 'English'}."
+        response = model.generate_content(prompt)
+        return {"reply": response.text.strip()}
+    except Exception as e:
+        print(f"Chat AI error: {e}")
+        return {"reply": "אירעה שגיאה בתקשורת מול ה-AI. אנא נסה שוב." if request.language == 'he' else "AI communication error. Please try again."}
 
 @app.get("/api/ta100")
 def get_ta100_recommendations():
