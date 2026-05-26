@@ -193,19 +193,19 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const universeRes = await axios.get('http://127.0.0.1:8000/api/universe');
+        const universeRes = await axios.get('/api/universe');
         setUniverseCount(universeRes.data.count);
         
-        const res = await axios.get('http://127.0.0.1:8000/api/screener-results');
+        const res = await axios.get('/api/screener-results');
         setResults(res.data);
 
-        const ta100Res = await axios.get('http://127.0.0.1:8000/api/ta100');
+        const ta100Res = await axios.get('/api/ta100');
         setTa100Results(ta100Res.data);
         
-        const sectorsRes = await axios.get('http://127.0.0.1:8000/api/sectors/deep-dive');
+        const sectorsRes = await axios.get('/api/sectors/deep-dive');
         setDeepDiveSectors(sectorsRes.data);
         
-        const podcastsRes = await axios.get('http://127.0.0.1:8000/api/podcasts');
+        const podcastsRes = await axios.get('/api/podcasts');
         setPodcasts(podcastsRes.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -255,7 +255,7 @@ function App() {
     setIsTyping(true);
 
     try {
-      const res = await axios.post('http://127.0.0.1:8000/api/chat', { message: newUserMsg.content, language: lang });
+      const res = await axios.post('/api/chat', { message: newUserMsg.content, language: lang });
       setTimeout(() => {
         setIsTyping(false);
         setChatMessages(prev => [...prev, { id: (Date.now() + 1).toString(), role: 'ai', content: res.data.reply }]);
@@ -271,7 +271,7 @@ function App() {
     setChartModalOpen(true);
     setChartLoading(true);
     try {
-      const res = await axios.get(`http://127.0.0.1:8000/api/chart/${ticker}`);
+      const res = await axios.get(`/api/chart/${ticker}`);
       setChartData(res.data);
     } catch (err) {
       console.error(err);
@@ -352,7 +352,7 @@ function App() {
                 <div className="pulsing-live"></div>
                 <span className="podcast-title"><Globe size={16} style={{display:'inline', marginRight:'4px'}}/> {t.podcastTitle}</span>
                 <span className="podcast-divider">|</span>
-                <audio controls src={`http://127.0.0.1:8000${podcasts[0].mp3_url}`} className="compact-audio" />
+                <audio controls src={`${podcasts[0].mp3_url}`} className="compact-audio" />
               </div>
               <div className="podcast-bar-right">
                 <span className="countdown-small">{t.nextBroadcast} <strong>{countdown}</strong></span>
@@ -363,7 +363,7 @@ function App() {
                      {podcasts.slice(1).map(p => (
                        <div key={p.id} className="dropdown-item">
                          <span style={{fontSize: '0.8rem', marginBottom: '4px', display:'block'}}>{p.title}</span>
-                         <audio controls src={`http://127.0.0.1:8000${p.mp3_url}`} className="compact-audio" />
+                         <audio controls src={`${p.mp3_url}`} className="compact-audio" />
                        </div>
                      ))}
                   </div>
