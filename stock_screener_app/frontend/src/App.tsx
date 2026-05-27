@@ -769,11 +769,11 @@ function App() {
               ) : (
                 <ResponsiveContainer width="100%" height={400}>
                   <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 10 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                    <XAxis dataKey="date" stroke="#94a3b8" />
-                    <YAxis stroke="#94a3b8" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--panel-border)" />
+                    <XAxis dataKey="date" stroke="var(--text-muted)" />
+                    <YAxis stroke="var(--text-muted)" />
                     <Tooltip content={<CustomTooltip lang={lang} t={t} />} />
-                    <Line type="monotone" dataKey="price" stroke="#3b82f6" strokeWidth={3} dot={false} activeDot={{ r: 8 }} />
+                    <Line type="monotone" dataKey="price" stroke="var(--accent)" strokeWidth={3} dot={false} activeDot={{ r: 8 }} />
                     {/* Render dots for events */}
                     {chartData.map((entry, index) => {
                       if (entry.event) {
