@@ -44,28 +44,53 @@ def generate_podcast_script(news_items):
     month_name = months[now.month - 1]
     today_str = f"{day} ל{month_name}"
     
+    # Determine edition focus based on hour
+    if 5 <= now.hour < 17:
+        edition_title = "מהדורת חצות"
+        edition_focus = "סיכום נתוני סגירת המסחר בוול-סטריט, אירועי הלילה הגלובליים, והשפעתם הצפויה על פתיחת המסחר בבורסה בתל אביב בבוקר."
+    else:
+        edition_title = "מהדורת עשר בלילה"
+        edition_focus = "סיכום אירועי היום בישראל ואירופה, ניתוח המתרחש במסחר בארצות הברית כעת, והערכות לקראת יום המחר."
+
     api_key = os.environ.get("GEMINI_API_KEY")
     if api_key:
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel('gemini-2.5-flash-lite')
         
         prompt = f"""
-        You are a top-tier financial analyst.
-        Today's date is: {today_str}.
+        You are a senior macro-economic strategist and chief capital markets reporter for "הדופק של השוק" (The Pulse of the Market) financial podcast.
+        Your delivery style is authoritative, professional, sharp yet accessible.
+        
+        Today's date: {today_str}.
+        This is the: {edition_title}.
+        Edition Focus: {edition_focus}
+        
         Review these news headlines:
         {news_items}
         
         CRITICAL RULES:
-        1. Read every headline. If it is gossip, crime, or general news with ZERO direct economic/stock market impact (e.g. "בן זוגה לשעבר של עורכת..."), you MUST IGNORE it completely. Do not mention it at all.
-        2. If a headline has economic/market relevance (e.g., a stock dropping, interest rates, macro events), you must mention it and IMMEDIATELY explain the deep economic reasons behind it and its market impact. (Example: "מניית פוקס ירדה היום. המשמעות הכלכלית היא שמשקיעים חוששים מירידה בצריכה הפרטית בעקבות סביבת הריבית...")
-        3. Do not just summarize. Analyze.
-        
-        Format the script exactly like a radio broadcast in HEBREW:
-        Start with: "שלום לכולם וברוכים הבאים למהדורת החדשות הכלכליות של אלפא ל-{today_str}."
-        Then transition between the selected news items, providing the deep analysis for each one immediately after mentioning it.
-        End with: "עד כאן המהדורה. נתראה בעדכון הבא."
-        
-        Output ONLY the Hebrew script text.
+        1. THE GATEKEEPER (Aggressive Filtering):
+           - Strictly forbid general news, gossip, yellow politics, or security events with zero direct economic impact.
+           - Include ONLY events that act as a direct catalyst for: major stock indices (TA-35, S&P 500, Nasdaq), yields, forex (USD/ILS, EUR/ILS), or key sectors (Tech, Defense, Energy, Banks).
+           
+        2. TRANSMISSION MECHANISM ANALYSIS (No summarization):
+           - Do not just summarize. Analyze the step-by-step transmission chain (e.g., event -> shipping rates rise -> inflation expectations -> central bank rate pressure -> tech stock drop).
+           - Rely only on facts and figures. If a rate, index value, or percentage is mentioned, use it. If uncertain, state the market pricing probabilities explicitly.
+           
+        3. SPEECH ENGINE OPTIMIZATION (For Hebrew TTS):
+           - NO abbreviations or acronyms: write full words. E.g., write "ארצות הברית" instead of "ארה"ב", "יושב ראש" instead of "יו"ר", "מנכ"ל" as "מנכאל" or "מנהל כללי", "אחוזים" instead of "%", "דולרים" instead of "$".
+           - NO math symbols: write numbers and percentages in full Hebrew words (e.g., write "שניים נקודה חמישה אחוזים" instead of "2.5%").
+           - Punctuation: Use commas [,] and periods [.] frequently to break down long sentences so the digital voice stays dynamic and does not become monotone. Keep sentences short.
+           - Verbal connectors: Include transition phrases to create human-like pacing and intonation (e.g., "מנגד", "חשוב לשים לב", "וכאן נמצא הסיפור האמיתי", "המשמעות בשטח היא").
+           
+        4. STRUCTURE & OUTPUT FORMAT:
+           - Output ONLY the Hebrew script text.
+           - Do NOT output any headings, subheadings, bullet points, or markdown titles that the speaker would read aloud.
+           - Length: 2 to 3 minutes read time (about 300 to 400 words).
+           - Must include:
+             - Dynamic opening: date, edition time, and main headline.
+             - Body (max 2-3 events): the events and their transmission chain.
+             - Bottom line: tactical focus (support/resistance, earnings, macro releases).
         """
         try:
             time.sleep(3) # Prevent rate limits
