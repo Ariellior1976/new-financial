@@ -47,7 +47,7 @@ def generate_podcast_script(news_items):
     api_key = os.environ.get("GEMINI_API_KEY")
     if api_key:
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-2.0-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash-lite')
         
         prompt = f"""
         You are a top-tier financial analyst.

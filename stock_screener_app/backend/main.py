@@ -150,34 +150,6 @@ def chat_endpoint(request: ChatRequest):
             except Exception as ex:
                 return {"reply": f"Error listing models: {str(ex)}"}
                 
-        if request.message.lower() == "debug test models":
-            if not api_key:
-                return {"reply": "No API key found"}
-            import time
-            test_models = [
-                "gemini-1.5-flash",
-                "gemini-flash-latest",
-                "gemini-2.0-flash",
-                "gemini-2.0-flash-lite",
-                "gemini-2.5-flash-lite",
-                "gemini-3.1-flash-lite",
-                "gemini-3.5-flash"
-            ]
-            results = {}
-            try:
-                genai.configure(api_key=api_key)
-                for m in test_models:
-                    try:
-                        time.sleep(1)
-                        model = genai.GenerativeModel(m)
-                        res = model.generate_content("Say test")
-                        results[m] = f"SUCCESS: {res.text.strip()}"
-                    except Exception as ex:
-                        results[m] = f"ERROR: {str(ex)}"
-                return {"reply": f"Test results:\n" + "\n".join([f"{k}: {v}" for k, v in results.items()])}
-            except Exception as ex:
-                return {"reply": f"Outer test error: {str(ex)}"}
-                
         if request.message.lower() == "debug podcast":
             try:
                 import backend.news_engine as ne
@@ -209,7 +181,7 @@ def chat_endpoint(request: ChatRequest):
         system_instruction = "You are Alpha AI, a professional financial assistant for the Alpha Stock Screener app. You have access to real-time stock metrics, market news, TA-100 recommendations, and screener results. Use these tools whenever the user asks for stock info, news, or market recommendations. Always answer concisely and professionally in Hebrew (or English if the user writes in English)."
         
         chat_model = genai.GenerativeModel(
-            model_name='gemini-2.0-flash',
+            model_name='gemini-2.5-flash-lite',
             system_instruction=system_instruction,
             tools=[get_stock_metrics, get_latest_market_news, get_ta100_recommendations, get_live_screener_results]
         )
