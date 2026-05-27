@@ -156,7 +156,7 @@ def chat_endpoint(request: ChatRequest):
         system_instruction = "You are Alpha AI, a professional financial assistant for the Alpha Stock Screener app. You have access to real-time stock metrics, market news, TA-100 recommendations, and screener results. Use these tools whenever the user asks for stock info, news, or market recommendations. Always answer concisely and professionally in Hebrew (or English if the user writes in English)."
         
         chat_model = genai.GenerativeModel(
-            model_name='gemini-1.5-flash',
+            model_name='gemini-2.0-flash',
             system_instruction=system_instruction,
             tools=[get_stock_metrics, get_latest_market_news, get_ta100_recommendations, get_live_screener_results]
         )
