@@ -481,8 +481,22 @@ body {
 
 /* Mobile Responsiveness */
 @media (max-width: 1024px) {
+  .app-container {
+    padding: 0.5rem;
+    padding-top: 3.5rem; /* space for lang button */
+  }
+
+  .app-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .app-header p {
+    font-size: 0.9rem;
+  }
+
   .dashboard-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
     height: auto;
     overflow-y: visible;
     padding-bottom: 5rem;
@@ -495,41 +509,99 @@ body {
   .glass-panel {
     overflow-y: visible;
     height: auto;
+    padding: 1rem;
   }
   
   .podcast-bar {
     flex-direction: column;
     gap: 1rem;
     text-align: center;
+    padding: 1rem;
+    border-radius: 12px;
   }
   
   .podcast-bar-left, .podcast-bar-right {
     justify-content: center;
     width: 100%;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .compact-audio {
+    width: 100%;
+    max-width: 320px;
   }
   
   .metrics-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
   }
   
-  .chat-window {
-    width: calc(100vw - 3rem);
-    right: 1.5rem;
-    left: 1.5rem;
+  .metric-box {
+    padding: 0.8rem;
   }
   
-  .rtl .chat-window {
-    right: 1.5rem;
-    left: 1.5rem;
+  .metric-value {
+    font-size: 1.2rem;
   }
   
+  .ticker-bar {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .ticker-item {
+    margin: 0 1rem;
+  }
+  
+  .lang-btn {
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+  
+  .rtl .lang-btn {
+    left: 0.5rem;
+    right: auto;
+  }
+
   .chat-widget {
-    bottom: 1rem;
-    right: 1rem;
+    bottom: 0.5rem;
+    right: 0.5rem;
   }
   
   .rtl .chat-widget {
-    left: 1rem;
+    left: 0.5rem;
+    right: auto;
+  }
+  
+  .chat-window {
+    width: calc(100vw - 1rem);
+    height: 70vh;
+    right: 0;
+    bottom: 4rem;
+    border-radius: 12px;
+  }
+  
+  .rtl .chat-window {
+    left: 0;
+    right: auto;
+  }
+  
+  .chat-messages {
+    max-height: calc(70vh - 140px);
+  }
+  
+  .deep-dive-stock-row {
+    flex-wrap: wrap;
+    gap: 0.2rem;
+  }
+  
+  .stock-name {
+    flex: 1 1 100%;
+    margin: 0;
+    text-align: right;
   }
 }
 
