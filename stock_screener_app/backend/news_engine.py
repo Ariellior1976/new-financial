@@ -55,7 +55,7 @@ def generate_podcast_script(news_items):
     api_key = os.environ.get("GEMINI_API_KEY")
     if api_key:
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-2.5-flash-lite')
+        model = genai.GenerativeModel('gemini-3.1-flash-lite')
         
         prompt = f"""
         You are a senior macro-economic strategist and chief capital markets reporter for "הדופק של השוק" (The Pulse of the Market) financial podcast.

@@ -200,7 +200,7 @@ def chat_endpoint(request: ChatRequest):
         )
         
         chat_model = genai.GenerativeModel(
-            model_name='gemini-2.5-flash-lite',
+            model_name='gemini-3.1-flash-lite',
             system_instruction=system_instruction,
             tools=[get_stock_metrics, get_latest_market_news, get_ta100_recommendations, get_live_screener_results]
         )
