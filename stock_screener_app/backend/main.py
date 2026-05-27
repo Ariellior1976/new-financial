@@ -54,23 +54,83 @@ def get_screener_results():
     """
     return screener.get_live_screener_results()
 
+class ChatMessage(BaseModel):
+    role: str # 'user' or 'model'
+    parts: list[str]
+
 class ChatRequest(BaseModel):
     message: str
+    history: list[ChatMessage] = []
     language: str = 'he'
+
+# Define tools for the AI model
+def get_stock_metrics(ticker: str) -> str:
+    """
+    Fetches real-time financial metrics for a stock ticker (e.g. NVDA, AAPL, PLTR) from yfinance,
+    including current price, return on equity (ROE), and quarterly earnings growth.
+    """
+    import yfinance as yf
+    try:
+        stock = yf.Ticker(ticker)
+        info = stock.info
+        price = info.get('currentPrice') or info.get('regularMarketPrice') or 'N/A'
+        eps_growth = info.get('earningsQuarterlyGrowth')
+        eps_growth_str = f"{eps_growth * 100:.1f}%" if eps_growth is not None else 'N/A'
+        roe = info.get('returnOnEquity')
+        roe_str = f"{roe * 100:.1f}%" if roe is not None else 'N/A'
+        return f"מנייה: {ticker}\nמחיר נוכחי: ${price}\nצמיחת רווחים רבעונית: {eps_growth_str}\nתשואה להון (ROE): {roe_str}"
+    except Exception as e:
+        return f"שגיאה בקבלת נתונים עבור {ticker}: {str(e)}"
+
+def get_latest_market_news() -> str:
+    """
+    Fetches the latest financial market news headlines from Globes and Ynet RSS feeds.
+    """
+    import backend.news_engine as news_engine
+    try:
+        news = news_engine.fetch_top_news()
+        return "כותרות החדשות האחרונות:\n" + "\n".join([f"- {item}" for item in news])
+    except Exception as e:
+        return f"שגיאה בקבלת חדשות: {e}"
+
+def get_ta100_recommendations() -> str:
+    """
+    Fetches daily stock recommendations for the Tel Aviv 100 index (e.g. Nice, Enlight).
+    """
+    import backend.screener as screener
+    import json
+    try:
+        recs = screener.get_live_ta100_recommendations()
+        return "המלצות מדד תל אביב 100:\n" + json.dumps(recs, ensure_ascii=False, indent=2)
+    except Exception as e:
+        return f"שגיאה בקבלת המלצות: {e}"
+
+def get_live_screener_results() -> str:
+    """
+    Fetches the live results of the stock screener (breakout stocks, alert statuses, ROE, RPS).
+    """
+    import backend.screener as screener
+    import json
+    try:
+        results = screener.get_live_screener_results()
+        return "תוצאות סורק המניות החיות:\n" + json.dumps(results, ensure_ascii=False, indent=2)
+    except Exception as e:
+        return f"שגיאה בקבלת נתוני סורק: {e}"
 
 @app.post("/api/chat")
 def chat_endpoint(request: ChatRequest):
     """
-    Live AI Endpoint using Gemini.
+    Live AI Endpoint using Gemini with tools and history support.
     """
     try:
-        from backend.screener import model, api_key
+        from backend.screener import api_key
         import google.generativeai as genai
         
         if request.message.lower() == "debug models":
             if not api_key:
                 return {"reply": "No API key found"}
             try:
+                genai.configure(api_key=api_key)
                 models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
                 return {"reply": f"Available models: {', '.join(models)}"}
             except Exception as ex:
@@ -87,15 +147,36 @@ def chat_endpoint(request: ChatRequest):
                 import traceback
                 return {"reply": f"Error running podcast check: {str(ex)}\n{traceback.format_exc()}"}
                 
-        if not model:
+        if not api_key:
             return {"reply": "מפתח GEMINI_API_KEY חסר במערכת. ה-AI אינו זמין כרגע." if request.language == 'he' else "GEMINI_API_KEY is missing. AI is currently unavailable."}
             
-        prompt = f"You are a professional financial AI assistant for a stock screener app. The user says: '{request.message}'. Reply professionally and concisely in {'Hebrew' if request.language == 'he' else 'English'}."
-        response = model.generate_content(prompt)
+        genai.configure(api_key=api_key)
+        
+        # Configure model with tools and system instruction
+        system_instruction = "You are Alpha AI, a professional financial assistant for the Alpha Stock Screener app. You have access to real-time stock metrics, market news, TA-100 recommendations, and screener results. Use these tools whenever the user asks for stock info, news, or market recommendations. Always answer concisely and professionally in Hebrew (or English if the user writes in English)."
+        
+        chat_model = genai.GenerativeModel(
+            model_name='gemini-1.5-flash',
+            system_instruction=system_instruction,
+            tools=[get_stock_metrics, get_latest_market_news, get_ta100_recommendations, get_live_screener_results]
+        )
+        
+        # Convert request history to SDK format
+        sdk_history = []
+        for msg in request.history:
+            sdk_history.append({
+                "role": msg.role,
+                "parts": msg.parts
+            })
+            
+        # Start chat with history and automatic function calling
+        chat = chat_model.start_chat(history=sdk_history, enable_automatic_function_calling=True)
+        response = chat.send_message(request.message)
         return {"reply": response.text.strip()}
     except Exception as e:
         err_msg = str(e)
-        print(f"Chat AI error: {err_msg}")
+        import traceback
+        print(f"Chat AI error: {err_msg}\n{traceback.format_exc()}")
         return {"reply": f"שגיאת תקשורת עם ה-AI: {err_msg}" if request.language == 'he' else f"AI communication error: {err_msg}"}
 
 @app.get("/api/ta100")

@@ -250,16 +250,27 @@ function App() {
     if (!inputValue.trim()) return;
 
     const newUserMsg: ChatMessage = { id: Date.now().toString(), role: 'user', content: inputValue };
-    setChatMessages(prev => [...prev, newUserMsg]);
+    const updatedMessages = [...chatMessages, newUserMsg];
+    setChatMessages(updatedMessages);
     setInputValue('');
     setIsTyping(true);
 
+    // Map messages to the history format expected by the API
+    const historyPayload = chatMessages.map(msg => ({
+      role: msg.role === 'user' ? 'user' : 'model',
+      parts: [msg.content]
+    }));
+
     try {
-      const res = await axios.post('/api/chat', { message: newUserMsg.content, language: lang });
+      const res = await axios.post('/api/chat', { 
+        message: newUserMsg.content, 
+        history: historyPayload, 
+        language: lang 
+      });
       setTimeout(() => {
         setIsTyping(false);
         setChatMessages(prev => [...prev, { id: (Date.now() + 1).toString(), role: 'ai', content: res.data.reply }]);
-      }, 1000);
+      }, 500);
     } catch (err) {
       setIsTyping(false);
       setChatMessages(prev => [...prev, { id: (Date.now() + 1).toString(), role: 'ai', content: 'Network Error.' }]);
