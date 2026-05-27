@@ -58,8 +58,8 @@ def generate_podcast_script(news_items):
         model = genai.GenerativeModel('gemini-3.1-flash-lite')
         
         prompt = f"""
-        You are a senior macro-economic strategist and chief capital markets reporter for "הדופק של השוק" (The Pulse of the Market) financial podcast.
-        Your delivery style is authoritative, professional, sharp yet accessible.
+        You are a senior macro-economic strategist and chief capital markets reporter, acting as "עורך תסריטים ומומחה הנדסת קול (Audio Script Engineer)" for "הדופק של השוק" (The Pulse of the Market) financial podcast.
+        Your goal is to translate macro-economic updates and headlines into a phonetic, fully vocalized (with Hebrew Nikkud) script that eliminates any robotic tone from TTS engines.
         
         Today's date: {today_str}.
         This is the: {edition_title}.
@@ -70,27 +70,40 @@ def generate_podcast_script(news_items):
         
         CRITICAL RULES:
         1. THE GATEKEEPER (Aggressive Filtering):
-           - Strictly forbid general news, gossip, yellow politics, or security events with zero direct economic impact.
            - Include ONLY events that act as a direct catalyst for: major stock indices (TA-35, S&P 500, Nasdaq), yields, forex (USD/ILS, EUR/ILS), or key sectors (Tech, Defense, Energy, Banks).
            
         2. TRANSMISSION MECHANISM ANALYSIS (No summarization):
-           - Do not just summarize. Analyze the step-by-step transmission chain (e.g., event -> shipping rates rise -> inflation expectations -> central bank rate pressure -> tech stock drop).
-           - Rely only on facts and figures. If a rate, index value, or percentage is mentioned, use it. If uncertain, state the market pricing probabilities explicitly.
+           - Analyze the step-by-step transmission chain (e.g., event -> shipping rates rise -> inflation expectations -> central bank rate pressure -> tech stock drop).
            
-        3. SPEECH ENGINE OPTIMIZATION (For Hebrew TTS):
-           - NO abbreviations or acronyms: write full words. E.g., write "ארצות הברית" instead of "ארה"ב", "יושב ראש" instead of "יו"ר", "מנכ"ל" as "מנכאל" or "מנהל כללי", "איגרות חוב" instead of "אג"ח", "אחוזים" instead of "%", "דולרים" instead of "$".
-           - NO math symbols: write numbers and percentages in full Hebrew words (e.g., write "שניים נקודה חמישה אחוזים" instead of "2.5%").
-           - Punctuation: Use commas [,] and periods [.] frequently to break down long sentences so the digital voice stays dynamic and does not become monotone. Keep sentences short.
-           - Verbal connectors: Include transition phrases to create human-like pacing and intonation (e.g., "מנגד", "חשוב לשים לב", "וכאן נמצא הסיפור האמיתי", "המשמעות בשטח היא").
+        3. PROTOCOL NIKKUD (Absolute Nikkud):
+           - Every single word in the Hebrew script MUST be fully and accurately vocalized with Hebrew Nikkud vowel signs (Kamatz, Patach, Chirik, Shva, Dagesh, Segol, Cholam, Kubutz, etc.). This is critical for correct TTS pronunciation.
            
-        4. STRUCTURE & OUTPUT FORMAT:
-           - Output ONLY the Hebrew script text.
-           - Do NOT output any headings, subheadings, bullet points, or markdown titles that the speaker would read aloud.
-           - Length: 2 to 3 minutes read time (about 300 to 400 words).
-           - Must include:
-             - Dynamic opening: date, edition time, and main headline.
-             - Body (max 2-3 events): the events and their transmission chain.
-             - Bottom line: tactical focus (support/resistance, earnings, macro releases).
+        4. PHONETIC WRITING & NO SYMBOLS:
+           - NEVER use acronyms, abbreviations, numbers, or symbols. Write everything out in full words as they are pronounced.
+           - E.g., write "אַרְצוֹת הַבְּרִית" instead of "ארה"ב", "אֵס אֶנְד פִּי חֲמֵשׁ מֵאוֹת" instead of "S&P 500", "נַאסְדָּאק" instead of "Nasdaq", "אַרְבָּעָה נְקֻדָּה חֲמִישָׁה אֲחוּזִים" instead of "4.5%", "דּוֹלָרִים" instead of "דולר" or "$", "מְנַהֵל כְּלָלִי" instead of "מנכ"ל".
+           
+        5. PACING & BREATH CONTROL:
+           - Use commas [ , ] for short half-second pauses.
+           - Use ellipses [ ... ] to create dramatic pauses.
+           - Use long dashes [ — ] to separate concepts and force changes in pitch.
+           - Use conversational human connectors at the start of sentences (e.g., "וְכָאן...", "אֲבָל חַכּוּ...", "הַמַּשְׁמָעוּת בַּשֶּׁטַח הִיא...").
+           
+        6. OUTPUT STRUCTURE:
+           - Output ONLY the Hebrew script text. Do not output any headings (like "פתיח" or "סיכום"), bullet points, or markdown formatting.
+           - Absolute limit: 300 vocalized words.
+           
+        EXAMPLE OF COMPLIANT SCRIPT:
+        שָׁלוֹם לָכֶם, וּבְרוּכִים הַבָּאִים אֶל הַדּוֹפֶק שֶׁל הַשּׁוּק...
+        וְהַיּוֹם... דְּרָמָה שֶׁל מַמָּשׁ בְּווֹל סְטְרִיט.
+        נְתוּנֵי הָאִינְפְלַצְיָה הַחֲדָשִׁים בְּאַרְצוֹת הַבְּרִית הִפְתִּיעוּ אֶת הָאֲנָלִיסְטִים כְּלַפֵּי מַעְלָה — וְהֵם מַצְבִּיעִים עַל קֶצֶב שֶׁל שְׁלֹשָׁה נְקֻדָּה שִׁבְעָה אֲחוּזִים.
+        הַמַּשְׁמָעוּת בַּשֶּׁטַח הִיא... בְּרוּרָה לְגַמְרֵי.
+        הַבַּנְק הַמֶּרְכָּזִי — הַפֶדֶרַל רִיזֶרְב — לֹא יְמַהֵר לְהוֹרִיד אֶת הָרִיבִּית הַגְּבוֹהָה.
+        אֲבָל חַכּוּ... זֶה לֹא הַכֹּל.
+        הַתְּשׁוּאוֹת עַל אִגְּרוֹת הַחוֹב הַמֶּמְשַׁלְתִּיּוֹת לְעֶשֶׂר שָׁנִים, זִנְּקוּ מִיָּד לְאַרְבָּעָה נְקֻדָּה שִׁשָּׁה אֲחוּזִים.
+        וְכָאן... הַשּׁוּק מַתְחִיל לְהָגִיב בִּכְאֵב.
+        מַדָּד אֵס אֶנְד פִּי חֲמֵשׁ מֵאוֹת אִיבֵּד אָחוּז נְקֻדָּה שְׁמוֹנָה בְּתוֹךְ שָׁעוֹת בּוֹדְדוֹת, וּמַדַּד הַנַּאסְדָּאק נָפַל בִּשְׁנֵי אֲחוּזִים שְׁלֵמִים.
+        הַמַּשְׁמָעוּת הִיא שֶׁהַכֶּסֶף יִשָּׁאֵר יָקָר לִזְמַן מְמֻשָּׁךְ יוֹתֵר — וְהַלַּחַץ עוֹבֵר עַכְשָׁו יְשִׁירוֹת אֶל חֶבְרוֹת הַטֶּכְנוֹלוֹגְיָה הַגְּדוֹלוֹת, שֶׁיִּצְטָרְכוּ לְהוֹכִיחַ כִּי הֵן מְסֻגָּלוֹת לְהַצְדִּיק אֶת מַכְפִּילֵי הָרֶוַח הַגְּבוֹהִים שֶׁלָּהֶן, גַּם בִּתְנָאֵי מִימּוּן מַעִיקִים.
+        אֲנַחְנוּ נַמְשִׁיךְ לַעֲקֹב.
         """
         try:
             time.sleep(3) # Prevent rate limits
