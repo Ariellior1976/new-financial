@@ -94,7 +94,7 @@ async def create_edition():
         print(f"Edge-TTS failed ({e}). Falling back to gTTS...")
         try:
             from gtts import gTTS
-            tts = gTTS(text=script, lang='he')
+            tts = gTTS(text=script, lang='iw')
             tts.save(mp3_path)
             print("Successfully generated podcast audio using gTTS fallback.")
         except Exception as ge:
