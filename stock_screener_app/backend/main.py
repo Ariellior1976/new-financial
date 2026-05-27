@@ -150,6 +150,34 @@ def chat_endpoint(request: ChatRequest):
             except Exception as ex:
                 return {"reply": f"Error listing models: {str(ex)}"}
                 
+        if request.message.lower() == "debug test models":
+            if not api_key:
+                return {"reply": "No API key found"}
+            import time
+            test_models = [
+                "gemini-1.5-flash",
+                "gemini-flash-latest",
+                "gemini-2.0-flash",
+                "gemini-2.0-flash-lite",
+                "gemini-2.5-flash-lite",
+                "gemini-3.1-flash-lite",
+                "gemini-3.5-flash"
+            ]
+            results = {}
+            try:
+                genai.configure(api_key=api_key)
+                for m in test_models:
+                    try:
+                        time.sleep(1)
+                        model = genai.GenerativeModel(m)
+                        res = model.generate_content("Say test")
+                        results[m] = f"SUCCESS: {res.text.strip()}"
+                    except Exception as ex:
+                        results[m] = f"ERROR: {str(ex)}"
+                return {"reply": f"Test results:\n" + "\n".join([f"{k}: {v}" for k, v in results.items()])}
+            except Exception as ex:
+                return {"reply": f"Outer test error: {str(ex)}"}
+                
         if request.message.lower() == "debug podcast":
             try:
                 import backend.news_engine as ne
