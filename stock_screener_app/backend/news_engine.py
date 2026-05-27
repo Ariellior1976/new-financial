@@ -86,9 +86,20 @@ async def create_edition():
     mp3_filename = f"{edition_id}.mp3"
     mp3_path = os.path.join(ARCHIVE_DIR, mp3_filename)
     
-    # Run edge-tts asynchronously
-    communicate = edge_tts.Communicate(script, "he-IL-AvriNeural")
-    await communicate.save(mp3_path)
+    # Run edge-tts asynchronously, with a fallback to gTTS on failure (e.g. cloud hosting block)
+    try:
+        communicate = edge_tts.Communicate(script, "he-IL-AvriNeural")
+        await communicate.save(mp3_path)
+    except Exception as e:
+        print(f"Edge-TTS failed ({e}). Falling back to gTTS...")
+        try:
+            from gtts import gTTS
+            tts = gTTS(text=script, lang='he')
+            tts.save(mp3_path)
+            print("Successfully generated podcast audio using gTTS fallback.")
+        except Exception as ge:
+            print(f"gTTS fallback failed: {ge}")
+            raise ge
     
     metadata = {
         "id": edition_id,
