@@ -76,6 +76,17 @@ def chat_endpoint(request: ChatRequest):
             except Exception as ex:
                 return {"reply": f"Error listing models: {str(ex)}"}
                 
+        if request.message.lower() == "debug podcast":
+            try:
+                import backend.news_engine as ne
+                import asyncio
+                import traceback
+                asyncio.run(ne.check_and_update_podcast())
+                return {"reply": f"Debug run complete! Current archive: {ne.get_archive()}"}
+            except Exception as ex:
+                import traceback
+                return {"reply": f"Error running podcast check: {str(ex)}\n{traceback.format_exc()}"}
+                
         if not model:
             return {"reply": "מפתח GEMINI_API_KEY חסר במערכת. ה-AI אינו זמין כרגע." if request.language == 'he' else "GEMINI_API_KEY is missing. AI is currently unavailable."}
             
