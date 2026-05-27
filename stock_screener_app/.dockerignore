@@ -5,5 +5,4 @@ __pycache__
 *.pyc
 venv
 .venv
-screener_data.db
 podcasts/
