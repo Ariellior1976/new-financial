@@ -416,12 +416,12 @@ function App() {
                         <h4><TrendingUp size={16} style={{display:'inline'}}/> {t.aiSummary} (Pro)</h4>
                         <p>{stock.AI_Summary}</p>
                       </div>
-                      {stock.Simple_Explanation && (
-                        <div className="ai-summary simple">
-                          <h4><Zap size={16} style={{display:'inline'}}/> TL;DR (Beginner)</h4>
-                          <p>{stock.Simple_Explanation}</p>
+                      {stock.Simple_Explanation ? (
+                        <div className="ai-summary simple" style={{ padding: '1rem', marginTop: '1rem', background: 'rgba(16, 185, 129, 0.1)', borderLeft: '3px solid #10b981' }}>
+                          <h4 style={{ color: '#10b981', margin: '0 0 0.5rem 0' }}><Zap size={16} style={{display:'inline'}}/> TL;DR (Beginner)</h4>
+                          <p style={{ color: '#e2e8f0', fontSize: '0.9rem', margin: 0 }}>{stock.Simple_Explanation}</p>
                         </div>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                 ))

@@ -603,5 +603,15 @@ body {
     margin: 0;
     text-align: right;
   }
+  
+  .stock-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .stock-card-header > div {
+    flex-wrap: wrap;
+  }
 }
 
