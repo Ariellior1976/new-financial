@@ -97,8 +97,9 @@ def generate_podcast_script(news_items):
             response = model.generate_content(prompt)
             return response.text.strip()
         except Exception as e:
+            import traceback
             print(f"Gemini podcast generation error: {e}")
-            return f"שלום לכולם. עקב עומס זמני על שרתי הניתוח, לא ניתן לספק את המהדורה הכלכלית המלאה ל-{today_str}. נשוב בקרוב."
+            return f"Error: {str(e)}\n{traceback.format_exc()}"
             
     return f"מפתח הגישה לא מוגדר בשרת, ולכן הפודקאסט מנותק מהמוח הכלכלי ל-{today_str}."
 
