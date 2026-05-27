@@ -64,7 +64,18 @@ def chat_endpoint(request: ChatRequest):
     Live AI Endpoint using Gemini.
     """
     try:
-        from backend.screener import model
+        from backend.screener import model, api_key
+        import google.generativeai as genai
+        
+        if request.message.lower() == "debug models":
+            if not api_key:
+                return {"reply": "No API key found"}
+            try:
+                models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+                return {"reply": f"Available models: {', '.join(models)}"}
+            except Exception as ex:
+                return {"reply": f"Error listing models: {str(ex)}"}
+                
         if not model:
             return {"reply": "מפתח GEMINI_API_KEY חסר במערכת. ה-AI אינו זמין כרגע." if request.language == 'he' else "GEMINI_API_KEY is missing. AI is currently unavailable."}
             
