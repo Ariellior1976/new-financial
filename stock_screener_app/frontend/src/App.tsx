@@ -1,17 +1,29 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Activity, TrendingUp, Zap, Server, Globe, MessageSquare, Send, X, BarChart2, PieChart, Activity as ActivityIcon, LineChart as LineChartIcon } from 'lucide-react';
+import { Activity, TrendingUp, Zap, Server, Globe, MessageSquare, Send, X, BarChart2, PieChart, Activity as ActivityIcon, LineChart as LineChartIcon, Sun, Moon, Play, Pause, Info } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceDot, CartesianGrid } from 'recharts';
 import './index.css';
 
 interface ScreenerResult {
   Ticker: string;
+  Name: string;
+  ROIC_5Yr: string;
+  FCF_Growth: string;
   EPS_Growth_Qtr: number;
   ROE: number;
   RPS: number;
   Alert: string;
   AI_Summary: string;
   Simple_Explanation?: string;
+}
+
+interface InvestmentThesis {
+  Ticker: string;
+  Name: string;
+  Sector: string;
+  WhyTracked: string;
+  WhereIsEdge: string;
+  TimingValuation: string;
 }
 
 interface TA100Recommendation {
@@ -77,7 +89,7 @@ const translations = {
     close: "סגור",
     price: "מחיר",
     event: "אירוע מרכזי",
-    podcastTitle: "מהדורת החדשות של אלפא",
+    podcastTitle: "הדופק של השוק",
     nextBroadcast: "השידור הבא בעוד:",
     archive: "ארכיון מהדורות (48 שעות)"
   },
@@ -103,13 +115,11 @@ const translations = {
     close: "Close",
     price: "Price",
     event: "Key Event",
-    podcastTitle: "Alpha News Edition",
+    podcastTitle: "The Pulse of the Market",
     nextBroadcast: "Next broadcast in:",
     archive: "Edition Archive (48 Hours)"
   }
 };
-
-// mockHebrewData removed
 
 const tickerItems = [
   { sym: "SPY", val: "+1.2%", up: true },
@@ -171,6 +181,7 @@ function App() {
   const [ta100Results, setTa100Results] = useState<TA100Recommendation[]>([]);
   const [deepDiveSectors, setDeepDiveSectors] = useState<DeepDiveSector[]>([]);
   const [podcasts, setPodcasts] = useState<PodcastEdition[]>([]);
+  const [activePodcast, setActivePodcast] = useState<PodcastEdition | null>(null);
   const [countdown, setCountdown] = useState("");
   const [loading, setLoading] = useState(true);
   const [universeCount, setUniverseCount] = useState(0);
@@ -187,6 +198,120 @@ function App() {
   const [selectedTicker, setSelectedTicker] = useState('');
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [chartLoading, setChartLoading] = useState(false);
+
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [selectedStock, setSelectedStock] = useState<ScreenerResult | null>(null);
+
+  // Audio Player State
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playbackRate, setPlaybackRate] = useState(1);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('alpha-theme') as 'dark' | 'light' | null;
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+    setTheme(initialTheme);
+    document.documentElement.setAttribute('data-theme', initialTheme);
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    localStorage.setItem('alpha-theme', nextTheme);
+    document.documentElement.setAttribute('data-theme', nextTheme);
+  };
+
+  const togglePlay = () => {
+    if (!audioRef.current) return;
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch(err => console.error("Audio play error:", err));
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleSpeedToggle = () => {
+    if (!audioRef.current) return;
+    const rates = [1, 1.5, 2];
+    const nextIndex = (rates.indexOf(playbackRate) + 1) % rates.length;
+    const nextRate = rates[nextIndex];
+    setPlaybackRate(nextRate);
+    audioRef.current.playbackRate = nextRate;
+  };
+
+  const formatTime = (time: number) => {
+    if (isNaN(time)) return "00:00";
+    const mins = Math.floor(time / 60);
+    const secs = Math.floor(time % 60);
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const handleTimeUpdate = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) {
+      setDuration(audioRef.current.duration);
+      audioRef.current.playbackRate = playbackRate;
+    }
+  };
+
+  const handleAudioEnded = () => {
+    setIsPlaying(false);
+  };
+
+  const loadPodcast = (podcast: PodcastEdition) => {
+    setActivePodcast(podcast);
+    setIsPlaying(false);
+    if (audioRef.current) {
+      audioRef.current.src = podcast.mp3_url;
+      audioRef.current.load();
+      setTimeout(() => {
+        audioRef.current?.play()
+          .then(() => setIsPlaying(true))
+          .catch(err => console.error("Audio play error:", err));
+      }, 100);
+    }
+  };
+
+  const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!audioRef.current || duration === 0) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const width = rect.width;
+    const percentage = clickX / width;
+    const newTime = percentage * duration;
+    audioRef.current.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
+  const getBearCase = (ticker: string) => {
+    const bearCases: Record<string, string> = {
+      "PLTR": lang === 'he' 
+        ? "הערכת שווי גבוהה במיוחד ביחס למכירות (High P/S multiple), תלות רבה בחוזים ממשלתיים שעשויים להצטמצם, וקושי בחדירה לשוק הארגוני האזרחי מול ענקיות הענן הוותיקות." 
+        : "Extremely high valuation multiple (P/S), heavy reliance on government contracts which may face budgetary headwinds, and friction in commercial scaling against legacy SaaS players.",
+      "NVDA": lang === 'he' 
+        ? "תחרות גוברת מצד מעבדי AI עצמאיים של גוגל (TPU) ואמזון (Trainium), מחזוריות של שוק השבבים, ורמת ציפיות היסטורית שאינה משאירה מקום לטעויות בדוחות הבאים." 
+        : "Growing internal silicon threats from cloud hyperscalers (Google TPU, Amazon Trainium), cyclical nature of semiconductors, and priced-for-perfection valuation with no margin for error.",
+      "ESLT.TA": lang === 'he' 
+        ? "שחיקת רווחיות תפעולית עקב עליית עלויות שכר חריגה בישראל, פגיעה במוניטין בשווקים אירופאיים מסוימים עקב רגישות פוליטית, ותלות תקציבית במשרד הביטחון." 
+        : "Operational margin contraction due to high domestic wage inflation, potential geopolitical pushback in European markets, and heavy dependency on Israeli Defense Ministry budgets.",
+      "RTX": lang === 'he' 
+        ? "עלויות קרקוע מנועי GTF של חטיבת פראט אנד ויטני שמובילות להפרשות כבדות, וקצב צמיחה מתון בהשוואה לסקטור הטכנולוגי." 
+        : "Long-term liability overhang from Pratt & Whitney GTF engine recalls leading to heavy cash outflows, and structural lag in commercial aviation relative to tech growth.",
+      "NXSN.TA": lang === 'he' 
+        ? "סיכון ריכוזיות לקוחות גבוה (תלות במספר קטן של אינטגרטורים), תחרות גוברת מצד רכיבי הרכבה זולים מסין, ורגולציה מחמירה על ייצוא טכנולוגיות כטב\"מים." 
+        : "Significant customer concentration risk (dependency on key defense aggregators), rising cheap component competition from Chinese manufacturers, and tight regulatory export controls."
+    };
+    return bearCases[ticker] || (lang === 'he' ? "לא הוגדרו סיכונים ספציפיים עבור מנייה זו." : "No specific risks defined for this asset.");
+  };
 
   const t = translations[lang];
 
@@ -207,6 +332,9 @@ function App() {
         
         const podcastsRes = await axios.get('/api/podcasts');
         setPodcasts(podcastsRes.data);
+        if (podcastsRes.data.length > 0) {
+          setActivePodcast(podcastsRes.data[0]);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -286,6 +414,10 @@ function App() {
     }
   };
 
+  const [selectedThesis, setSelectedThesis] = useState<InvestmentThesis | null>(null);
+  const [thesisModalOpen, setThesisModalOpen] = useState(false);
+  const [thesisLoading, setThesisLoading] = useState(false);
+
   const openChartModal = async (ticker: string) => {
     setSelectedTicker(ticker);
     setChartModalOpen(true);
@@ -300,13 +432,33 @@ function App() {
     }
   };
 
+  const openThesisModal = async (ticker: string) => {
+    setSelectedThesis(null);
+    setThesisModalOpen(true);
+    setThesisLoading(true);
+    try {
+      const res = await axios.get(`/api/thesis/${ticker}`);
+      setSelectedThesis(res.data);
+    } catch (err) {
+      console.error("Error fetching thesis:", err);
+    } finally {
+      setThesisLoading(false);
+    }
+  };
+
   return (
     <div className={`app-container ${lang === 'he' ? 'rtl' : 'ltr'}`} dir={lang === 'he' ? 'rtl' : 'ltr'}>
       <BackgroundSlideshow />
       
-      <button className="lang-btn" onClick={toggleLang}>
-        <Globe size={16} /> {t.langToggle}
-      </button>
+      {/* Premium Top Action Bar */}
+      <div className="top-actions">
+        <button className="theme-toggle-btn" onClick={toggleTheme} title={theme === 'dark' ? 'Light Mode' : 'Dark Mode'}>
+          {theme === 'dark' ? <Sun size={16} className="sun-icon" /> : <Moon size={16} className="moon-icon" />}
+        </button>
+        <button className="lang-btn-modern" onClick={toggleLang}>
+          <Globe size={16} /> <span>{t.langToggle}</span>
+        </button>
+      </div>
 
       {/* Top Ticker Tape */}
       <div className="ticker-tape-container">
@@ -365,27 +517,53 @@ function App() {
         {/* Main Center Feed */}
         <div className="glass-panel main-feed">
           
-          {/* Podcast Player - Compact Bar */}
+          {/* Collapsible Transcript & Podcast Card */}
           {podcasts.length > 0 && (
-            <div className="podcast-bar">
-              <div className="podcast-bar-left">
-                <div className="pulsing-live"></div>
-                <span className="podcast-title"><Globe size={16} style={{display:'inline', marginRight:'4px'}}/> {t.podcastTitle}</span>
-                <span className="podcast-divider">|</span>
-                <audio controls src={`${podcasts[0].mp3_url}`} className="compact-audio" />
-              </div>
-              <div className="podcast-bar-right">
+            <div className="podcast-transcript-card">
+              <div className="podcast-card-header-flex">
+                <div className="podcast-live-indicator">
+                  <div className="pulsing-live"></div>
+                  <span className="podcast-card-title">
+                    <Globe size={14} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'middle' }} /> 
+                    {lang === 'he' ? 'הדופק של השוק - מהדורה קולית' : 'The Market Pulse - Audio Edition'}
+                  </span>
+                </div>
                 <span className="countdown-small">{t.nextBroadcast} <strong>{countdown}</strong></span>
-                <details className="archive-dropdown">
-                  <summary>טקסט וארכיון</summary>
-                  <div className="dropdown-content">
-                     <div className="podcast-script-small">{podcasts[0].script}</div>
-                     {podcasts.slice(1).map(p => (
-                       <div key={p.id} className="dropdown-item">
-                         <span style={{fontSize: '0.8rem', marginBottom: '4px', display:'block'}}>{p.title}</span>
-                         <audio controls src={`${p.mp3_url}`} className="compact-audio" />
-                       </div>
-                     ))}
+              </div>
+              
+              <div className="podcast-card-body">
+                <div className="active-podcast-meta">
+                  <span className="active-podcast-title">{activePodcast?.title || podcasts[0].title}</span>
+                  <span className="active-podcast-date">{activePodcast?.date || podcasts[0].date}</span>
+                </div>
+                
+                <details className="podcast-script-details" open>
+                  <summary className="script-summary-btn">
+                    <span>{lang === 'he' ? 'תמלול השידור הכלכלי' : 'View Broadcast Transcript'}</span>
+                    <span className="arrow-down">▾</span>
+                  </summary>
+                  <div className="podcast-script-text">
+                    {activePodcast?.script || podcasts[0].script}
+                  </div>
+                </details>
+
+                <details className="podcast-archive-details">
+                  <summary className="archive-summary-btn">
+                    <span>{t.archive}</span>
+                    <span className="arrow-down">▾</span>
+                  </summary>
+                  <div className="archive-list-container">
+                    {podcasts.map(p => (
+                      <div key={p.id} className={`archive-podcast-item ${activePodcast?.id === p.id ? 'active' : ''}`} onClick={() => loadPodcast(p)}>
+                        <div className="archive-item-info">
+                          <span className="archive-item-title">{p.title}</span>
+                          <span className="archive-item-date">{p.date}</span>
+                        </div>
+                        <button className="archive-play-btn" onClick={(e) => { e.stopPropagation(); loadPodcast(p); }}>
+                          {activePodcast?.id === p.id && isPlaying ? <Pause size={14} /> : <Play size={14} />}
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 </details>
               </div>
@@ -406,16 +584,21 @@ function App() {
                 </div>
               ) : (
                 results.map((stock) => (
-                  <div key={stock.Ticker} className="stock-card">
+                  <div 
+                    key={stock.Ticker} 
+                    className="stock-card clickable-card"
+                    onClick={() => setSelectedStock(stock)}
+                  >
                     <div className="stock-card-header">
                       <h2 className="stock-card-ticker">{stock.Ticker}</h2>
                       <div style={{display:'flex', gap:'1rem', alignItems:'center'}}>
-                        <button className="chart-btn" onClick={() => openChartModal(stock.Ticker)}>
+                        <button className="chart-btn" onClick={(e) => { e.stopPropagation(); openChartModal(stock.Ticker); }}>
                           <LineChartIcon size={16} /> {t.viewChart}
                         </button>
                         <div className="alert-badge">{stock.Alert}</div>
                       </div>
                     </div>
+                    
                     <div className="metrics-grid">
                       <div className="metric-box">
                         <span className="metric-label">{t.epsGrowth}</span>
@@ -442,6 +625,11 @@ function App() {
                           <p style={{ color: '#e2e8f0', fontSize: '0.9rem', margin: 0 }}>{stock.Simple_Explanation}</p>
                         </div>
                       ) : null}
+                    </div>
+
+                    <div className="card-click-prompt">
+                      <span>{lang === 'he' ? 'לחץ לניתוח ROIC, תזרים חופשי וסיכונים ➔' : 'Click for ROIC, FCF, & Risk deep dive ➔'}</span>
+                      <Info size={12} />
                     </div>
                   </div>
                 ))
@@ -504,7 +692,12 @@ function App() {
                     {s.stocks && s.stocks.length > 0 && (
                       <div className="deep-dive-stocks">
                         {s.stocks.map(st => (
-                          <div key={st.symbol} className="deep-dive-stock-row">
+                          <div 
+                            key={st.symbol} 
+                            className="deep-dive-stock-row clickable-row"
+                            onClick={() => openThesisModal(st.symbol)}
+                            title={lang === 'he' ? 'לחץ לצפייה בתזת השקעות' : 'Click to view investment thesis'}
+                          >
                             <span className="stock-sym">{st.symbol}</span>
                             <span className="stock-name">{st.name}</span>
                             <span className={`stock-change ${st.change.startsWith('-') ? 'down' : 'up'}`}>{st.change}</span>
@@ -595,6 +788,183 @@ function App() {
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Bottom Sheet Drawer for Selected Stock */}
+      {selectedStock && (
+        <div className="bottom-sheet-overlay" onClick={() => setSelectedStock(null)}>
+          <div className="bottom-sheet-drawer" onClick={(e) => e.stopPropagation()}>
+            <div className="bottom-sheet-header">
+              <div className="bottom-sheet-meta">
+                <h3 className="bottom-sheet-ticker">{selectedStock.Ticker}</h3>
+                <span className="bottom-sheet-name">{selectedStock.Name || selectedStock.Ticker}</span>
+              </div>
+              <button className="bottom-sheet-close-btn" onClick={() => setSelectedStock(null)}>
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="bottom-sheet-body">
+              <div className="bottom-sheet-section">
+                <h4 className="section-title"><TrendingUp size={16} /> {lang === 'he' ? 'אנליזה טכנית ומומנטום (הספרינטר)' : 'Technical & Momentum Analysis'}</h4>
+                <div className="info-grid">
+                  <div className="info-card">
+                    <span className="info-label">{t.rps}</span>
+                    <span className="info-value">{selectedStock.RPS}</span>
+                  </div>
+                  <div className="info-card">
+                    <span className="info-label">{lang === 'he' ? 'סטטוס פריצה' : 'Breakout Status'}</span>
+                    <span className="info-value text-accent">{selectedStock.Alert}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bottom-sheet-section">
+                <h4 className="section-title"><Zap size={16} /> {lang === 'he' ? 'ערך איכותי לטווח ארוך (המרתוניסט)' : 'Long-Term Moat & Quality'}</h4>
+                <div className="info-grid">
+                  <div className="info-card">
+                    <span className="info-label">ROIC (5 Years)</span>
+                    <span className="info-value text-success">{selectedStock.ROIC_5Yr || "N/A"}</span>
+                  </div>
+                  <div className="info-card">
+                    <span className="info-label">FCF Growth</span>
+                    <span className="info-value text-success">{selectedStock.FCF_Growth || "N/A"}</span>
+                  </div>
+                  <div className="info-card">
+                    <span className="info-label">ROE</span>
+                    <span className="info-value">{(selectedStock.ROE * 100).toFixed(1)}%</span>
+                  </div>
+                  <div className="info-card">
+                    <span className="info-label">EPS Growth (Qtr)</span>
+                    <span className="info-value">+{Math.round(selectedStock.EPS_Growth_Qtr * 100)}%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bottom-sheet-section bear-case-container">
+                <h4 className="section-title bear"><ActivityIcon size={16} /> {lang === 'he' ? 'תרחיש דובי וסיכוני מפתח (Bear Case)' : 'Bear Case & Downside Risks'}</h4>
+                <p className="bear-case-text">{getBearCase(selectedStock.Ticker)}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Investment Thesis Modal */}
+      {thesisModalOpen && (
+        <div className="modal-overlay" onClick={() => setThesisModalOpen(false)}>
+          <div className="modal-content thesis-modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <h2 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 900, color: 'var(--text-main)' }}>
+                  {selectedThesis ? `${selectedThesis.Ticker} - ${selectedThesis.Name}` : lang === 'he' ? 'טוען תזת השקעה...' : 'Loading Investment Thesis...'}
+                </h2>
+                {selectedThesis && (
+                  <span style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: 'bold', marginTop: '0.2rem' }}>
+                    {selectedThesis.Sector}
+                  </span>
+                )}
+              </div>
+              <button className="close-btn" onClick={() => setThesisModalOpen(false)}><X size={24} /></button>
+            </div>
+            
+            <div className="modal-body" style={{ padding: '1.5rem 2rem' }}>
+              {thesisLoading ? (
+                <div className="chart-loading">
+                  <Activity size={48} className="spinner" />
+                </div>
+              ) : selectedThesis ? (
+                <div className="thesis-popup-body">
+                  <div className="thesis-popup-section">
+                    <h4 className="thesis-popup-section-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold', fontSize: '1.05rem', color: 'var(--text-main)', borderBottom: '1px solid var(--panel-border)', paddingBottom: '0.4rem', margin: '0 0 0.5rem 0' }}>
+                      <TrendingUp size={16} /> 
+                      {lang === 'he' ? 'א. סיבת המעקב (Why Tracked)' : 'A. Why Tracked'}
+                    </h4>
+                    <p className="thesis-popup-text" style={{ fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--text-main)', margin: '0 0 1.5rem 0' }}>{selectedThesis.WhyTracked}</p>
+                  </div>
+
+                  <div className="thesis-popup-section">
+                    <h4 className="thesis-popup-section-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold', fontSize: '1.05rem', color: 'var(--text-main)', borderBottom: '1px solid var(--panel-border)', paddingBottom: '0.4rem', margin: '0 0 0.5rem 0' }}>
+                      <Zap size={16} />
+                      {lang === 'he' ? 'ב. מיקום הפוטנציאל והקטליזטור (Where is the Edge)' : 'B. Where is the Edge'}
+                    </h4>
+                    <p className="thesis-popup-text" style={{ fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--text-main)', margin: '0 0 1.5rem 0' }}>{selectedThesis.WhereIsEdge}</p>
+                  </div>
+
+                  <div className="thesis-popup-section">
+                    <h4 className="thesis-popup-section-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold', fontSize: '1.05rem', color: 'var(--success)', borderBottom: '1px solid var(--panel-border)', paddingBottom: '0.4rem', margin: '0 0 0.5rem 0' }}>
+                      <ActivityIcon size={16} />
+                      {lang === 'he' ? 'ג. למה עכשיו (Timing & Valuation Rationale)' : 'C. Timing & Valuation Rationale'}
+                    </h4>
+                    <p className="thesis-popup-text" style={{ fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--text-main)', margin: 0 }}>{selectedThesis.TimingValuation}</p>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--danger)' }}>
+                  {lang === 'he' ? 'שגיאה בטעינת הנתונים.' : 'Error loading thesis data.'}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Custom Audio Player */}
+      {podcasts.length > 0 && activePodcast && (
+        <div className="floating-audio-player">
+          <div className="player-container">
+            <div className="player-left">
+              <button className="player-play-btn" onClick={togglePlay} title={isPlaying ? 'Pause' : 'Play'}>
+                {isPlaying ? <Pause size={18} /> : <Play size={18} fill="currentColor" />}
+              </button>
+              <div className="player-track-info">
+                <span className="player-track-title">{activePodcast.title}</span>
+                <span className="player-track-subtitle">{lang === 'he' ? 'הדופק של השוק' : 'The Market Pulse'}</span>
+              </div>
+            </div>
+
+            {/* Waveform visualizer */}
+            <div className="waveform-container" onClick={handleProgressBarClick} title={lang === 'he' ? 'לחץ לניווט בשמע' : 'Click to seek audio'}>
+              <div className="progress-bar-overlay" style={{ width: `${(currentTime / duration) * 100}%` }}></div>
+              <div className="wave-bars">
+                {[12, 18, 10, 24, 16, 28, 20, 14, 26, 12, 8, 16, 22, 18, 14, 20, 24, 10, 16, 12, 28, 18].map((height, i) => {
+                  const percentOfAudio = (i / 22) * 100;
+                  const currentPercent = (currentTime / duration) * 100;
+                  const isActive = currentPercent >= percentOfAudio;
+                  return (
+                    <div 
+                      key={i} 
+                      className={`wave-bar ${isActive ? 'wave-active' : ''} ${isPlaying ? 'wave-animated' : ''}`}
+                      style={{ 
+                        height: `${height}px`,
+                        animationDelay: `${i * 50}ms`
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="player-right">
+              <button className="speed-badge" onClick={handleSpeedToggle}>
+                {playbackRate}x
+              </button>
+              <div className="time-indicator">
+                <span>{formatTime(currentTime)}</span>
+                <span className="time-divider">/</span>
+                <span>{formatTime(duration)}</span>
+              </div>
+            </div>
+          </div>
+          {/* Audio element itself */}
+          <audio 
+            ref={audioRef}
+            src={activePodcast.mp3_url}
+            onTimeUpdate={handleTimeUpdate}
+            onLoadedMetadata={handleLoadedMetadata}
+            onEnded={handleAudioEnded}
+          />
         </div>
       )}
 

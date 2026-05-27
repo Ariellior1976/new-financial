@@ -237,6 +237,81 @@ def get_sectors_deep_dive():
     """
     return screener.get_sector_deep_dives()
 
+@app.get("/api/thesis/{ticker}")
+def get_investment_thesis(ticker: str):
+    """
+    Fetches the 3-point investment thesis for a given ticker, either using pre-written high-quality
+    analyst logic or generating it dynamically with Gemini.
+    """
+    ticker_upper = ticker.upper().replace(".TA", "")
+    
+    # Pre-written templates for simulation
+    prewritten = {
+        "AVAV": {
+            "Ticker": "AVAV",
+            "Name": "AeroVironment (Counter-UAS)",
+            "Sector": "ביטחון (ארה\"ב - ענקיות ונישה)",
+            "WhyTracked": "מונופול דה-פקטו ברחפנים טקטיים קטנים (כמו ה-Switchblade) המשמשים חימוש משוטט (Loitering Munition). החברה מהווה ספק יחיד (Sole Source) עבור פרויקטים קריטיים של הפנטגון, והביקוש למוצריה זינק במאות אחוזים בעקבות מלחמת אוקראינה-רוסיה והצורך בהגנה מפני נחילי רחפנים.",
+            "WhereIsEdge": "פריצת הדרך הכלכלית היא במעבר מייצור ידני מוגבל לייצור תעשייתי המוני ברווחיות גבוהה, בשילוב אינטגרציה של מערכות ניווט מבוססות בינה מלאכותית (ללא צורך ב-GPS) שעוברות כעת את אישורי הפנטגון. פלח השוק של Counter-UAS (הגנה מפני רחפנים) גדל בקצב צמיחה שנתי (CAGR) של מעל 25%.",
+            "TimingValuation": "המניה פרצה בסיס מחיר של 18 חודשים (Cup and Handle) במחזור מסחר הגבוה ב-60% מהממוצע, במקביל למעבר לרווחיות GAAP עקבית וצבר הזמנות (Backlog) של מעל מיליארד דולר שמבטיח הכנסות לשנתיים הבאות."
+        },
+        "CAMT": {
+            "Ticker": "CAMT",
+            "Name": "קמטק (Semiconductors)",
+            "Sector": "טכנולוגיות פורצות דרך (ישראלי / Silicon Wadi)",
+            "WhyTracked": "מונופול משותף (דואופול עם Onto Innovation) בשוק מטרולוגיית ובדיקת פרוסות סיליקון (Wafer Inspection) לתחום המארזים המתקדמים (Advanced Packaging) של שבבי בינה מלאכותית (AI High-Bandwidth Memory - HBM). Camtek היא ספקית קריטית של TSMC וסמסונג עבור בדיקת שבבי HBM של אנבידיה.",
+            "WhereIsEdge": "ביקוש חסר תקדים למארזים מתקדמים (CoWoS) של TSMC. ככל ששבבי ה-AI מורכבים יותר (יותר שכבות של זיכרון HBM), אחוז הפגמים עולה, מה שמחייב שימוש מוגבר במערכות הבדיקה של קמטק. שיעור הרווחיות הגולמית של החברה עומד על מעל 48% עם תזרים חופשי מעל 20% מההכנסות.",
+            "TimingValuation": "החברה פרצה טכנית מתוך מבנה התייצבות ממושך (Flat Base) בעקבות הכרזה על הזמנה מסיבית של 50 מערכות בדיקה מחצי מוליכים מובילה. המכפיל התפעולי שלה ירד משמעותית ביחס לקצב צמיחת הרווחים (PEG < 1.2), המייצג נקודת כניסה אופטימלית לפני גל שדרוגי הייצור הבא."
+        }
+    }
+    
+    if ticker_upper in prewritten:
+        return prewritten[ticker_upper]
+        
+    # AI dynamic generation if not prewritten
+    from backend.screener import api_key
+    import google.generativeai as genai
+    import json
+    
+    if api_key:
+        try:
+            genai.configure(api_key=api_key)
+            model = genai.GenerativeModel('gemini-3.1-flash-lite')
+            
+            prompt = f"""
+            You are a senior hedge fund analyst. Write a highly detailed, professional, and institutional-grade investment thesis in Hebrew for the stock ticker "{ticker_upper}".
+            Your analysis must have zero AI fluff, and rely on real financial logic (seeking alpha style).
+            
+            Structure the response strictly as a JSON object with these keys:
+            - "Ticker": "{ticker_upper}"
+            - "Name": The Hebrew company name.
+            - "Sector": A suitable investment sector.
+            - "WhyTracked": Answer: Why is this stock tracked by the fund? (e.g. niche monopoly, technological edge). Around 50-60 words in Hebrew.
+            - "WhereIsEdge": Answer: Where is the economic edge and future catalyst? (TAM growth, new product approvals, pricing power). Around 50-60 words in Hebrew.
+            - "TimingValuation": Answer: Why now? (cross of technical base breakout and fundamental inflection, like GAAP profitability transition). Around 50-60 words in Hebrew.
+            
+            Do NOT wrap the output in markdown code blocks. Return only raw valid JSON.
+            """
+            response = model.generate_content(prompt)
+            text = response.text.strip()
+            if text.startswith("```json"): text = text[7:]
+            if text.startswith("```"): text = text[3:]
+            if text.endswith("```"): text = text[:-3]
+            
+            return json.loads(text.strip())
+        except Exception as e:
+            print(f"Error generating dynamic thesis for {ticker_upper}: {e}")
+            
+    # Final fallback if AI fails or key is missing
+    return {
+        "Ticker": ticker_upper,
+        "Name": f"{ticker_upper} Target",
+        "Sector": "מעקב מיוחד",
+        "WhyTracked": f"חברת {ticker_upper} נסקרת כחלק ממעקב סקטוריאלי ממוקד של הקרן לאיתור נקודות פיתול פונדמנטליות.",
+        "WhereIsEdge": "הפוטנציאל נובע מצמיחה בשוק היעד ותהליכי יעילות תפעולית לשיפור תזרים המזומנים החופשי.",
+        "TimingValuation": "מומנטום טכני חיובי לצד התייצבות רמות תמיכה היסטוריות מהווה נקודת כניסה טקטית נוחה במכפיל סביר."
+    }
+
 @app.get("/api/chart/{ticker}")
 def get_historical_chart_data(ticker: str):
     """

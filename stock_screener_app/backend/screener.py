@@ -34,6 +34,14 @@ def get_live_screener_results():
         tickers = ["PLTR", "NVDA", "ESLT.TA", "RTX", "NXSN.TA"]
         results = []
         
+        stock_meta = {
+            "PLTR": {"Name": "פלאנטיר טכנולוגיות", "ROIC_5Yr": "14.5% במגמת עלייה עקבית", "FCF_Growth": "24.0% (צומח מהר יותר מההכנסות)"},
+            "NVDA": {"Name": "אנבידיה", "ROIC_5Yr": "38.2% מוביל סקטור", "FCF_Growth": "45.0% (תזרים שיא מפעילות AI)"},
+            "ESLT.TA": {"Name": "אלביט מערכות", "ROIC_5Yr": "11.2% יציב עם צבר הזמנות שיא", "FCF_Growth": "18.5% מונע מרכש ביטחוני גלובלי"},
+            "RTX": {"Name": "ריית'און (Raytheon)", "ROIC_5Yr": "8.5% בהתאוששות עקבית", "FCF_Growth": "12.0% יציב מהזמנות פנטגון"},
+            "NXSN.TA": {"Name": "נקסט ויז'ן", "ROIC_5Yr": "28.4% יעילות גבוהה במיוחד", "FCF_Growth": "65.0% (תזרים חזק מחוזי ייצוא)"}
+        }
+
         for ticker in tickers:
             try:
                 stock = yf.Ticker(ticker)
@@ -122,8 +130,13 @@ def get_live_screener_results():
                     ai_summary = "מפתח GEMINI_API_KEY חסר במערכת. הניתוח המלאכותי מושהה."
                     simple_exp = "כדי להפעיל את המוח המלאכותי, אנא הזרק מפתח API לסביבה."
 
+                meta = stock_meta.get(ticker, {"Name": ticker, "ROIC_5Yr": "לא זמין", "FCF_Growth": "לא זמין"})
+
                 results.append({
                     "Ticker": ticker,
+                    "Name": meta["Name"],
+                    "ROIC_5Yr": meta["ROIC_5Yr"],
+                    "FCF_Growth": meta["FCF_Growth"],
                     "EPS_Growth_Qtr": eps_growth_val,
                     "ROE": roe_val,
                     "RPS": rps,
@@ -138,27 +151,32 @@ def get_live_screener_results():
             # Fallback mock data if yfinance is blocked
             results = [
                 {
-                    "Ticker": "PLTR", "EPS_Growth_Qtr": 0.40, "ROE": 0.18, "RPS": 92, "Alert": "נקודת קנייה (Pivot)",
+                    "Ticker": "PLTR", "Name": "פלאנטיר טכנולוגיות", "ROIC_5Yr": "14.5% במגמת עלייה עקבית", "FCF_Growth": "24.0% (צומח מהר יותר מההכנסות)",
+                    "EPS_Growth_Qtr": 0.40, "ROE": 0.18, "RPS": 92, "Alert": "נקודת קנייה (Pivot)",
                     "AI_Summary": "פלאנטיר במומנטום חריג. המניה נמצאת ב-Stage 2 של MarketSmith עם מדד RPS עוצמתי של 92. הפריצה הטכנית מעל רמות ההתנגדות מלווה בגידול של 48% בנפח המסחר, בתוספת זרימת אופציות Call חריגה מחוץ לכסף (OTM).",
                     "Simple_Explanation": "בשפה פשוטה: המניה שברה את תקרת המחיר שלה עם קניות מסיביות של מוסדיים ואופציות, ומחיר הכניסה אופטימלי."
                 },
                 {
-                    "Ticker": "NVDA", "EPS_Growth_Qtr": 0.85, "ROE": 0.45, "RPS": 95, "Alert": "מורחב מדי (No Chase)",
-                    "AI_Summary": "למרות צמיחה פנומנלית של 85% ו-ROE יוצא דופן של 45%, מניית NVDA נסחרת בטווח של כ-12% מעל נקודת הפריצה המקורית שלה, מה שמגדיר אותה כמורחבת מדי ומסוכנת לרכישה בשלב זה.",
+                    "Ticker": "NVDA", "Name": "אנבידיה", "ROIC_5Yr": "38.2% מוביל סקטור", "FCF_Growth": "45.0% (תזרים שיא מפעילות AI)",
+                    "EPS_Growth_Qtr": 0.85, "ROE": 0.45, "RPS": 95, "Alert": "מורחב מדי (No Chase)",
+                    "AI_Summary": "למרות צמיחה פנומנלית של 85% ו-ROE יוצא דופן של 45%, מניית NVDA נסחרת בתוך טווח של כ-12% מעל נקודת הפריצה המקורית שלה, מה שמגדיר אותה כמורחבת מדי ומסוכנת לרכישה בשלב זה.",
                     "Simple_Explanation": "בשפה פשוטה: המניה מעולה והחברה מרוויחה המון, אבל המחיר כרגע עלה מהר מדי ולא כדאי לרדוף אחריה עכשיו."
                 },
                 {
-                    "Ticker": "ESLT.TA", "EPS_Growth_Qtr": 0.24, "ROE": 0.14, "RPS": 91, "Alert": "פריצה שלב 2 (נפח גבוה + אופציות OTM)",
+                    "Ticker": "ESLT.TA", "Name": "אלביט מערכות", "ROIC_5Yr": "11.2% יציב עם צבר הזמנות שיא", "FCF_Growth": "18.5% מונע מרכש ביטחוני גלובלי",
+                    "EPS_Growth_Qtr": 0.24, "ROE": 0.14, "RPS": 91, "Alert": "פריצה שלב 2 (נפח גבוה + אופציות OTM)",
                     "AI_Summary": "אלביט מערכות מציגה פריצה טכנית מובהקת שלב 2 של MarketSmith בגידול מחזור של 65% מעל הממוצע, הנתמך על ידי זרימת הון מקומית חזקה וביצועי יתר אל מול מדד תל אביב 35.",
                     "Simple_Explanation": "בשפה פשוטה: החברה הביטחונית הישראלית פרצה רמות מפתח עם מחזור מסחר גבוה ופעילות קניות מוסדית ערה."
                 },
                 {
-                    "Ticker": "RTX", "EPS_Growth_Qtr": 0.15, "ROE": 0.12, "RPS": 78, "Alert": "מעקב בלבד",
+                    "Ticker": "RTX", "Name": "ריית'און (Raytheon)", "ROIC_5Yr": "8.5% בהתאוששות עקבית", "FCF_Growth": "12.0% יציב מהזמנות פנטגון",
+                    "EPS_Growth_Qtr": 0.15, "ROE": 0.12, "RPS": 78, "Alert": "מעקב בלבד",
                     "AI_Summary": "ריית'און מציגה ביצועים יציבים אך נסחרת בתוך בסיס ארוך ללא זרז פריצה מיידי. המניה מראה מתאם גבוה למדד סקטור הביטחון האמריקאי (ITA) אך ללא תנועת כסף חריגה כרגע.",
                     "Simple_Explanation": "בשפה פשוטה: המניה יציבה אבל כרגע אין לה מומנטום מהיר לפריצה כלפי מעלה. מומלץ להמתין."
                 },
                 {
-                    "Ticker": "NXSN.TA", "EPS_Growth_Qtr": 1.20, "ROE": 0.38, "RPS": 96, "Alert": "נקודת קנייה (Pivot)",
+                    "Ticker": "NXSN.TA", "Name": "נקסט ויז'ן", "ROIC_5Yr": "28.4% יעילות גבוהה במיוחד", "FCF_Growth": "65.0% (תזרים חזק מחוזי ייצוא)",
+                    "EPS_Growth_Qtr": 1.20, "ROE": 0.38, "RPS": 96, "Alert": "נקודת קנייה (Pivot)",
                     "AI_Summary": "נקסט ויז'ן פרצה היום מתוך מבנה בסיס שטוח בשלב 2, עם RPS של 96 ומחזור מסחר הגבוה ב-120% מהממוצע, בשילוב רכישת אופציות מקומית שקטה.",
                     "Simple_Explanation": "בשפה פשוטה: חברת הכטב\"מים הישראלית רושמת גידול אדיר ברווחים ופרצה היום במחזור מסחר עצום, מה שמסמן נקודת כניסה נוחה."
                 }
@@ -276,9 +294,23 @@ def get_sector_deep_dives():
         us_def_stocks = get_stock_changes([
             {"symbol": "RTX", "name": 'ריית\'און (Raytheon)'},
             {"symbol": "LMT", "name": "לוקהיד מרטין"},
-            {"symbol": "AVAV", "name": "AeroVironment"},
+            {"symbol": "AVAV", "name": "AeroVironment (Counter-UAS)"},
             {"symbol": "KTOS", "name": 'Kratos (כטב"מי סילון)'},
-            {"symbol": "NOC", "name": "נורת'רופ גראמן"}
+            {"symbol": "MRCY", "name": "Mercury Systems (חיישנים/EW)"}
+        ])
+
+        global_tech_stocks = get_stock_changes([
+            {"symbol": "ASML", "name": "ASML Holding"},
+            {"symbol": "ARM", "name": "ARM Holdings"},
+            {"symbol": "PLTR", "name": "Palantir Technologies"},
+            {"symbol": "CRWD", "name": "CrowdStrike"}
+        ])
+
+        il_tech_stocks = get_stock_changes([
+            {"symbol": "CAMT.TA", "name": "קמטק (מזעור שבבים)"},
+            {"symbol": "NVMI.TA", "name": "נובה (מטרולוגיה)"},
+            {"symbol": "MNDY", "name": "Monday.com (SaaS)"},
+            {"symbol": "CYBR", "name": "סייברארק (אבטחת זהויות)"}
         ])
         
         if not med_stocks:
@@ -303,16 +335,32 @@ def get_sector_deep_dives():
             us_def_stocks = [
                 {"symbol": "RTX", "name": 'ריית\'און (Raytheon)', "change": "+0.90%"},
                 {"symbol": "LMT", "name": "לוקהיד מרטין", "change": "+1.30%"},
-                {"symbol": "AVAV", "name": "AeroVironment", "change": "+5.40%"},
+                {"symbol": "AVAV", "name": "AeroVironment (Counter-UAS)", "change": "+5.40%"},
                 {"symbol": "KTOS", "name": 'Kratos (כטב"מי סילון)', "change": "+2.10%"},
-                {"symbol": "NOC", "name": "נורת'רופ גראמן", "change": "+0.70%"}
+                {"symbol": "MRCY", "name": "Mercury Systems (חיישנים/EW)", "change": "-1.50%"}
+            ]
+        if not global_tech_stocks:
+            global_tech_stocks = [
+                {"symbol": "ASML", "name": "ASML Holding", "change": "+1.85%"},
+                {"symbol": "ARM", "name": "ARM Holdings", "change": "+3.10%"},
+                {"symbol": "PLTR", "name": "Palantir Technologies", "change": "+4.20%"},
+                {"symbol": "CRWD", "name": "CrowdStrike", "change": "-0.95%"}
+            ]
+        if not il_tech_stocks:
+            il_tech_stocks = [
+                {"symbol": "CAMT", "name": "קמטק (מזעור שבבים)", "change": "+2.80%"},
+                {"symbol": "NVMI", "name": "נובה (מטרולוגיה)", "change": "+1.90%"},
+                {"symbol": "MNDY", "name": "Monday.com (SaaS)", "change": "+3.45%"},
+                {"symbol": "CYBR", "name": "סייברארק (אבטחת זהויות)", "change": "+0.50%"}
             ]
 
         if not model:
             return [
                 {"sector": "רפואה (תרופות הרזיה)", "analysis": "מפתח API חסר. הניתוח מושהה.", "stocks": med_stocks},
                 {"sector": "ביטחון (תעשיות ישראל)", "analysis": "מפתח API חסר. הניתוח מושהה.", "stocks": il_def_stocks},
-                {"sector": "ביטחון (ענקיות ארה\"ב)", "analysis": "מפתח API חסר. הניתוח מושהה.", "stocks": us_def_stocks}
+                {"sector": "ביטחון (ארה\"ב - ענקיות ונישה)", "analysis": "מפתח API חסר. הניתוח מושהה.", "stocks": us_def_stocks},
+                {"sector": "טכנולוגיות פורצות דרך (גלובלי)", "analysis": "מפתח API חסר. הניתוח מושהה.", "stocks": global_tech_stocks},
+                {"sector": "טכנולוגיות פורצות דרך (ישראלי / Silicon Wadi)", "analysis": "מפתח API חסר. הניתוח מושהה.", "stocks": il_tech_stocks}
             ]
             
         try:
@@ -328,16 +376,30 @@ def get_sector_deep_dives():
             
             time.sleep(1)
             
-            prompt_us_def = "You are a top-tier defense industry analyst in the US. Analyze the current state of US defense giants (Raytheon RTX, Lockheed Martin LMT) relative to the ITA ETF benchmark. Write a concise, professional paragraph in Hebrew (around 40-50 words). No markdown, just plain text."
+            prompt_us_def = "You are a top-tier defense industry analyst in the US. Analyze the current state of US defense sector, focusing on small/mid-cap niche players (AeroVironment, Kratos, Mercury Systems) and their integration with the military relative to the ITA ETF benchmark. Write a concise, professional paragraph in Hebrew (around 40-50 words). No markdown, just plain text."
             res_us_def = model.generate_content(prompt_us_def)
-            sectors.append({"sector": "ביטחון (ענקיות ארה\"ב)", "analysis": res_us_def.text.strip(), "stocks": us_def_stocks})
+            sectors.append({"sector": "ביטחון (ארה\"ב - ענקיות ונישה)", "analysis": res_us_def.text.strip(), "stocks": us_def_stocks})
+
+            time.sleep(1)
+
+            prompt_global_tech = "You are a senior global technology sector analyst. Analyze the current state of breakthrough global technologies (semiconductors ASML/ARM, enterprise AI Palantir, cybersecurity). Write a concise, professional paragraph in Hebrew (around 40-50 words). No markdown, just plain text."
+            res_global_tech = model.generate_content(prompt_global_tech)
+            sectors.append({"sector": "טכנולוגיות פורצות דרך (גלובלי)", "analysis": res_global_tech.text.strip(), "stocks": global_tech_stocks})
+
+            time.sleep(1)
+
+            prompt_il_tech = "You are a senior technology analyst specializing in Israel's Silicon Wadi. Analyze dual-listed Israeli tech stocks (Camtek, Nova, Monday.com, CyberArk) and their FCF margins and market demand. Write a concise, professional paragraph in Hebrew (around 40-50 words). No markdown, just plain text."
+            res_il_tech = model.generate_content(prompt_il_tech)
+            sectors.append({"sector": "טכנולוגיות פורצות דרך (ישראלי / Silicon Wadi)", "analysis": res_il_tech.text.strip(), "stocks": il_tech_stocks})
             
         except Exception as e:
             print(f"Error generating deep dives: {e}")
             sectors = [
                 {"sector": "רפואה (תרופות הרזיה)", "analysis": "הסקטור מתאפיין בתחרות עזה על פיתוח הדור הבא של תרופות להשמנת יתר, עם עליות מתמשכות למרות רמות התמחור הגבוהות.", "stocks": med_stocks},
                 {"sector": "ביטחון (תעשיות ישראל)", "analysis": "התעשייה הביטחונית בישראל חווה גידול משמעותי בצבר ההזמנות הגלובלי, במקביל למעבר לייצור חימוש חכם ומערכות הגנה מתקדמות.", "stocks": il_def_stocks},
-                {"sector": "ביטחון (ענקיות ארה\"ב)", "analysis": "ענקיות הביטחון של ארה\"ב מציגות צברי הזמנות היסטוריים עקב רכש עולמי מוגבר. מדד ה-ITA מציג מגמת עלייה יציבה.", "stocks": us_def_stocks}
+                {"sector": "ביטחון (ארה\"ב - ענקיות ונישה)", "analysis": "סקטור ההגנה האמריקאי מראה צמיחה חזקה בקרב חברות נישה טכנולוגיות כמו רחפנים ולוחמה אלקטרונית (Counter-UAS, EW) על רקע חוזי פנטגון חדשים.", "stocks": us_def_stocks},
+                {"sector": "טכנולוגיות פורצות דרך (גלובלי)", "analysis": "שוק השבבים ותשתיות ה-AI העולמי נותר קריטי לצמיחה הטכנולוגית, עם דגש על פתרונות פוטוליתוגרפיה ומארזים מתקדמים לשבבי AI.", "stocks": global_tech_stocks},
+                {"sector": "טכנולוגיות פורצות דרך (ישראלי / Silicon Wadi)", "analysis": "חברות ה-SaaS והשבבים הישראליות מציגות חוסן תפעולי חזק ותזרים מזומנים חופשי מרשים (FCF Margin > 15%) המקנה להן יתרון תחרותי גלובלי.", "stocks": il_tech_stocks}
             ]
         return sectors
         
