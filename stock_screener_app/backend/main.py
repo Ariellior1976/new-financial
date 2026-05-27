@@ -1,10 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 from pydantic import BaseModel
 import os
 from fastapi.staticfiles import StaticFiles
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import backend.news_engine as news_engine
 import backend.screener as screener
 
@@ -14,10 +14,10 @@ os.makedirs(news_engine.ARCHIVE_DIR, exist_ok=True)
 app.mount("/api/podcasts/audio", StaticFiles(directory=news_engine.ARCHIVE_DIR), name="audio")
 
 @app.on_event("startup")
-def startup_event():
-    print("Starting background scheduler and generating initial podcast archive...")
-    news_engine.setup_mock_history()
-    scheduler = BackgroundScheduler()
+async def startup_event():
+    print("Starting background scheduler and checking for updates...")
+    await news_engine.check_and_update_podcast()
+    scheduler = AsyncIOScheduler()
     scheduler.add_job(news_engine.create_edition, 'cron', hour=12, minute=0)
     scheduler.add_job(news_engine.create_edition, 'cron', hour=22, minute=0)
     scheduler.start()
@@ -150,10 +150,11 @@ def get_historical_chart_data(ticker: str):
     return data
 
 @app.get("/api/podcasts")
-def get_podcasts():
+def get_podcasts(background_tasks: BackgroundTasks):
     """
     Returns the archive of generated podcasts.
     """
+    background_tasks.add_task(news_engine.check_and_update_podcast)
     return news_engine.get_archive()
 
 from fastapi.responses import FileResponse

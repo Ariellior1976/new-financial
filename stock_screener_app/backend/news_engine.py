@@ -1,10 +1,11 @@
 import feedparser
-import subprocess
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import google.generativeai as genai
+import asyncio
+import edge_tts
 
 ARCHIVE_DIR = os.path.join(os.path.dirname(__file__), "archive")
 os.makedirs(ARCHIVE_DIR, exist_ok=True)
@@ -76,7 +77,7 @@ def generate_podcast_script(news_items):
             
     return f"מפתח הגישה לא מוגדר בשרת, ולכן הפודקאסט מנותק מהמוח הכלכלי ל-{today_str}."
 
-def create_edition():
+async def create_edition():
     news = fetch_top_news()
     script = generate_podcast_script(news)
     
@@ -85,8 +86,9 @@ def create_edition():
     mp3_filename = f"{edition_id}.mp3"
     mp3_path = os.path.join(ARCHIVE_DIR, mp3_filename)
     
-    # Run edge-tts via python module to avoid Windows CLI hanging
-    subprocess.run(["python", "-m", "edge_tts", "--text", script, "--voice", "he-IL-AvriNeural", "--write-media", mp3_path], check=True)
+    # Run edge-tts asynchronously
+    communicate = edge_tts.Communicate(script, "he-IL-AvriNeural")
+    await communicate.save(mp3_path)
     
     metadata = {
         "id": edition_id,
@@ -117,6 +119,41 @@ def get_archive():
     editions.sort(key=lambda x: x["timestamp"], reverse=True)
     return editions
 
-def setup_mock_history():
+async def setup_mock_history():
     if not os.path.exists(ARCHIVE_DIR) or len([f for f in os.listdir(ARCHIVE_DIR) if f.endswith('.json')]) < 1:
-        create_edition()
+        await create_edition()
+
+_updating = False
+
+def get_latest_scheduled_slot():
+    now = datetime.now()
+    slot1 = now.replace(hour=12, minute=0, second=0, microsecond=0)
+    slot2 = now.replace(hour=22, minute=0, second=0, microsecond=0)
+    
+    if now >= slot2:
+        return slot2
+    elif now >= slot1:
+        return slot1
+    else:
+        yesterday = now - timedelta(days=1)
+        return yesterday.replace(hour=22, minute=0, second=0, microsecond=0)
+
+async def check_and_update_podcast():
+    global _updating
+    if _updating:
+        return
+    _updating = True
+    try:
+        archive = get_archive()
+        latest_slot = get_latest_scheduled_slot()
+        latest_slot_ts = int(latest_slot.timestamp())
+        
+        if not archive or archive[0]["timestamp"] < latest_slot_ts:
+            print(f"Podcast archive is out of date. Latest slot: {latest_slot}. Creating new edition...")
+            await create_edition()
+        else:
+            print("Podcast archive is up to date.")
+    except Exception as e:
+        print(f"Error checking/updating podcast: {e}")
+    finally:
+        _updating = False
