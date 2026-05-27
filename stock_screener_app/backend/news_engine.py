@@ -78,7 +78,7 @@ def generate_podcast_script(news_items):
            - Rely only on facts and figures. If a rate, index value, or percentage is mentioned, use it. If uncertain, state the market pricing probabilities explicitly.
            
         3. SPEECH ENGINE OPTIMIZATION (For Hebrew TTS):
-           - NO abbreviations or acronyms: write full words. E.g., write "ארצות הברית" instead of "ארה"ב", "יושב ראש" instead of "יו"ר", "מנכ"ל" as "מנכאל" or "מנהל כללי", "אחוזים" instead of "%", "דולרים" instead of "$".
+           - NO abbreviations or acronyms: write full words. E.g., write "ארצות הברית" instead of "ארה"ב", "יושב ראש" instead of "יו"ר", "מנכ"ל" as "מנכאל" or "מנהל כללי", "איגרות חוב" instead of "אג"ח", "אחוזים" instead of "%", "דולרים" instead of "$".
            - NO math symbols: write numbers and percentages in full Hebrew words (e.g., write "שניים נקודה חמישה אחוזים" instead of "2.5%").
            - Punctuation: Use commas [,] and periods [.] frequently to break down long sentences so the digital voice stays dynamic and does not become monotone. Keep sentences short.
            - Verbal connectors: Include transition phrases to create human-like pacing and intonation (e.g., "מנגד", "חשוב לשים לב", "וכאן נמצא הסיפור האמיתי", "המשמעות בשטח היא").
@@ -97,9 +97,8 @@ def generate_podcast_script(news_items):
             response = model.generate_content(prompt)
             return response.text.strip()
         except Exception as e:
-            import traceback
             print(f"Gemini podcast generation error: {e}")
-            return f"Error: {str(e)}\n{traceback.format_exc()}"
+            return f"שלום לכולם. עקב עומס זמני על שרתי הניתוח, לא ניתן לספק את המהדורה הכלכלית המלאה ל-{today_str}. נשוב בקרוב."
             
     return f"מפתח הגישה לא מוגדר בשרת, ולכן הפודקאסט מנותק מהמוח הכלכלי ל-{today_str}."
 
