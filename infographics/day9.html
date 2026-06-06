@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יום 9 – בודפשט ← שדה תעופה וינה ← תל אביב</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#ECEFF1;padding:24px;direction:rtl}
+.page{max-width:820px;margin:0 auto;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.13)}
+.header{background:linear-gradient(135deg,#263238,#455A64);padding:32px;color:#fff}
+.day-badge{display:inline-block;background:rgba(255,255,255,.22);border-radius:30px;padding:4px 16px;font-size:13px;font-weight:600;margin-bottom:10px}
+.day-title{font-size:28px;font-weight:800;margin-bottom:4px;line-height:1.25}
+.day-subtitle{font-size:15px;opacity:.85;margin-bottom:18px}
+.route-strip{background:rgba(0,0,0,.25);border-radius:10px;padding:10px 16px;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.route-label{font-weight:600;font-size:14px}
+.route-km{background:rgba(255,255,255,.18);border-radius:20px;padding:4px 14px;font-size:13px}
+.summary-bar{display:flex;justify-content:space-around;background:linear-gradient(135deg,#1a2226,#37474F);padding:14px 0}
+.summary-item{text-align:center;color:#fff}
+.summary-value{font-size:22px;font-weight:800}
+.summary-label{font-size:11px;opacity:.75;margin-top:2px}
+.timeline{padding:28px 24px}
+.activity{display:flex;align-items:flex-start;margin-bottom:6px}
+.a-icon-col{display:flex;flex-direction:column;align-items:center;width:56px;flex-shrink:0}
+.a-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.a-line{width:3px;flex:1;min-height:18px;background:#CFD8DC}
+.a-card{flex:1;background:#F8F9FA;border-radius:14px;padding:16px 18px;margin-right:12px;margin-bottom:6px}
+.a-name{font-size:19px;font-weight:700;color:#0D2137;margin-bottom:2px}
+.a-latin{font-size:12px;color:#78909C;margin-bottom:8px;direction:ltr;text-align:right}
+.a-desc{font-size:14px;color:#546E7A;line-height:1.6;margin-bottom:10px}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.b{padding:3px 12px;border-radius:20px;font-size:12px;font-weight:500}
+.bt{background:#ECEFF1;color:#263238}
+.bp{background:#F3E5F5;color:#4A148C}
+.by{background:#FFF9C4;color:#E65100}
+.bg{background:#E8F5E9;color:#1B5E20}
+.bw{background:#E3F2FD;color:#1565C0}
+.br{background:#FCE4EC;color:#880E4F}
+.connector{display:flex;align-items:center;margin-bottom:6px}
+.c-col{width:56px;display:flex;flex-direction:column;align-items:center}
+.c-line{width:3px;height:100%;background:#CFD8DC}
+.c-bubble{display:flex;align-items:center;gap:10px;background:#ECEFF1;border-radius:24px;padding:8px 18px;margin-right:12px;flex:1;border:2px dashed #B0BEC5}
+.c-car{font-size:18px}
+.c-text{font-size:14px;color:#455A64;font-weight:600}
+.c-km{font-size:13px;color:#78909C;direction:ltr}
+.timing-box{background:linear-gradient(135deg,#FFF9C4,#FFF3E0);border-right:4px solid #FF8F00;border-radius:12px;padding:16px 18px;margin:8px 0 8px 68px;font-size:14px}
+.timing-title{font-weight:700;color:#E65100;margin-bottom:10px;font-size:16px}
+.timing-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.06);color:#546E7A}
+.timing-row:last-child{border-bottom:none}
+.timing-time{font-weight:700;color:#BF360C;direction:ltr}
+.summary-trip{background:linear-gradient(135deg,#E8F5E9,#E3F2FD);border-radius:16px;margin:0 24px 28px;padding:24px;text-align:center}
+.summary-trip-title{font-size:22px;font-weight:800;color:#1B5E20;margin-bottom:16px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat-box{background:#fff;border-radius:12px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.stat-val{font-size:26px;font-weight:800;color:#1976D2}
+.stat-lbl{font-size:12px;color:#78909C;margin-top:4px}
+.highlights{background:#ECEFF1;padding:14px 24px;border-top:1px solid #CFD8DC}
+.hl-title{font-size:12px;color:#455A64;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.hl-items{display:flex;gap:16px;flex-wrap:wrap}
+.hl-item{font-size:13px;color:#546E7A;display:flex;align-items:center;gap:4px}
+.footer{background:#263238;padding:10px 24px;text-align:center;color:rgba(255,255,255,.6);font-size:12px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="day-badge">יום 9 מתוך 9 &nbsp;|&nbsp; שני, 7 יולי 2025 &nbsp;|&nbsp; ✈️ יום הטיסה</div>
+    <div class="day-title">✈️ בודפשט ← וינה ← ברוך הבא הביתה, תל אביב!</div>
+    <div class="day-subtitle">הבוקר האחרון – נסיעה לוינה, החזרת הרכב וטיסה לתל אביב</div>
+    <div class="route-strip">
+      <span class="route-label">🇭🇺 בודפשט &nbsp;→&nbsp; 🇦🇹 שדה תעופה וינה &nbsp;→&nbsp; 🇮🇱 תל אביב</span>
+      <span class="route-km">250 ק"מ &nbsp;|&nbsp; 2.5 שעות נסיעה</span>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="summary-item"><div class="summary-value">250</div><div class="summary-label">ק"מ אחרונים</div></div>
+    <div class="summary-item"><div class="summary-value">2.5</div><div class="summary-label">שעות נסיעה</div></div>
+    <div class="summary-item"><div class="summary-value">3</div><div class="summary-label">מדינות חצינו</div></div>
+    <div class="summary-item"><div class="summary-value">🏠</div><div class="summary-label">הביתה!</div></div>
+  </div>
+
+  <div class="timeline">
+
+    <!-- STOP 1 - BREAKFAST -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#FFF8E1">☕</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #FF8F00">
+        <div class="a-name">ארוחת בוקר אחרונה בבודפשט</div>
+        <div class="a-latin">Last Breakfast in Budapest</div>
+        <div class="a-desc">ארוחת בוקר במלון, צ'ק-אאוט. פרידה מבודפשט. אם הזמן מאפשר – קפה ורייגוש (Rétes) בבית קפה קרוב.</div>
+        <div class="badges">
+          <span class="b bt">⏰ בהתאם לשעת הטיסה</span>
+          <span class="b by">🧁 Rétes = מאפה עלים הונגרי – לנסות!</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚗</span>
+        <span class="c-text">נסיעה לשדה התעופה וינה</span>
+        <span class="c-km">250 ק"מ &nbsp;|&nbsp; 2.5 שעות &nbsp;|&nbsp; M0 → M1 → A4</span>
+      </div>
+    </div>
+
+    <!-- TIMING BOX -->
+    <div class="timing-box">
+      <div class="timing-title">⏱️ לוח זמנים מומלץ לפי שעת הטיסה</div>
+      <div class="timing-row"><span>טיסה בצהריים (12:00–13:00)</span><span class="timing-time">יציאה: 6:30–7:00</span></div>
+      <div class="timing-row"><span>טיסה אחה"צ (14:00–16:00)</span><span class="timing-time">יציאה: 8:30–9:30</span></div>
+      <div class="timing-row"><span>טיסה ערב (17:00–19:00)</span><span class="timing-time">יציאה: 10:30–11:00</span></div>
+      <div class="timing-row"><span style="font-size:12px;color:#BF360C">חשבו: 2.5 ש' נסיעה + החזרת רכב (~45 ד') + צ'ק-אין (2 ש') = 5.5 שעות לפני הטיסה</span><span></span></div>
+    </div>
+
+    <!-- STOP 2 - HIGHWAY -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#ECEFF1">🛣️</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #607D8B">
+        <div class="a-name">נסיעה: בודפשט → שדה תעופה וינה</div>
+        <div class="a-latin">Budapest M0/M1 → Vienna Schwechat Airport</div>
+        <div class="a-desc">
+          נסיעה על הכביש המהיר M0 (מעקפת בודפשט) → M1 מערבה → A4 לאוסטריה. נסיעה נוחה ומהירה, בדרך כלל ללא פקקים בבוקר.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 2.5 שעות</span>
+          <span class="b bw">🛣️ M0 → M1 → A4</span>
+          <span class="b bg">⛽ ממלאים דלק לפני החזרת הרכב!</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚗→🏢</span>
+        <span class="c-text">החזרת רכב שכור</span>
+        <span class="c-km">~30–45 דקות (החזרת רכב + תחבורה לטרמינל)</span>
+      </div>
+    </div>
+
+    <!-- STOP 3 - CAR RETURN -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E8F5E9">🚗</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #4CAF50">
+        <div class="a-name">שדה תעופה וינה – החזרת רכב</div>
+        <div class="a-latin">Vienna Airport – Car Return</div>
+        <div class="a-desc">
+          <strong>חשוב:</strong> מלאו דלק לפני כניסה לשדה התעופה (תחנה בכניסה לנמל). בדקו את הרכב לנזקים. החזרת מפתחות ואישור.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ ~30–45 דקות</span>
+          <span class="b by">⛽ מלאו דלק לפני החזרה!</span>
+          <span class="b bg">📸 צלמו את הרכב לפני ההחזרה</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">✈️</span>
+        <span class="c-text">צ'ק-אין + ביטחון</span>
+        <span class="c-km">~2 שעות לפני טיסה</span>
+      </div>
+    </div>
+
+    <!-- STOP 4 - FLIGHT -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E3F2FD">✈️</div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #1976D2">
+        <div class="a-name">טיסה: וינה ← תל אביב 🏠</div>
+        <div class="a-latin">Vienna (VIE) → Tel Aviv Ben Gurion (TLV)</div>
+        <div class="a-desc">משך הטיסה הממוצע: 3.5–4 שעות. ברוכים השבים!</div>
+        <div class="badges">
+          <span class="b bt">✈️ VIE → TLV</span>
+          <span class="b bw">⏱ ~3.5–4 שעות טיסה</span>
+          <span class="b bg">🏠 ברוכים השבים!</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TRIP SUMMARY -->
+  <div class="summary-trip">
+    <div class="summary-trip-title">🎉 סיכום הטיול המלא – 9 ימים, 3 מדינות!</div>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-val">9</div><div class="stat-lbl">ימי טיול</div></div>
+      <div class="stat-box"><div class="stat-val">3</div><div class="stat-lbl">מדינות</div></div>
+      <div class="stat-box"><div class="stat-val">~1,100</div><div class="stat-lbl">ק"מ ברכב</div></div>
+      <div class="stat-box"><div class="stat-val">25+</div><div class="stat-lbl">אתרים</div></div>
+      <div class="stat-box"><div class="stat-val">12+</div><div class="stat-lbl">נופי מים</div></div>
+      <div class="stat-box"><div class="stat-val">4</div><div class="stat-lbl">טירות/מצודות</div></div>
+      <div class="stat-box"><div class="stat-val">3</div><div class="stat-lbl">UNESCO</div></div>
+      <div class="stat-box"><div class="stat-val">2</div><div class="stat-lbl">שיטים בנהר</div></div>
+    </div>
+  </div>
+
+  <div class="highlights">
+    <div class="hl-title">🌟 הרגעים הכי בלתי נשכחים של המסלול</div>
+    <div class="hl-items">
+      <div class="hl-item">💧 צומת דנובה ← מורבה בדווין</div>
+      <div class="hl-item">⛵ שיט על הדנובה בואכאו</div>
+      <div class="hl-item">🏔️ כיפוף הדנובה מויזגרד</div>
+      <div class="hl-item">🌊 שיט ערב בודפשט מואר</div>
+      <div class="hl-item">🏛️ מנזר מלק על הצוק</div>
+      <div class="hl-item">🦢 חסידות רוסט על האגם</div>
+    </div>
+  </div>
+
+  <div class="footer">מסלול וינה – ברטיסלבה – ואכאו – אגם ניושידל – שופרון – כיפוף הדנובה – בודפשט &nbsp;|&nbsp; 29 יוני – 7 יולי 2025</div>
+</div>
+</body>
+</html>

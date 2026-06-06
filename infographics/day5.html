@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יום 5 – קרמס → אגם ניושידל (רוסט) → שופרון</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#ECEFF1;padding:24px;direction:rtl}
+.page{max-width:820px;margin:0 auto;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.13)}
+.header{background:linear-gradient(135deg,#004D40,#00796B);padding:32px;color:#fff}
+.day-badge{display:inline-block;background:rgba(255,255,255,.22);border-radius:30px;padding:4px 16px;font-size:13px;font-weight:600;margin-bottom:10px}
+.day-title{font-size:28px;font-weight:800;margin-bottom:4px;line-height:1.25}
+.day-subtitle{font-size:15px;opacity:.85;margin-bottom:18px}
+.route-strip{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 16px;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.route-label{font-weight:600;font-size:14px}
+.route-km{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 14px;font-size:13px}
+.summary-bar{display:flex;justify-content:space-around;background:linear-gradient(135deg,#003530,#00695C);padding:14px 0}
+.summary-item{text-align:center;color:#fff}
+.summary-value{font-size:22px;font-weight:800}
+.summary-label{font-size:11px;opacity:.75;margin-top:2px}
+.timeline{padding:28px 24px}
+.activity{display:flex;align-items:flex-start;margin-bottom:6px}
+.a-icon-col{display:flex;flex-direction:column;align-items:center;width:56px;flex-shrink:0}
+.a-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.a-line{width:3px;flex:1;min-height:18px;background:#CFD8DC}
+.a-card{flex:1;background:#F8F9FA;border-radius:14px;padding:16px 18px;margin-right:12px;margin-bottom:6px}
+.a-name{font-size:19px;font-weight:700;color:#0D2137;margin-bottom:2px}
+.a-latin{font-size:12px;color:#78909C;margin-bottom:8px;direction:ltr;text-align:right}
+.a-desc{font-size:14px;color:#546E7A;line-height:1.6;margin-bottom:10px}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.b{padding:3px 12px;border-radius:20px;font-size:12px;font-weight:500}
+.bt{background:#E0F2F1;color:#004D40}
+.bp{background:#F3E5F5;color:#4A148C}
+.by{background:#FFF9C4;color:#E65100}
+.bg{background:#E8F5E9;color:#1B5E20}
+.bw{background:#E1F5FE;color:#01579B}
+.bo{background:#FBE9E7;color:#BF360C}
+.connector{display:flex;align-items:center;margin-bottom:6px}
+.c-col{width:56px;display:flex;flex-direction:column;align-items:center}
+.c-line{width:3px;height:100%;background:#CFD8DC}
+.c-bubble{display:flex;align-items:center;gap:10px;background:#E0F2F1;border-radius:24px;padding:8px 18px;margin-right:12px;flex:1;border:2px dashed #80CBC4}
+.c-car{font-size:18px}
+.c-text{font-size:14px;color:#004D40;font-weight:600}
+.c-km{font-size:13px;color:#78909C;direction:ltr}
+.border-box{background:#FFF9C4;border-right:4px solid #F57F17;border-radius:12px;padding:12px 16px;margin-right:68px;margin-bottom:8px;font-size:14px;color:#E65100;font-weight:500}
+.accom{margin:0 24px 28px;background:linear-gradient(135deg,#E0F2F1,#E8F5E9);border-radius:14px;padding:18px 20px}
+.accom-label{font-size:12px;color:#00796B;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.accom-title{font-size:19px;font-weight:700;color:#004D40;margin-bottom:6px}
+.accom-opts{font-size:13px;color:#00695C;line-height:1.9}
+.highlights{background:#E0F2F1;padding:14px 24px;border-top:1px solid #80CBC4}
+.hl-title{font-size:12px;color:#004D40;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.hl-items{display:flex;gap:16px;flex-wrap:wrap}
+.hl-item{font-size:13px;color:#00695C;display:flex;align-items:center;gap:4px}
+.water-bar{background:#E1F5FE;padding:12px 24px;border-top:1px solid #B3E5FC;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.water-tag{background:#B3E5FC;color:#01579B;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:500}
+.footer{background:#004D40;padding:10px 24px;text-align:center;color:rgba(255,255,255,.6);font-size:12px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="day-badge">יום 5 מתוך 9 &nbsp;|&nbsp; חמישי, 3 יולי 2025</div>
+    <div class="day-title">🦢 קרמס ← אגם ניושידל (רוסט) ← שופרון, הונגריה</div>
+    <div class="day-subtitle">אגם UNESCO עם חסידות + מעבר לגבול הונגריה + עיר ימי-ביניים</div>
+    <div class="route-strip">
+      <span class="route-label">🇦🇹 קרמס &nbsp;→&nbsp; רוסט/ניושידל &nbsp;→&nbsp; 🇭🇺 שופרון</span>
+      <span class="route-km">~135 ק"מ &nbsp;|&nbsp; ~2 שעות נסיעה</span>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="summary-item"><div class="summary-value">135</div><div class="summary-label">ק"מ נסיעה</div></div>
+    <div class="summary-item"><div class="summary-value">UNESCO</div><div class="summary-label">אגם ניושידל</div></div>
+    <div class="summary-item"><div class="summary-value">🦢</div><div class="summary-label">300+ מיני ציפורים</div></div>
+    <div class="summary-item"><div class="summary-value">🇭🇺</div><div class="summary-label">כניסה להונגריה</div></div>
+  </div>
+
+  <div class="timeline">
+
+    <!-- STOP 1 -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E0F2F1">🚗</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #00796B">
+        <div class="a-name">יציאה מקרמס – כיוון דרום</div>
+        <div class="a-latin">Departure from Krems towards Burgenland</div>
+        <div class="a-desc">נסיעה דרומה עוקפת וינה (כביש S5/A1/A3) לכיוון מחוז Burgenland ואגם ניושידל.</div>
+        <div class="badges">
+          <span class="b bt">⏰ יציאה מומלצת: 9:00</span>
+          <span class="b bg">🛣️ S5 → A1 → A3</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚗</span>
+        <span class="c-text">לרוסט – אגם ניושידל</span>
+        <span class="c-km">~115 ק"מ &nbsp;|&nbsp; 1.5 שעות &nbsp;|&nbsp; S5 → A1 → Eisenstadt → Rust</span>
+      </div>
+    </div>
+
+    <!-- STOP 2 - RUST -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E1F5FE">🏰</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #0288D1">
+        <div class="a-name">רוסט (Rust) – "עיר החסידות" על האגם ⭐</div>
+        <div class="a-latin">Rust – Neusiedler See (UNESCO World Heritage)</div>
+        <div class="a-desc">
+          עיירת ימי הביניים קסומה על שפת אגם ניושידל. <strong>ידועה בקינות החסידה</strong> על ארובות הבתים ההיסטוריים. האגם הוא אתר UNESCO – האגם הגדול ביותר במרכז אירופה, <strong>רדוד ומחומם</strong>, אידיאלי לשחייה ביולי.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 2–2.5 שעות</span>
+          <span class="b bw">🏊 שחייה באגם ביולי</span>
+          <span class="b bg">🦢 300+ מיני ציפורים</span>
+          <span class="b bp">🍷 Esterhazy Weinkeller</span>
+          <span class="b bo">🐦 חסידות על גגות!</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPTIONAL STOP - MORBISCH -->
+    <div style="padding:0 0 8px 68px">
+      <div style="background:#E3F2FD;border-right:4px solid #1976D2;border-radius:12px;padding:12px 16px;font-size:14px;color:#0D47A1">
+        <strong>🔄 אופציה – מורביש (Mörbisch am See):</strong> 15 ק"מ דרומה מרוסט (20 דקות). שביל עץ על האגם, שלב הצף המפורסם, אווירה שלווה. מוסיף ~30–45 דקות.
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚗</span>
+        <span class="c-text">מעבר לגבול הונגריה</span>
+        <span class="c-km">~22 ק"מ &nbsp;|&nbsp; 25 דקות &nbsp;|&nbsp; כביש B52 לשופרון</span>
+      </div>
+    </div>
+
+    <!-- BORDER NOTE -->
+    <div class="border-box">
+      🛂 <strong>מעבר גבול אוסטריה → הונגריה:</strong> מדינות Schengen – אין ביקורת דרכונים בדרך כלל. זיכרו: מטבע עובר ל-<strong>פורינט הונגרי (HUF)</strong>. כרטיסי אשראי מקובלים בשופרון, אך כדאי קצת מזומן.
+    </div>
+
+    <!-- STOP 3 - SOPRON -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#FFF8E1">🔥</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #F57F17">
+        <div class="a-name">מגדל השמירה מפני אש (Tűztorony) – שופרון</div>
+        <div class="a-latin">Firewatch Tower – Sopron, Hungary</div>
+        <div class="a-desc">
+          הסמל של שופרון – מגדל שנבנה על חומות רומיות מהמאה ה-13. <strong>116 מדרגות</strong> לנוף פנורמי על העיר, האזור והאלפים. מוסיקת אור מיוחדת בשעות הלילה. כניסה משולבת עם בית שטורנו.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 30–45 דקות</span>
+          <span class="b bp">💰 1,500 HUF (~4 €)</span>
+          <span class="b bg">🏛️ על חומות רומיות</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR (walk) -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚶</span>
+        <span class="c-text">הליכה בעיר עתיקה</span>
+        <span class="c-km">~2–3 ק"מ הליכה קלה</span>
+      </div>
+    </div>
+
+    <!-- STOP 4 -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#F3E5F5">🏛️</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #7B1FA2">
+        <div class="a-name">כיכר פות'ר + בית שטורנו + כנסיית העיזים</div>
+        <div class="a-latin">Fő tér + Storno House + Goat Church</div>
+        <div class="a-desc">
+          <strong>כיכר פות'ר (Fő tér)</strong> – הכיכר הראשית המוקפת בבניינים גותיים ורנסנסיים. <strong>בית שטורנו</strong> (1417) – כאן ישן המלך מאתיאש וניגן פרנץ ליסט! מוזיאון. <strong>כנסיית העיזים</strong> – גותית עם אגדה ייחודית. <strong>חומות העיר הרומיות</strong> – שאריות עתיקות.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 1.5–2 שעות</span>
+          <span class="b bp">💰 ~4 € לבית שטורנו</span>
+          <span class="b bg">🏛️ ימי הביניים שמורים</span>
+          <span class="b bw">🎹 פרנץ ליסט ניגן כאן!</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="water-bar">
+    <strong style="color:#01579B;font-size:13px">💧 נופי מים היום:</strong>
+    <span class="water-tag">🏊 אגם ניושידל – UNESCO (שחייה!)</span>
+    <span class="water-tag">🦢 אגם שלוו עם קנים ועופות מים</span>
+    <span class="water-tag">⛵ שביל עץ מורביש מעל המים</span>
+  </div>
+
+  <div class="accom">
+    <div class="accom-label">🏨 המלצות לינה</div>
+    <div class="accom-title">שופרון, הונגריה – לילה 5</div>
+    <div class="accom-opts">
+      ⭐⭐⭐⭐ <strong>Pannonia Med Hotel Sopron</strong> – 4 כוכבים, ספא, במרכז<br>
+      ⭐⭐⭐ <strong>Hotel Palatinus Sopron</strong> – עיצוב קלאסי, מרכזי<br>
+      ⭐⭐⭐ <strong>פנסיונות ב-Várkerület</strong> – רחוב החומות הרומיות, אווירה אוטנטית
+    </div>
+  </div>
+
+  <div class="highlights">
+    <div class="hl-title">💡 טיפים ליום זה</div>
+    <div class="hl-items">
+      <div class="hl-item">🏊 הביאו בגדי ים לשחייה באגם ניושידל!</div>
+      <div class="hl-item">🍷 רוסט: מרתף Esterhazy – הביאו בקבוק הביתה</div>
+      <div class="hl-item">💶 שופרון: כספות, רק HUF במקומות קטנים</div>
+      <div class="hl-item">📸 שחר/שקיעה: החסידות פעילות יותר בבוקר</div>
+    </div>
+  </div>
+
+  <div class="footer">מסלול וינה – ברטיסלבה – ואכאו – בודפשט &nbsp;|&nbsp; 29 יוני – 7 יולי</div>
+</div>
+</body>
+</html>

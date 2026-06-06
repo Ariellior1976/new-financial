@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יום 7 – בודפשט: גבעת הטירה + גשר השרשרת + שוק</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#ECEFF1;padding:24px;direction:rtl}
+.page{max-width:820px;margin:0 auto;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.13)}
+.header{background:linear-gradient(135deg,#1A237E,#3949AB);padding:32px;color:#fff}
+.day-badge{display:inline-block;background:rgba(255,255,255,.22);border-radius:30px;padding:4px 16px;font-size:13px;font-weight:600;margin-bottom:10px}
+.day-title{font-size:28px;font-weight:800;margin-bottom:4px;line-height:1.25}
+.day-subtitle{font-size:15px;opacity:.85;margin-bottom:18px}
+.route-strip{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 16px;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.route-label{font-weight:600;font-size:14px}
+.route-km{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 14px;font-size:13px}
+.summary-bar{display:flex;justify-content:space-around;background:linear-gradient(135deg,#0d1757,#283593);padding:14px 0}
+.summary-item{text-align:center;color:#fff}
+.summary-value{font-size:22px;font-weight:800}
+.summary-label{font-size:11px;opacity:.75;margin-top:2px}
+.timeline{padding:28px 24px}
+.activity{display:flex;align-items:flex-start;margin-bottom:6px}
+.a-icon-col{display:flex;flex-direction:column;align-items:center;width:56px;flex-shrink:0}
+.a-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.a-line{width:3px;flex:1;min-height:18px;background:#CFD8DC}
+.a-card{flex:1;background:#F8F9FA;border-radius:14px;padding:16px 18px;margin-right:12px;margin-bottom:6px}
+.a-name{font-size:18px;font-weight:700;color:#0D2137;margin-bottom:2px}
+.a-latin{font-size:12px;color:#78909C;margin-bottom:8px;direction:ltr;text-align:right}
+.a-desc{font-size:14px;color:#546E7A;line-height:1.6;margin-bottom:10px}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.b{padding:3px 12px;border-radius:20px;font-size:12px;font-weight:500}
+.bt{background:#E8EAF6;color:#1A237E}
+.bp{background:#F3E5F5;color:#4A148C}
+.by{background:#FFF9C4;color:#E65100}
+.bg{background:#E8F5E9;color:#1B5E20}
+.bw{background:#E0F7FA;color:#006064}
+.br{background:#FCE4EC;color:#880E4F}
+.connector{display:flex;align-items:center;margin-bottom:6px}
+.c-col{width:56px;display:flex;flex-direction:column;align-items:center}
+.c-line{width:3px;height:100%;background:#CFD8DC}
+.c-bubble{display:flex;align-items:center;gap:10px;background:#E8EAF6;border-radius:24px;padding:8px 18px;margin-right:12px;flex:1;border:2px dashed #9FA8DA}
+.c-car{font-size:18px}
+.c-text{font-size:14px;color:#1A237E;font-weight:600}
+.c-km{font-size:13px;color:#78909C;direction:ltr}
+.sub-items{background:#EDE7F6;border-radius:10px;padding:10px 14px;margin:6px 0;font-size:13px;color:#311B92;line-height:1.9}
+.sub-title{font-weight:700;color:#1A237E;margin-bottom:4px;font-size:14px}
+.accom{margin:0 24px 28px;background:linear-gradient(135deg,#E8EAF6,#EDE7F6);border-radius:14px;padding:18px 20px}
+.accom-label{font-size:12px;color:#3949AB;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.accom-title{font-size:19px;font-weight:700;color:#1A237E;margin-bottom:6px}
+.accom-opts{font-size:13px;color:#3949AB;line-height:1.9}
+.highlights{background:#E8EAF6;padding:14px 24px;border-top:1px solid #9FA8DA}
+.hl-title{font-size:12px;color:#1A237E;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.hl-items{display:flex;gap:16px;flex-wrap:wrap}
+.hl-item{font-size:13px;color:#3949AB;display:flex;align-items:center;gap:4px}
+.water-bar{background:#E0F7FA;padding:12px 24px;border-top:1px solid #B2EBF2;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.water-tag{background:#B2EBF2;color:#006064;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:500}
+.footer{background:#1A237E;padding:10px 24px;text-align:center;color:rgba(255,255,255,.6);font-size:12px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="day-badge">יום 7 מתוך 9 &nbsp;|&nbsp; שבת, 5 יולי 2025</div>
+    <div class="day-title">🏰 בודפשט – צד בודה: גבעת הטירה + גשר השרשרת + שוק מרכזי</div>
+    <div class="day-subtitle">יום הליכה בבודפשט – מחצי בודה ההיסטורי עד לשוק הגדול בפסט</div>
+    <div class="route-strip">
+      <span class="route-label">🏰 גבעת הטירה &nbsp;→&nbsp; 🌉 גשר השרשרת &nbsp;→&nbsp; 🛒 שוק מרכזי &nbsp;→&nbsp; 🌊 שפת הדנובה</span>
+      <span class="route-km">~5 ק"מ הליכה</span>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="summary-item"><div class="summary-value">🏛️</div><div class="summary-label">UNESCO בודה</div></div>
+    <div class="summary-item"><div class="summary-value">~8</div><div class="summary-label">שעות פעילות</div></div>
+    <div class="summary-item"><div class="summary-value">🌉</div><div class="summary-label">גשר השרשרת</div></div>
+    <div class="summary-item"><div class="summary-value">🛒</div><div class="summary-label">שוק 1897</div></div>
+  </div>
+
+  <div class="timeline">
+
+    <!-- STOP 1 - CASTLE HILL -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E8EAF6">🚡</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #3949AB">
+        <div class="a-name">גבעת הטירה (Várhegy) – רכבל + כניסה</div>
+        <div class="a-latin">Castle Hill – Budavári Sikló funicular</div>
+        <div class="a-desc">
+          עלייה ברכבל ההיסטורי מ-<strong>Clark Ádám tér</strong> (3 דקות). הגעה לגבעת הטירה – ה-UNESCO המפורסם של בודפשט.
+        </div>
+        <div class="badges">
+          <span class="b bt">💰 ~1.5 € רכבל לכיוון אחד</span>
+          <span class="b by">⏰ הגיעו לפני 9:00 – לפני ההמונים!</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STOP 2 - FISHERMAN'S BASTION -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E3F2FD">⚔️</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #1565C0">
+        <div class="a-name">מבצר הדייגים (Halászbastya) ⭐⭐⭐</div>
+        <div class="a-latin">Fisherman's Bastion – Buda Castle</div>
+        <div class="a-desc">
+          <strong>הנוף הפנורמי הטוב ביותר בבודפשט!</strong> מגדלים ניאו-גותיים לבנים מעל הדנובה – ממול נראים הפרלמנט, גשר השרשרת ופסט. כניסה לטרסות החיצוניות חינם, עלייה למגדלים בתשלום.
+        </div>
+        <div class="sub-items">
+          <div class="sub-title">מה לא לפספס:</div>
+          📸 נוף לפרלמנט מממול הדנובה<br>
+          🐴 פסל המלך סנט סטפן<br>
+          🌅 הזריחה מהמגדלים – עוצרת נשימה
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 1–1.5 שעות</span>
+          <span class="b bg">חינם לטרסות חיצוניות</span>
+          <span class="b bp">💰 1,200 HUF (~3 €) למגדלים</span>
+          <span class="b bw">🌊 נוף לדנובה ופרלמנט</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR (walk) -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚶</span>
+        <span class="c-text">הליכה לכנסיית מתיאש</span>
+        <span class="c-km">~1 דקה הליכה – ממש ליד</span>
+      </div>
+    </div>
+
+    <!-- STOP 3 - MATTHIAS CHURCH -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#FFF8E1">⛪</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #F9A825">
+        <div class="a-name">כנסיית מתיאש (Mátyás-templom)</div>
+        <div class="a-latin">Matthias Church – UNESCO</div>
+        <div class="a-desc">
+          גג אריחים מרהיב בדוגמאות עתיקות – ייחודי לכנסייה זו. פנים גותי מעוטר בציורי קיר. כאן הוכתרו מלכי הונגריה.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 30–45 דקות</span>
+          <span class="b bp">💰 ~4 €</span>
+          <span class="b bg">🎨 גג אריחים צבעוני ייחודי</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STOP 4 - ROYAL PALACE -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E8EAF6">👑</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #5C6BC0">
+        <div class="a-name">ארמון מלכותי + מוזיאון היסטוריה של בודפשט</div>
+        <div class="a-latin">Royal Palace (Budavári Palota) + Budapest History Museum</div>
+        <div class="a-desc">
+          הארמון המלכותי הענק משמש כיום כמרכז תרבות עם מוזיאונים. ניתן להסתפק בסיור בחצר ובנוף. <strong>שכונת הטירה</strong> – סמטאות מרוצפות עם חנויות וגלריות.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 45–60 דקות (חצר + סביבה)</span>
+          <span class="b bp">💰 ~8 € למוזיאון</span>
+          <span class="b bg">🏛️ ניתן לסיור חינם בחצר</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚶</span>
+        <span class="c-text">הליכה לגשר השרשרת</span>
+        <span class="c-km">~10 דקות ירידה מגבעת הטירה</span>
+      </div>
+    </div>
+
+    <!-- STOP 5 - CHAIN BRIDGE -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E0F7FA">🌉</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #00ACC1">
+        <div class="a-name">גשר השרשרת (Széchenyi Lánchíd) ⭐</div>
+        <div class="a-latin">Chain Bridge – Built 1849</div>
+        <div class="a-desc">
+          <strong>הסמל הכי מצולם של בודפשט!</strong> הגשר בנוי ב-1849 – ראשון מסוגו בהונגריה. הליכה על הגשר מבודה לפסט עם נוף מרהיב על שני צידי הדנובה, הטירה מאחור והפרלמנט מקדימה.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 15–20 דקות הליכה הלוך-חזור</span>
+          <span class="b bg">חינם</span>
+          <span class="b bw">🌊 על הדנובה</span>
+          <span class="b by">📸 הנוף הכי מצולם</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚶</span>
+        <span class="c-text">לשוק המרכזי הגדול</span>
+        <span class="c-km">~10 דקות הליכה בפסט</span>
+      </div>
+    </div>
+
+    <!-- STOP 6 - GREAT MARKET HALL -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E8F5E9">🛒</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #388E3C">
+        <div class="a-name">השוק המרכזי הגדול (Központi Vásárcsarnok) ⭐</div>
+        <div class="a-latin">Central Market Hall – built 1897</div>
+        <div class="a-desc">
+          <strong>מבנה ניאו-גותי מרהיב מ-1897</strong> – שוק מקורה ענק. קומה ראשונה: ירקות טריים, בשרים, גבינות, פפריקה. קומה שנייה: עבודות יד, רקמות, מזכרות, לנגוש (Lángos – מאכל רחוב הונגרי!).
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 1–1.5 שעות</span>
+          <span class="b bg">חינם לכניסה</span>
+          <span class="b by">🫑 פפריקה לקנות!</span>
+          <span class="b br">🥙 Lángos – חובה לטעום</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚶</span>
+        <span class="c-text">טיול ערב לדנובה</span>
+        <span class="c-km">~15 דקות הליכה לאנדרטת הנעלים</span>
+      </div>
+    </div>
+
+    <!-- STOP 7 - EVENING -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#FCE4EC">👟</div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #AD1457">
+        <div class="a-name">אנדרטת הנעלים על הדנובה + ערב</div>
+        <div class="a-latin">Shoes on the Danube Bank Memorial</div>
+        <div class="a-desc">
+          אנדרטה מרגשת ב-1955 פסלי נעליים ברזל על שפת הנהר לזיכרון יהודים שנרצחו ב-1944. אחד האתרים הממזמינים ביותר ברחבי בודפשט. ממנה נוף לפרלמנט הגדול המואר.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 15–20 דקות</span>
+          <span class="b bg">חינם</span>
+          <span class="b bw">🌊 על שפת הדנובה</span>
+          <span class="b br">🕯️ אנדרטה מרגשת</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="water-bar">
+    <strong style="color:#006064;font-size:13px">💧 נופי מים היום:</strong>
+    <span class="water-tag">🌊 נוף לדנובה ממבצר הדייגים</span>
+    <span class="water-tag">🌉 גשר השרשרת מעל הדנובה</span>
+    <span class="water-tag">🌊 שפת הנהר – אנדרטת הנעלים</span>
+  </div>
+
+  <div class="accom">
+    <div class="accom-label">🏨 לינה הלילה – בודפשט</div>
+    <div class="accom-title">בודפשט – לילה 7 (לילה 2 מתוך 3)</div>
+    <div class="accom-opts">
+      ⭐⭐⭐⭐⭐ <strong>Hilton Budapest Castle District</strong> – גבעת הטירה, נוף<br>
+      ⭐⭐⭐⭐⭐ <strong>Hotel Clark Budapest</strong> – ליד גשר השרשרת, מודרני<br>
+      ⭐⭐⭐⭐ <strong>Aria Hotel Budapest</strong> – בוטיק מוזיקלי מדהים<br>
+      ⭐⭐⭐⭐ <strong>Parlament Hotel</strong> – ממול הפרלמנט, נוף לדנובה
+    </div>
+  </div>
+
+  <div class="highlights">
+    <div class="hl-title">💡 טיפים ליום זה</div>
+    <div class="hl-items">
+      <div class="hl-item">🌅 מבצר הדייגים: הגיעו לפני 9:00!</div>
+      <div class="hl-item">🎫 רכבל: קנו כרטיס בחנות לפני ההמתנה</div>
+      <div class="hl-item">🥙 Lángos בשוק: מנה אחת לא תספיק</div>
+      <div class="hl-item">🎸 ערב: בר הריסות (Szimpla Kert) – גם בשבת</div>
+    </div>
+  </div>
+
+  <div class="footer">מסלול וינה – ברטיסלבה – ואכאו – בודפשט &nbsp;|&nbsp; 29 יוני – 7 יולי</div>
+</div>
+</body>
+</html>

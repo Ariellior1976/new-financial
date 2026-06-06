@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יום 3 – ברטיסלבה ← קלוסטרנויבורג ← דירנשטיין</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#ECEFF1;padding:24px;direction:rtl}
+.page{max-width:820px;margin:0 auto;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.13)}
+.header{background:linear-gradient(135deg,#1B5E20,#388E3C);padding:32px;color:#fff}
+.day-badge{display:inline-block;background:rgba(255,255,255,.22);border-radius:30px;padding:4px 16px;font-size:13px;font-weight:600;margin-bottom:10px}
+.day-title{font-size:28px;font-weight:800;margin-bottom:4px;line-height:1.25}
+.day-subtitle{font-size:15px;opacity:.85;margin-bottom:18px}
+.route-strip{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 16px;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.route-label{font-weight:600;font-size:14px}
+.route-km{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 14px;font-size:13px}
+.summary-bar{display:flex;justify-content:space-around;background:linear-gradient(135deg,#154a18,#2E7D32);padding:14px 0}
+.summary-item{text-align:center;color:#fff}
+.summary-value{font-size:22px;font-weight:800}
+.summary-label{font-size:11px;opacity:.75;margin-top:2px}
+.timeline{padding:28px 24px}
+.activity{display:flex;align-items:flex-start;margin-bottom:6px}
+.a-icon-col{display:flex;flex-direction:column;align-items:center;width:56px;flex-shrink:0}
+.a-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.a-line{width:3px;flex:1;min-height:18px;background:#CFD8DC}
+.a-card{flex:1;background:#F8F9FA;border-radius:14px;padding:16px 18px;margin-right:12px;margin-bottom:6px}
+.a-name{font-size:19px;font-weight:700;color:#0D2137;margin-bottom:2px}
+.a-latin{font-size:12px;color:#78909C;margin-bottom:8px;direction:ltr;text-align:right}
+.a-desc{font-size:14px;color:#546E7A;line-height:1.6;margin-bottom:10px}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.b{padding:3px 12px;border-radius:20px;font-size:12px;font-weight:500}
+.bt{background:#E8F5E9;color:#1B5E20}
+.bp{background:#F3E5F5;color:#6A1B9A}
+.by{background:#FFF9C4;color:#E65100}
+.bg{background:#E3F2FD;color:#0D47A1}
+.bw{background:#E0F7FA;color:#006064}
+.br{background:#FBE9E7;color:#BF360C}
+.connector{display:flex;align-items:center;margin-bottom:6px}
+.c-col{width:56px;display:flex;flex-direction:column;align-items:center}
+.c-line{width:3px;height:100%;background:#CFD8DC}
+.c-bubble{display:flex;align-items:center;gap:10px;background:#F1F8E9;border-radius:24px;padding:8px 18px;margin-right:12px;flex:1;border:2px dashed #AED581}
+.c-car{font-size:18px}
+.c-text{font-size:14px;color:#33691E;font-weight:600}
+.c-km{font-size:13px;color:#78909C;direction:ltr}
+.accom{margin:0 24px 28px;background:linear-gradient(135deg,#E8F5E9,#F1F8E9);border-radius:14px;padding:18px 20px}
+.accom-label{font-size:12px;color:#388E3C;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.accom-title{font-size:19px;font-weight:700;color:#1B5E20;margin-bottom:6px}
+.accom-opts{font-size:13px;color:#2E7D32;line-height:1.9}
+.highlights{background:#F1F8E9;padding:14px 24px;border-top:1px solid #C5E1A5}
+.hl-title{font-size:12px;color:#33691E;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.hl-items{display:flex;gap:16px;flex-wrap:wrap}
+.hl-item{font-size:13px;color:#388E3C;display:flex;align-items:center;gap:4px}
+.water-bar{background:#E0F7FA;padding:12px 24px;border-top:1px solid #B2EBF2;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.water-tag{background:#B2EBF2;color:#006064;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:500}
+.footer{background:#1B5E20;padding:10px 24px;text-align:center;color:rgba(255,255,255,.6);font-size:12px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="day-badge">יום 3 מתוך 9 &nbsp;|&nbsp; שלישי, 1 יולי 2025</div>
+    <div class="day-title">🌿 ברטיסלבה ← קלוסטרנויבורג ← ואכאו (דירנשטיין)</div>
+    <div class="day-subtitle">מעבר לאוסטריה – מנזר על הדנובה ולב עמק ואכאו</div>
+    <div class="route-strip">
+      <span class="route-label">🇸🇰 ברטיסלבה &nbsp;→&nbsp; 🇦🇹 קלוסטרנויבורג &nbsp;→&nbsp; דירנשטיין</span>
+      <span class="route-km">~130 ק"מ &nbsp;|&nbsp; ~2 שעות + עצירות</span>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="summary-item"><div class="summary-value">130</div><div class="summary-label">ק"מ נסיעה</div></div>
+    <div class="summary-item"><div class="summary-value">2</div><div class="summary-label">מנזר + טירה</div></div>
+    <div class="summary-item"><div class="summary-value">UNESCO</div><div class="summary-label">ואכאו</div></div>
+    <div class="summary-item"><div class="summary-value">🏰</div><div class="summary-label">ריצ'רד לב ארי</div></div>
+  </div>
+
+  <div class="timeline">
+
+    <!-- STOP 1 -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#F1F8E9">🚗</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #388E3C">
+        <div class="a-name">יציאה מברטיסלבה</div>
+        <div class="a-latin">Departure from Bratislava</div>
+        <div class="a-desc">ארוחת בוקר, צ'ק-אאוט ויציאה בכביש A4 לכיוון וינה ואז A22 צפונה לאורך הדנובה.</div>
+        <div class="badges">
+          <span class="b bt">⏰ יציאה מומלצת: 9:00</span>
+          <span class="b bg">🛣️ A4 → A22</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚗</span>
+        <span class="c-text">לקלוסטרנויבורג (אוסטריה)</span>
+        <span class="c-km">60 ק"מ &nbsp;|&nbsp; 50 דקות &nbsp;|&nbsp; A4 → A22</span>
+      </div>
+    </div>
+
+    <!-- STOP 2 -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E8F5E9">⛪</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #2E7D32">
+        <div class="a-name">מנזר קלוסטרנויבורג (Klosterneuburg)</div>
+        <div class="a-latin">Augustinian Monastery – on the Danube</div>
+        <div class="a-desc">
+          אחד ממנזרי האוגוסטין הגדולים של אוסטריה, בנוי מעל גדות הדנובה. ברוק מפואר עם קפלה מוזהבת ונוף מהגן על הנהר. <strong>שווה עצירה לפני כניסה לוואכאו.</strong>
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 1–1.5 שעות</span>
+          <span class="b bp">💰 ~12 €</span>
+          <span class="b bw">🌊 נוף על הדנובה</span>
+          <span class="b bg">🎨 ברוק אוסטרי מפואר</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚗</span>
+        <span class="c-text">לאורך הדנובה לואכאו</span>
+        <span class="c-km">65 ק"מ &nbsp;|&nbsp; 45 דקות &nbsp;|&nbsp; כביש B14 לאורך הנהר</span>
+      </div>
+    </div>
+
+    <!-- STOP 3 -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E1F5FE">🏘️</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #0288D1">
+        <div class="a-name">כפר דירנשטיין – כנסיית הטייר הכחול</div>
+        <div class="a-latin">Dürnstein – Stiftskirche (Blue Tower)</div>
+        <div class="a-desc">
+          כניסה לעמק ואכאו – עיירה ציורית ללא תנועת מכוניות בתוכה. <strong>מגדל הכנסייה הכחול</strong> הוא הסמל האיקוני ביותר של עמק ואכאו. רחוב ראשי עם חנויות יין, בתי קפה וגינות.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 30–45 דקות</span>
+          <span class="b bg">חינם לכניסה לכפר</span>
+          <span class="b bw">🌊 על גדות הדנובה</span>
+          <span class="b bp">📸 מגדל כחול אייקוני</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR (walk) -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🥾</span>
+        <span class="c-text">הליכה לטירה בהר</span>
+        <span class="c-km">1–1.5 ק"מ עלייה &nbsp;|&nbsp; 25–35 דקות &nbsp;|&nbsp; שביל מסומן</span>
+      </div>
+    </div>
+
+    <!-- STOP 4 -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#FBE9E7">👑</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #D84315">
+        <div class="a-name">טירת דירנשטיין – מצודת ריצ'רד לב ארי ⭐</div>
+        <div class="a-latin">Dürnsteinburg – Richard I imprisonment site (1193)</div>
+        <div class="a-desc">
+          שרידי מצודה מימי הביניים בה נכלא <strong>ריצ'רד לב ארי</strong> (מלך אנגליה) ב-1193 לאחר שובו ממסע הצלב השלישי. נוף <strong>פנורמי מדהים</strong> על עמק ואכאו, הדנובה והכרמים מהגובה.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 1–1.5 שעות (כולל הליכה)</span>
+          <span class="b bg">חינם</span>
+          <span class="b bw">🌊 נוף על הדנובה מגבוה</span>
+          <span class="b br">🥾 בינוני (מתאים לרוב הילדים)</span>
+          <span class="b bp">👑 היסטוריה מרתקת</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚗</span>
+        <span class="c-text">לקרמס (אם לא נשארים בדירנשטיין)</span>
+        <span class="c-km">10 ק"מ &nbsp;|&nbsp; 15 דקות</span>
+      </div>
+    </div>
+
+    <!-- STOP 5 -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E8F5E9">😴</div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #4CAF50">
+        <div class="a-name">לינה בדירנשטיין או קרמס</div>
+        <div class="a-latin">Overnight in Dürnstein or Krems</div>
+        <div class="a-desc">ארוחת ערב עם יין ואכאו מקומי. כניסה לאווירת העמק הקסום.</div>
+        <div class="badges"><span class="b bt">😴 לילה ראשון בואכאו</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="water-bar">
+    <strong style="color:#006064;font-size:13px">💧 נופי מים היום:</strong>
+    <span class="water-tag">🌊 דנובה מהמנזר – קלוסטרנויבורג</span>
+    <span class="water-tag">🌊 נוף לדנובה מטירת דירנשטיין</span>
+    <span class="water-tag">🚗 נסיעה לאורך הנהר</span>
+  </div>
+
+  <div class="accom">
+    <div class="accom-label">🏨 המלצות לינה</div>
+    <div class="accom-title">דירנשטיין / קרמס – ואכאו (לילה 3 מתוך 4)</div>
+    <div class="accom-opts">
+      ⭐⭐⭐⭐⭐ <strong>Schloss Hotel Dürnstein</strong> – מלון-טירה, נוף על הדנובה, בריכה, מסעדת גורמה<br>
+      ⭐⭐⭐ <strong>Gästehaus Sänger Blondel</strong> – פנסיון קסום בדירנשטיין (על שם המינסטרל שמצא את ריצ'רד!)<br>
+      ⭐⭐⭐⭐ <strong>Hotel Klinglhuber, קרמס</strong> – משפחתי, מרכזי, קרוב לכל כיוון<br>
+      ⭐⭐⭐⭐ <strong>Steigenberger Krems</strong> – ספא, בריכה, מודרני
+    </div>
+  </div>
+
+  <div class="highlights">
+    <div class="hl-title">💡 טיפים ליום זה</div>
+    <div class="hl-items">
+      <div class="hl-item">🚗 חנו לפני כניסת הכפר בדירנשטיין (חניה חינם)</div>
+      <div class="hl-item">🥾 הליכה לטירה: נעלי ספורט מספיקות</div>
+      <div class="hl-item">🍷 נסו יין Grüner Veltliner המקומי</div>
+      <div class="hl-item">📸 קצה הדירה הכי יפה לצילום מגדל הכחול</div>
+    </div>
+  </div>
+
+  <div class="footer">מסלול וינה – ברטיסלבה – ואכאו – בודפשט &nbsp;|&nbsp; 29 יוני – 7 יולי</div>
+</div>
+</body>
+</html>

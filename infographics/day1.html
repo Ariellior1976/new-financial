@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יום 1 – וינה ← ברטיסלבה</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#ECEFF1;padding:24px;direction:rtl}
+.page{max-width:820px;margin:0 auto;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.13)}
+.header{background:linear-gradient(135deg,#0D47A1,#1976D2);padding:32px;color:#fff}
+.day-badge{display:inline-block;background:rgba(255,255,255,.22);border-radius:30px;padding:4px 16px;font-size:13px;font-weight:600;margin-bottom:10px;letter-spacing:.5px}
+.day-title{font-size:32px;font-weight:800;margin-bottom:4px;line-height:1.2}
+.day-subtitle{font-size:15px;opacity:.85;margin-bottom:18px}
+.route-strip{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 16px;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.route-label{font-weight:600;font-size:15px}
+.route-km{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 14px;font-size:13px}
+.summary-bar{display:flex;justify-content:space-around;background:linear-gradient(135deg,#0a3580,#1565C0);padding:14px 0}
+.summary-item{text-align:center;color:#fff}
+.summary-value{font-size:22px;font-weight:800}
+.summary-label{font-size:11px;opacity:.75;margin-top:2px}
+.timeline{padding:28px 24px}
+.activity{display:flex;align-items:flex-start;margin-bottom:6px}
+.a-icon-col{display:flex;flex-direction:column;align-items:center;width:56px;flex-shrink:0}
+.a-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 2px 8px rgba(0,0,0,.12);background:#fff}
+.a-line{width:3px;flex:1;min-height:18px;background:#CFD8DC}
+.a-card{flex:1;background:#F8F9FA;border-radius:14px;padding:16px 18px;margin-right:12px;margin-bottom:6px;border-right:4px solid #1976D2}
+.a-name{font-size:19px;font-weight:700;color:#0D2137;margin-bottom:2px}
+.a-latin{font-size:12px;color:#78909C;margin-bottom:8px;direction:ltr;text-align:right}
+.a-desc{font-size:14px;color:#546E7A;line-height:1.6;margin-bottom:10px}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.b{padding:3px 12px;border-radius:20px;font-size:12px;font-weight:500}
+.bt{background:#E3F2FD;color:#1565C0}
+.bp{background:#F3E5F5;color:#6A1B9A}
+.by{background:#FFF9C4;color:#E65100}
+.bg{background:#E8F5E9;color:#2E7D32}
+.connector{display:flex;align-items:center;margin-bottom:6px}
+.c-col{width:56px;display:flex;flex-direction:column;align-items:center}
+.c-line{width:3px;height:100%;background:#CFD8DC}
+.c-bubble{display:flex;align-items:center;gap:10px;background:#E8EAF6;border-radius:24px;padding:8px 18px;margin-right:12px;flex:1;border:2px dashed #9FA8DA}
+.c-car{font-size:18px}
+.c-text{font-size:14px;color:#3949AB;font-weight:600}
+.c-km{font-size:13px;color:#78909C;direction:ltr}
+.accom{margin:0 24px 28px;background:linear-gradient(135deg,#E8EAF6,#EDE7F6);border-radius:14px;padding:18px 20px}
+.accom-label{font-size:12px;color:#7986CB;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.accom-title{font-size:19px;font-weight:700;color:#1A237E;margin-bottom:6px}
+.accom-opts{font-size:13px;color:#3949AB;line-height:1.9}
+.highlights{background:#E3F2FD;padding:14px 24px;border-top:1px solid #BBDEFB}
+.hl-title{font-size:12px;color:#1565C0;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.hl-items{display:flex;gap:16px;flex-wrap:wrap}
+.hl-item{font-size:13px;color:#1976D2;display:flex;align-items:center;gap:4px}
+.footer{background:#0D47A1;padding:10px 24px;text-align:center;color:rgba(255,255,255,.6);font-size:12px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="day-badge">יום 1 מתוך 9 &nbsp;|&nbsp; ראשון, 29 יוני 2025</div>
+    <div class="day-title">✈️ נחיתה בוינה &nbsp;→&nbsp; ברטיסלבה</div>
+    <div class="day-subtitle">יום ההגעה – איסוף רכב שכור ונסיעה לברטיסלבה</div>
+    <div class="route-strip">
+      <span class="route-label">🇦🇹 וינה &nbsp;→&nbsp; 🇸🇰 ברטיסלבה</span>
+      <span class="route-km">80 ק"מ &nbsp;|&nbsp; ~1 שעה</span>
+    </div>
+  </div>
+
+  <!-- SUMMARY BAR -->
+  <div class="summary-bar">
+    <div class="summary-item"><div class="summary-value">80</div><div class="summary-label">ק"מ נסיעה</div></div>
+    <div class="summary-item"><div class="summary-value">~1 שעה</div><div class="summary-label">זמן נסיעה</div></div>
+    <div class="summary-item"><div class="summary-value">1</div><div class="summary-label">מדינה חדשה</div></div>
+    <div class="summary-item"><div class="summary-value">🌙</div><div class="summary-label">לילה ראשון</div></div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="timeline">
+
+    <!-- STOP 1 -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E3F2FD">✈️</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right-color:#0D47A1">
+        <div class="a-name">שדה התעופה וינה (Schwechat)</div>
+        <div class="a-latin">Vienna International Airport – VIE</div>
+        <div class="a-desc">
+          נחיתה ואיסוף הרכב השכור. חשוב: לרכוש <strong>ויניטות (מדבקות כביש מהיר)</strong> לאוסטריה, סלובקיה והונגריה – ניתן לקנות בתחנות הדלק בשדה התעופה או מראש באינטרנט.
+        </div>
+        <div class="badges">
+          <span class="b by">⚠️ לרכוש ויניטה אוסטריה – ~9€ ל-10 ימים</span>
+          <span class="b by">⚠️ לרכוש ויניטה סלובקיה – ~6€ ל-10 ימים</span>
+          <span class="b by">⚠️ לרכוש ויניטה הונגריה – ~5€ ל-10 ימים</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚗</span>
+        <span class="c-text">נסיעה לברטיסלבה</span>
+        <span class="c-km">80 ק"מ &nbsp;|&nbsp; ~1 שעה &nbsp;|&nbsp; כביש A4 ← D2</span>
+      </div>
+    </div>
+
+    <!-- STOP 2 -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E8EAF6">🏨</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right-color:#1976D2">
+        <div class="a-name">ברטיסלבה – הגעה וצ'ק-אין</div>
+        <div class="a-latin">Bratislava – Check In</div>
+        <div class="a-desc">
+          הגעה למלון בלב העיר העתיקה. מנוחה קצרה לאחר הטיסה ואיסוף הרכב.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 30–45 דקות</span>
+          <span class="b bg">🅿️ השתמשו בחניון המלון</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR (walk) -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚶</span>
+        <span class="c-text">הליכה לעיר העתיקה</span>
+        <span class="c-km">~5 דקות הליכה ממרכז העיר</span>
+      </div>
+    </div>
+
+    <!-- STOP 3 -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#FFF8E1">🌆</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right-color:#42A5F5">
+        <div class="a-name">טיול ערב – עיר עתיקה של ברטיסלבה</div>
+        <div class="a-latin">Staré Mesto – Old Town Evening Walk</div>
+        <div class="a-desc">
+          כיכר Hviezdoslavovo námestie עם הפרלמנט ופנסיות מרשימות. מסעדות אוורות ותפריטי ערב. טיול קל ונינוח להתרשמות ראשונה מהעיר הקסומה.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 1–1.5 שעות</span>
+          <span class="b bg">🌙 ערב</span>
+          <span class="b bp">🍽️ ארוחת ערב בכיכר</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚶</span>
+        <span class="c-text">חזרה למלון</span>
+        <span class="c-km">הליכה קצרה</span>
+      </div>
+    </div>
+
+    <!-- STOP 4 - Night -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E8F5E9">😴</div>
+      </div>
+      <div class="a-card" style="border-right-color:#4CAF50">
+        <div class="a-name">לינה בברטיסלבה – לילה 1 מתוך 2</div>
+        <div class="a-latin">Overnight in Bratislava</div>
+        <div class="a-desc">מנוחה לקראת יום מלא ומרתק מחר בברטיסלבה.</div>
+        <div class="badges">
+          <span class="b bt">😴 לילה ראשון</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+
+  <!-- ACCOMMODATION -->
+  <div class="accom">
+    <div class="accom-label">🏨 המלצות לינה</div>
+    <div class="accom-title">ברטיסלבה – עיר עתיקה</div>
+    <div class="accom-opts">
+      ⭐⭐⭐⭐ <strong>AC Hotel by Marriott Old Town</strong> – מודרני, 200 מ' מהמצודה<br>
+      ⭐⭐⭐⭐ <strong>LOFT Hotel Bratislava</strong> – עיצובי, 200 מ' מהארמון הנשיאותי<br>
+      ⭐⭐⭐⭐ <strong>Crowne Plaza Bratislava</strong> – ממול הארמון הנשיאותי, מרכזי מאוד
+    </div>
+  </div>
+
+  <!-- HIGHLIGHTS -->
+  <div class="highlights">
+    <div class="hl-title">💡 לזכור ליום זה</div>
+    <div class="hl-items">
+      <div class="hl-item">🎫 רכשו ויניטות לכל 3 המדינות</div>
+      <div class="hl-item">💳 שקלו לכן מזומן HUF להונגריה מראש</div>
+      <div class="hl-item">🛂 חצייה לסלובקיה – פנו לנתיב EU/Schengen</div>
+      <div class="hl-item">🚗 חניון מלון מומלץ ביום הראשון</div>
+    </div>
+  </div>
+
+  <div class="footer">מסלול וינה – ברטיסלבה – ואכאו – בודפשט &nbsp;|&nbsp; 29 יוני – 7 יולי</div>
+</div>
+</body>
+</html>

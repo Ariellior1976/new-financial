@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יום 8 – בודפשט: אי מרגרט + כיכר הגיבורים + שיט ערב</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#ECEFF1;padding:24px;direction:rtl}
+.page{max-width:820px;margin:0 auto;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.13)}
+.header{background:linear-gradient(135deg,#004D40,#00897B);padding:32px;color:#fff}
+.day-badge{display:inline-block;background:rgba(255,255,255,.22);border-radius:30px;padding:4px 16px;font-size:13px;font-weight:600;margin-bottom:10px}
+.day-title{font-size:26px;font-weight:800;margin-bottom:4px;line-height:1.3}
+.day-subtitle{font-size:15px;opacity:.85;margin-bottom:18px}
+.route-strip{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 16px;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.route-label{font-weight:600;font-size:14px}
+.route-km{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 14px;font-size:13px}
+.summary-bar{display:flex;justify-content:space-around;background:linear-gradient(135deg,#003530,#00695C);padding:14px 0}
+.summary-item{text-align:center;color:#fff}
+.summary-value{font-size:22px;font-weight:800}
+.summary-label{font-size:11px;opacity:.75;margin-top:2px}
+.timeline{padding:28px 24px}
+.activity{display:flex;align-items:flex-start;margin-bottom:6px}
+.a-icon-col{display:flex;flex-direction:column;align-items:center;width:56px;flex-shrink:0}
+.a-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.a-line{width:3px;flex:1;min-height:18px;background:#CFD8DC}
+.a-card{flex:1;background:#F8F9FA;border-radius:14px;padding:16px 18px;margin-right:12px;margin-bottom:6px}
+.a-name{font-size:18px;font-weight:700;color:#0D2137;margin-bottom:2px}
+.a-latin{font-size:12px;color:#78909C;margin-bottom:8px;direction:ltr;text-align:right}
+.a-desc{font-size:14px;color:#546E7A;line-height:1.6;margin-bottom:10px}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.b{padding:3px 12px;border-radius:20px;font-size:12px;font-weight:500}
+.bt{background:#E0F2F1;color:#004D40}
+.bp{background:#F3E5F5;color:#4A148C}
+.by{background:#FFF9C4;color:#E65100}
+.bg{background:#E8F5E9;color:#1B5E20}
+.bw{background:#E1F5FE;color:#0277BD}
+.bo{background:#FBE9E7;color:#BF360C}
+.connector{display:flex;align-items:center;margin-bottom:6px}
+.c-col{width:56px;display:flex;flex-direction:column;align-items:center}
+.c-line{width:3px;height:100%;background:#CFD8DC}
+.c-bubble{display:flex;align-items:center;gap:10px;background:#E0F2F1;border-radius:24px;padding:8px 18px;margin-right:12px;flex:1;border:2px dashed #80CBC4}
+.c-boat{display:flex;align-items:center;gap:10px;background:#E1F5FE;border-radius:24px;padding:8px 18px;margin-right:12px;flex:1;border:2px dashed #81D4FA}
+.c-car{font-size:18px}
+.c-text{font-size:14px;color:#004D40;font-weight:600}
+.c-text-boat{font-size:14px;color:#0277BD;font-weight:600}
+.c-km{font-size:13px;color:#78909C;direction:ltr}
+.star-card{background:linear-gradient(135deg,#E0F2F1,#E8F5E9);border-right:4px solid #00796B;border-radius:12px;padding:14px 16px;margin:6px 0;font-size:14px;color:#004D40}
+.accom{margin:0 24px 28px;background:linear-gradient(135deg,#E0F2F1,#E8F5E9);border-radius:14px;padding:18px 20px}
+.accom-label{font-size:12px;color:#00796B;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.accom-title{font-size:19px;font-weight:700;color:#004D40;margin-bottom:6px}
+.accom-opts{font-size:13px;color:#00695C;line-height:1.9}
+.highlights{background:#E0F2F1;padding:14px 24px;border-top:1px solid #80CBC4}
+.hl-title{font-size:12px;color:#004D40;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.hl-items{display:flex;gap:16px;flex-wrap:wrap}
+.hl-item{font-size:13px;color:#00695C;display:flex;align-items:center;gap:4px}
+.water-bar{background:#E1F5FE;padding:12px 24px;border-top:1px solid #B3E5FC;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.water-tag{background:#B3E5FC;color:#0277BD;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:500}
+.footer{background:#004D40;padding:10px 24px;text-align:center;color:rgba(255,255,255,.6);font-size:12px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="day-badge">יום 8 מתוך 9 &nbsp;|&nbsp; ראשון, 6 יולי 2025 &nbsp;|&nbsp; 🌙 לילה אחרון</div>
+    <div class="day-title">🌿 בודפשט – אי מרגרט + כיכר הגיבורים + שיט שקיעה על הדנובה</div>
+    <div class="day-subtitle">היום האחרון בבודפשט – אי ירוק, מזרקה מוסיקלית, גן ורדים ושיט פרידה</div>
+    <div class="route-strip">
+      <span class="route-label">🏝️ אי מרגרט &nbsp;→&nbsp; 🏛️ כיכר הגיבורים &nbsp;→&nbsp; 🎨 אנדרסי &nbsp;→&nbsp; ⛵ שיט ערב</span>
+      <span class="route-km">~6 ק"מ הליכה + שיט</span>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="summary-item"><div class="summary-value">🏝️</div><div class="summary-label">אי ירוק בנהר</div></div>
+    <div class="summary-item"><div class="summary-value">🌹</div><div class="summary-label">גן ורדים יולי</div></div>
+    <div class="summary-item"><div class="summary-value">⛵</div><div class="summary-label">שיט שקיעה</div></div>
+    <div class="summary-item"><div class="summary-value">🌙</div><div class="summary-label">לילה אחרון</div></div>
+  </div>
+
+  <div class="timeline">
+
+    <!-- STOP 1 - MARGARET ISLAND -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E8F5E9">🏝️</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #388E3C">
+        <div class="a-name">אי מרגרט (Margit-sziget) ⭐⭐</div>
+        <div class="a-latin">Margaret Island – Car-free oasis in the Danube</div>
+        <div class="a-desc">
+          <strong>אי ירוק קסום באמצע הדנובה</strong> – ללא מכוניות! מגשר מרגרט רגלית, באופניים או במיני-אוטובוס. אי שלווה עם גנים, שרידי מנזרים, ובמרכזו – <strong>המזרקה המוסיקלית</strong> שמשחקת מוזיקה עם אורות כל שעה.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 2.5–3 שעות</span>
+          <span class="b bg">חינם לכניסה לאי</span>
+          <span class="b bw">💧 מוקף דנובה מכל צד</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUB STOPS ON ISLAND -->
+    <div style="padding:0 0 12px 68px">
+      <div class="star-card">
+        <strong>🌹 גן הוורדים</strong> – מלא בפריחה ביולי. כמה מאות זנים. מרשים ומבשם.<br>
+        <strong>⛲ המזרקה המוסיקלית</strong> – פועלת כל שעה עם תאורה. חובה לחכות ולצלם!<br>
+        <strong>🏛️ שרידי מנזר דומיניקני</strong> (מהמאה ה-13) – מגדל עגול, 15 דקות.<br>
+        <strong>🏊 בריכות פלטינוס (Palatinus Strand)</strong> – 8 בריכות פתוחות, מגלשות, מים תרמיים. <strong>המתאים ביותר למשפחות עם ילדים!</strong> כניסה ~24 € מבוגר / ~17 € ילד.
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚌</span>
+        <span class="c-text">לכיכר הגיבורים</span>
+        <span class="c-km">4 ק"מ &nbsp;|&nbsp; 15 דקות (אוטובוס 75/26)</span>
+      </div>
+    </div>
+
+    <!-- STOP 2 - HERO'S SQUARE -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E8EAF6">🗿</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #5C6BC0">
+        <div class="a-name">כיכר הגיבורים (Hősök tere) + גן העיר</div>
+        <div class="a-latin">Heroes' Square + Városliget City Park</div>
+        <div class="a-desc">
+          <strong>כיכר הגיבורים (UNESCO):</strong> עמוד 36 מ' עם 14 פסלי מלכי הונגריה. אנדרטת המילניום (1896). מרשים ביותר ל-"wow-moment" בפסט.<br>
+          <strong>גן העיר (Városliget):</strong> פארק ירוק גדול עם אגם קטן – בקיץ אפשר לשוט באגם.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 30–45 דקות</span>
+          <span class="b bg">חינם</span>
+          <span class="b bw">🌿 גן עם אגם</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR (walk) -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚶</span>
+        <span class="c-text">הליכה לטירת ווייאדהונייד</span>
+        <span class="c-km">~3 דקות הליכה בתוך גן העיר</span>
+      </div>
+    </div>
+
+    <!-- STOP 3 - VAJDAHUNYAD -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#F3E5F5">🏯</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #8E24AA">
+        <div class="a-name">טירת ווייאדהונייד (Vajdahunyad vára)</div>
+        <div class="a-latin">Vajdahunyad Castle – City Park</div>
+        <div class="a-desc">
+          <strong>טירה רומנטית מוקפת אגם</strong> בתוך גן העיר – שמשלבת סגנונות ארכיטקטורה שונים מ-5 תקופות היסטוריות הונגריות! בנויה ב-1896 לתערוכת המילניום. בקיץ: שייט קל באגם.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 30–45 דקות</span>
+          <span class="b bg">חינם לחצר (מוזיאון: ~5 €)</span>
+          <span class="b bw">🏰 מוקפת אגם</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚶</span>
+        <span class="c-text">שדרת אנדרסי (UNESCO)</span>
+        <span class="c-km">~30 דקות הליכה לאורך השדרה</span>
+      </div>
+    </div>
+
+    <!-- STOP 4 - ANDRASSY -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#FFF8E1">🛍️</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #F9A825">
+        <div class="a-name">שדרת אנדרסי (Andrássy út) – UNESCO</div>
+        <div class="a-latin">Andrássy Avenue – Budapest's Champs-Élysées</div>
+        <div class="a-desc">
+          ה"שאנז-אליזה" של בודפשט – שדרה מפוארת עם בניינים ניאו-רנסנסיים, קניות, בתי קפה ואופרה ממדינה. UNESCO. <strong>בית הטרור (House of Terror, #60)</strong> – מוזיאון מרתק על תקופת הנאצים והקומוניזם (1.5 שעות).
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 30–45 דקות הליכה</span>
+          <span class="b bg">חינם (הליכה)</span>
+          <span class="b bp">💰 ~7 € לבית הטרור</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR - BOAT -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-boat">
+        <span class="c-car">⛵</span>
+        <span class="c-text-boat">שיט שקיעה על הדנובה!</span>
+        <span class="c-km">מרכז בודפשט &nbsp;|&nbsp; 1–1.5 שעות &nbsp;|&nbsp; ~15–25 € לאדם</span>
+      </div>
+    </div>
+
+    <!-- STOP 5 - EVENING CRUISE -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E1F5FE">⛵</div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #0288D1">
+        <div class="a-name">שיט שקיעה ופרידה על הדנובה ⭐⭐⭐</div>
+        <div class="a-latin">Evening Danube Cruise – Budapest illuminated</div>
+        <div class="a-desc">
+          <strong>פסגת הנסיעה!</strong> שיט לאורך הדנובה עם כל ה"פנינים" מואר: גשר השרשרת, פרלמנט הונגריה, טירת בודה, גשר אליזבת. <strong>ביולי: שקיעה בסביבות 21:00</strong> – האורות נדלקים בדיוק בזמן. ארוחת ערב אחרונה בבודפשט.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 1–1.5 שעות</span>
+          <span class="b bp">💰 ~15–25 € לאדם</span>
+          <span class="b bw">🌊 כל בודפשט מהמים</span>
+          <span class="b by">🌅 שקיעה ~21:00 ביולי</span>
+          <span class="b bg">💡 מואר מדהים בלילה</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="water-bar">
+    <strong style="color:#0277BD;font-size:13px">💧 יום מים – בכל מקום!</strong>
+    <span class="water-tag">🏝️ אי מרגרט – מוקף דנובה</span>
+    <span class="water-tag">🏊 בריכות פלטינוס – מים תרמיים</span>
+    <span class="water-tag">⛲ מזרקה מוסיקלית</span>
+    <span class="water-tag">🏰 אגם סביב טירת ווייאדהונייד</span>
+    <span class="water-tag">⛵ שיט על הדנובה</span>
+  </div>
+
+  <div class="accom">
+    <div class="accom-label">🏨 לינה הלילה – אחרון בבודפשט</div>
+    <div class="accom-title">בודפשט – לילה 8 (לילה 3 מתוך 3)</div>
+    <div class="accom-opts">
+      ⭐⭐⭐⭐⭐ <strong>Hilton Budapest Castle District</strong> &nbsp;|&nbsp; <strong>Hotel Clark</strong> &nbsp;|&nbsp; <strong>Aria Hotel</strong><br>
+      ℹ️ מחר: יציאה מוקדמת לוינה – ארזו ערב זה!
+    </div>
+  </div>
+
+  <div class="highlights">
+    <div class="hl-title">💡 טיפים ליום האחרון</div>
+    <div class="hl-items">
+      <div class="hl-item">🧴 פלטינוס: הביאו קרם שמש + מגבות</div>
+      <div class="hl-item">⛵ הזמינו שיט מראש (Legenda.hu)</div>
+      <div class="hl-item">🛍️ קנו פפריקה + פוא גרה כמנות יד</div>
+      <div class="hl-item">🌙 ארזו ועשו מזוודות הלילה לפני השינה!</div>
+    </div>
+  </div>
+
+  <div class="footer">מסלול וינה – ברטיסלבה – ואכאו – בודפשט &nbsp;|&nbsp; 29 יוני – 7 יולי</div>
+</div>
+</body>
+</html>

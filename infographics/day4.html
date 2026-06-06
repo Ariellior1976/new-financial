@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יום 4 – עמק ואכאו: כפרים + מלק + סירה</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#ECEFF1;padding:24px;direction:rtl}
+.page{max-width:820px;margin:0 auto;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.13)}
+.header{background:linear-gradient(135deg,#4A148C,#7B1FA2);padding:32px;color:#fff}
+.day-badge{display:inline-block;background:rgba(255,255,255,.22);border-radius:30px;padding:4px 16px;font-size:13px;font-weight:600;margin-bottom:10px}
+.day-title{font-size:28px;font-weight:800;margin-bottom:4px;line-height:1.25}
+.day-subtitle{font-size:15px;opacity:.85;margin-bottom:18px}
+.route-strip{background:rgba(0,0,0,.2);border-radius:10px;padding:10px 16px;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.route-label{font-weight:600;font-size:14px}
+.route-km{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 14px;font-size:13px}
+.summary-bar{display:flex;justify-content:space-around;background:linear-gradient(135deg,#38006b,#6A1B9A);padding:14px 0}
+.summary-item{text-align:center;color:#fff}
+.summary-value{font-size:22px;font-weight:800}
+.summary-label{font-size:11px;opacity:.75;margin-top:2px}
+.timeline{padding:28px 24px}
+.activity{display:flex;align-items:flex-start;margin-bottom:6px}
+.a-icon-col{display:flex;flex-direction:column;align-items:center;width:56px;flex-shrink:0}
+.a-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.a-line{width:3px;flex:1;min-height:18px;background:#CFD8DC}
+.a-card{flex:1;background:#F8F9FA;border-radius:14px;padding:16px 18px;margin-right:12px;margin-bottom:6px}
+.a-name{font-size:19px;font-weight:700;color:#0D2137;margin-bottom:2px}
+.a-latin{font-size:12px;color:#78909C;margin-bottom:8px;direction:ltr;text-align:right}
+.a-desc{font-size:14px;color:#546E7A;line-height:1.6;margin-bottom:10px}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.b{padding:3px 12px;border-radius:20px;font-size:12px;font-weight:500}
+.bt{background:#F3E5F5;color:#4A148C}
+.bp{background:#EDE7F6;color:#311B92}
+.by{background:#FFF9C4;color:#E65100}
+.bg{background:#E8F5E9;color:#1B5E20}
+.bw{background:#E0F7FA;color:#006064}
+.connector{display:flex;align-items:center;margin-bottom:6px}
+.c-col{width:56px;display:flex;flex-direction:column;align-items:center}
+.c-line{width:3px;height:100%;background:#CFD8DC}
+.c-bubble{display:flex;align-items:center;gap:10px;background:#F3E5F5;border-radius:24px;padding:8px 18px;margin-right:12px;flex:1;border:2px dashed #CE93D8}
+.c-boat{display:flex;align-items:center;gap:10px;background:#E0F7FA;border-radius:24px;padding:8px 18px;margin-right:12px;flex:1;border:2px dashed #80DEEA}
+.c-car{font-size:18px}
+.c-text{font-size:14px;color:#4A148C;font-weight:600}
+.c-text-boat{font-size:14px;color:#006064;font-weight:600}
+.c-km{font-size:13px;color:#78909C;direction:ltr}
+.option-box{background:#EDE7F6;border-right:4px solid #7B1FA2;border-radius:12px;padding:14px 16px;margin:8px 0;font-size:14px;color:#311B92}
+.option-title{font-weight:700;margin-bottom:6px;font-size:15px}
+.accom{margin:0 24px 28px;background:linear-gradient(135deg,#F3E5F5,#EDE7F6);border-radius:14px;padding:18px 20px}
+.accom-label{font-size:12px;color:#7B1FA2;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.accom-title{font-size:19px;font-weight:700;color:#4A148C;margin-bottom:6px}
+.accom-opts{font-size:13px;color:#6A1B9A;line-height:1.9}
+.highlights{background:#F3E5F5;padding:14px 24px;border-top:1px solid #CE93D8}
+.hl-title{font-size:12px;color:#4A148C;font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.hl-items{display:flex;gap:16px;flex-wrap:wrap}
+.hl-item{font-size:13px;color:#6A1B9A;display:flex;align-items:center;gap:4px}
+.water-bar{background:#E0F7FA;padding:12px 24px;border-top:1px solid #B2EBF2;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.water-tag{background:#B2EBF2;color:#006064;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:500}
+.footer{background:#4A148C;padding:10px 24px;text-align:center;color:rgba(255,255,255,.6);font-size:12px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="day-badge">יום 4 מתוך 9 &nbsp;|&nbsp; רביעי, 2 יולי 2025</div>
+    <div class="day-title">⛵ עמק ואכאו: כפרי יין + מנזר מלק + שיט בדנובה</div>
+    <div class="day-subtitle">יום UNESCO בלב ואכאו – כפרים ציוריים, מנזר ברוק ושיט על הדנובה</div>
+    <div class="route-strip">
+      <span class="route-label">קרמס &nbsp;→&nbsp; ווייסנקירכן &nbsp;→&nbsp; שפיץ &nbsp;→&nbsp; מלק &nbsp;⛵&nbsp; → קרמס</span>
+      <span class="route-km">~70 ק"מ נסיעה + שיט</span>
+    </div>
+  </div>
+
+  <div class="summary-bar">
+    <div class="summary-item"><div class="summary-value">3</div><div class="summary-label">כפרי ואכאו</div></div>
+    <div class="summary-item"><div class="summary-value">UNESCO</div><div class="summary-label">מנזר מלק</div></div>
+    <div class="summary-item"><div class="summary-value">⛵</div><div class="summary-label">שיט בדנובה</div></div>
+    <div class="summary-item"><div class="summary-value">~10</div><div class="summary-label">שעות פעילות</div></div>
+  </div>
+
+  <div class="timeline">
+
+    <!-- STOP 1 -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#F1F8E9">⛪</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #558B2F">
+        <div class="a-name">ווייסנקירכן בדר ואכאו</div>
+        <div class="a-latin">Weißenkirchen in der Wachau</div>
+        <div class="a-desc">
+          כפר יין קסום עם <strong>כנסייה מבוצרת על גבעה</strong> – מבנה ייחודי שנבנה כמבצר להגנה. מוזיאון ואכאו, מרפסות עם נוף על כרמי הגבעות והנהר.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 25–30 דקות</span>
+          <span class="b bw">🌊 נוף לדנובה</span>
+          <span class="b bg">🍷 טעימת יין אפשרית</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚗</span>
+        <span class="c-text">כפר לכפר לאורך הנהר</span>
+        <span class="c-km">8 ק"מ &nbsp;|&nbsp; 10 דקות</span>
+      </div>
+    </div>
+
+    <!-- STOP 2 -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#FFF8E1">🏘️</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #F9A825">
+        <div class="a-name">שפיץ אן דר דונאו</div>
+        <div class="a-latin">Spitz an der Donau – Wine Village</div>
+        <div class="a-desc">
+          כפר יין קמאי על שפת הדנובה עם חזות מימי הביניים. שרידי <strong>מגדל Tausendeimerberg</strong> ("הגבעה בת האלף כדים" – לפי יכולת הייצור השנתית!). כנסייה גותית עתיקה.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 30–45 דקות</span>
+          <span class="b bw">🌊 על גדות הדנובה</span>
+          <span class="b bg">🍷 כפר יין היסטורי</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONNECTOR -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-bubble">
+        <span class="c-car">🚗</span>
+        <span class="c-text">לאורך הדנובה למלק</span>
+        <span class="c-km">18 ק"מ &nbsp;|&nbsp; 20 דקות</span>
+      </div>
+    </div>
+
+    <!-- STOP 3 - MELK -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#EDE7F6">🏛️</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #7B1FA2">
+        <div class="a-name">מנזר מלק (Stift Melk) ⭐⭐⭐</div>
+        <div class="a-latin">Benedictine Abbey of Melk – UNESCO</div>
+        <div class="a-desc">
+          <strong>גולת הכותרת של ואכאו!</strong> מנזר בנדיקטיני ברוק מהמאה ה-18, ניצב על צוק גיר זהוב מעל הדנובה. ספריה מוזהבת מרהיבה עם 100,000 כרכים עתיקים, כנסייה ענקית מפוארת, גן טרסות עם <strong>נוף ישיר על הנהר</strong>. אחד המנזרים היפים ביותר בעולם.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 2.5–3 שעות</span>
+          <span class="b bp">💰 ~13–15 €</span>
+          <span class="b bw">🌊 נוף על הדנובה</span>
+          <span class="b bg">🎧 Audio-guide לילדים</span>
+          <span class="b by">⏰ פתוח 9:00–17:30</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPTIONS -->
+    <div style="padding:0 0 12px 68px">
+      <div class="option-box">
+        <div class="option-title">⛵ אפשרות A (מומלצת): שיט Brandner ממלק לדירנשטיין</div>
+        נסיעה ברכבת/אוטובוס קרמס → מלק (1 שעה), ביקור מלק, שיט ממלק לכיוון קרמס (~1:45 שעות במורד הזרם) – עובר ליד Aggstein, Spitz, Weißenkirchen. <strong>הסירה:</strong> Brandner Schifffahrt (brandner.at). הרכב נשאר בקרמס.
+      </div>
+      <div class="option-box" style="background:#E8F5E9;border-right-color:#388E3C">
+        <div class="option-title">🚗 אפשרות B: נסיעה חזרה עם עצירות נוספות</div>
+        נסיעה בחזרה לקרמס דרך כביש גדה דרומית (שינוי נוף!) עם עצירה בשרידי <strong>טירת Aggstein</strong> (נוף פנורמי עוצר נשימה, הגיע ממלך שוד). ~20 דקות מהנסיעה.
+      </div>
+    </div>
+
+    <!-- CONNECTOR - BOAT -->
+    <div class="connector">
+      <div class="c-col"><div class="c-line"></div></div>
+      <div class="c-boat">
+        <span class="c-car">⛵</span>
+        <span class="c-text-boat">שיט דנובה – מלק ← דירנשטיין</span>
+        <span class="c-km">~1:45 שעות במורד הזרם &nbsp;|&nbsp; Brandner Schifffahrt</span>
+      </div>
+    </div>
+
+    <!-- STOP 4 -->
+    <div class="activity">
+      <div class="a-icon-col">
+        <div class="a-icon" style="background:#E8F5E9">🍷</div>
+        <div class="a-line"></div>
+      </div>
+      <div class="a-card" style="border-right:4px solid #388E3C">
+        <div class="a-name">ערב בקרמס – עיר עתיקה</div>
+        <div class="a-latin">Krems Altstadt – Evening</div>
+        <div class="a-desc">
+          קרמס היא עיר ואכאו הגדולה עם שכונה עתיקה מקסימה. שוק ירקות, בתי יין מקומיים, Altstadt עם כנסיות ובתים ברוקים. ארוחת ערב עם יין Wachau מקומי.
+        </div>
+        <div class="badges">
+          <span class="b bt">⏱ 1–1.5 שעות</span>
+          <span class="b bg">🍷 יין Grüner Veltliner</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="water-bar">
+    <strong style="color:#006064;font-size:13px">💧 נופי מים היום:</strong>
+    <span class="water-tag">⛵ שיט על הדנובה 1:45 שעות</span>
+    <span class="water-tag">🌊 נוף מנזר מלק על הנהר</span>
+    <span class="water-tag">🏘️ כל הכפרים על גדות הדנובה</span>
+  </div>
+
+  <div class="accom">
+    <div class="accom-label">🏨 לינה הלילה</div>
+    <div class="accom-title">קרמס / דירנשטיין – לילה 4 (לילה אחרון בואכאו)</div>
+    <div class="accom-opts">
+      ⭐⭐⭐⭐⭐ <strong>Schloss Hotel Dürnstein</strong> – טירה עם בריכה ונוף על הדנובה<br>
+      ⭐⭐⭐⭐ <strong>Steigenberger Hotel & Spa Krems</strong> – ספא, בריכה, נוחות<br>
+      ⭐⭐⭐ <strong>Hotel Klinglhuber, קרמס</strong> – משפחתי ומרכזי
+    </div>
+  </div>
+
+  <div class="highlights">
+    <div class="hl-title">💡 טיפים ליום זה</div>
+    <div class="hl-items">
+      <div class="hl-item">⛵ הזמינו מקומות בסירה מראש (brandner.at)</div>
+      <div class="hl-item">⏰ הסירה יוצאת ממלק ב-11:00 ו-14:00</div>
+      <div class="hl-item">🚂 קרמס-מלק ברכבת: ~55 דקות, זול</div>
+      <div class="hl-item">📸 הנוף הטוב ביותר: מטרסת הגן של מלק</div>
+    </div>
+  </div>
+
+  <div class="footer">מסלול וינה – ברטיסלבה – ואכאו – בודפשט &nbsp;|&nbsp; 29 יוני – 7 יולי</div>
+</div>
+</body>
+</html>
