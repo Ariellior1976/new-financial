@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>שיעורי קשב דיגיטלי | ארבעה שיעורים לתיכון</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
+
+    :root {
+      --blue: #2563eb; --blue-light: #eff6ff; --blue-mid: #bfdbfe;
+      --purple: #7c3aed; --purple-light: #f5f3ff;
+      --teal: #0891b2; --teal-light: #ecfeff;
+      --green: #059669; --green-light: #ecfdf5;
+      --orange: #d97706; --orange-light: #fffbeb;
+      --red: #dc2626; --red-light: #fef2f2;
+      --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb;
+      --gray-300: #d1d5db; --gray-400: #9ca3af; --gray-500: #6b7280;
+      --gray-600: #4b5563; --gray-700: #374151; --gray-800: #1f2937; --gray-900: #111827;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      direction: rtl;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: white;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .header-title { font-size: 20px; font-weight: 700; }
+    .header-subtitle { font-size: 13px; color: var(--gray-500); }
+
+    .app-container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+    .lesson-tabs {
+      display: flex; gap: 8px; margin-bottom: 20px;
+      overflow-x: auto; padding-bottom: 4px;
+    }
+    .lesson-tab {
+      padding: 10px 20px; border-radius: 8px; cursor: pointer;
+      font-size: 14px; font-weight: 600; white-space: nowrap;
+      border: 2px solid var(--gray-200); background: white; color: var(--gray-600);
+      transition: all 0.2s;
+    }
+    .lesson-tab:hover { background: var(--blue-light); color: var(--blue); border-color: var(--blue-mid); }
+    .lesson-tab.active { background: var(--blue); color: white; border-color: var(--blue); }
+
+    .lesson-goal {
+      background: var(--green-light); border: 1px solid #6ee7b7;
+      border-radius: 10px; padding: 14px 18px; font-size: 14px;
+      color: var(--gray-700); line-height: 1.7; margin-bottom: 20px;
+    }
+    .lesson-goal strong { color: var(--green); font-size: 12px; display: block; margin-bottom: 4px; }
+
+    .lesson-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 20px;
+    }
+
+    .section-list {
+      background: white; border-radius: 12px;
+      border: 1px solid var(--gray-200); overflow: hidden;
+      height: fit-content; position: sticky; top: 80px;
+    }
+    .section-list-header {
+      padding: 12px 16px; background: var(--gray-50);
+      border-bottom: 1px solid var(--gray-200);
+      font-size: 12px; font-weight: 700; color: var(--gray-500);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .section-item {
+      padding: 10px 14px; cursor: pointer;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex; align-items: center; gap: 10px;
+      transition: background 0.15s;
+    }
+    .section-item:last-child { border-bottom: none; }
+    .section-item:hover { background: var(--gray-50); }
+    .section-item.active { background: var(--blue-light); }
+    .section-item.active .section-item-title { color: var(--blue); }
+    .section-item-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--gray-100); display: flex; align-items: center;
+      justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0;
+    }
+    .section-item.active .section-item-num { background: var(--blue); color: white; }
+    .section-item-title { font-size: 12px; font-weight: 600; color: var(--gray-700); }
+    .section-item-duration { font-size: 11px; color: var(--gray-400); }
+
+    .section-card {
+      background: white; border-radius: 12px;
+      border: 1px solid var(--gray-200); overflow: hidden;
+    }
+    .section-header {
+      padding: 18px 22px; border-bottom: 1px solid var(--gray-100);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .section-title { font-size: 20px; font-weight: 700; }
+    .section-badge {
+      padding: 4px 12px; border-radius: 20px; font-size: 12px;
+      font-weight: 600; background: var(--gray-100); color: var(--gray-600);
+    }
+
+    .timer-widget {
+      background: var(--gray-50); border: 1px solid var(--gray-200);
+      border-radius: 10px; padding: 12px 18px;
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    }
+    .timer-display {
+      font-size: 36px; font-weight: 800; font-family: 'Courier New', monospace;
+      color: var(--gray-900); letter-spacing: 2px; min-width: 90px;
+    }
+    .timer-display.warning { color: var(--orange); }
+    .timer-display.danger { color: var(--red); animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0.5; } }
+    .timer-btn {
+      padding: 7px 14px; border-radius: 6px; border: none;
+      cursor: pointer; font-size: 12px; font-weight: 700; transition: all 0.15s;
+    }
+    .timer-btn-start { background: var(--green); color: white; }
+    .timer-btn-pause { background: var(--orange); color: white; }
+    .timer-btn-reset { background: var(--gray-200); color: var(--gray-700); }
+
+    .progress-bar { height: 4px; background: var(--gray-200); border-radius: 2px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--blue); border-radius: 2px; transition: width 0.3s; }
+
+    .content-body { padding: 22px; }
+    .content-section { margin-bottom: 22px; }
+    .content-section-title {
+      font-size: 14px; font-weight: 700; color: var(--gray-600);
+      margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+    }
+    .content-section-title::before {
+      content: ''; display: inline-block; width: 3px; height: 16px;
+      background: var(--blue); border-radius: 2px;
+    }
+
+    .question-card {
+      background: var(--blue-light); border: 2px solid var(--blue-mid);
+      border-radius: 12px; padding: 22px 26px;
+      font-size: 20px; font-weight: 600; color: var(--gray-800);
+      text-align: center; line-height: 1.6;
+    }
+
+    .info-card {
+      background: var(--gray-50); border: 1px solid var(--gray-200);
+      border-radius: 10px; padding: 14px 18px;
+      font-size: 14px; line-height: 1.7; color: var(--gray-700);
+    }
+
+    .teacher-note {
+      background: var(--orange-light); border: 1px solid #fbbf24;
+      border-radius: 10px; padding: 14px 18px;
+      font-size: 13px; line-height: 1.7; color: var(--gray-700);
+    }
+    .teacher-note-header {
+      font-size: 12px; font-weight: 700; color: var(--orange);
+      margin-bottom: 6px;
+    }
+
+    .step-list { display: flex; flex-direction: column; gap: 10px; }
+    .step-item {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 12px 16px; background: var(--gray-50);
+      border: 1px solid var(--gray-200); border-radius: 10px;
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--blue); color: white;
+      font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step-text { font-size: 14px; color: var(--gray-700); line-height: 1.6; padding-top: 3px; }
+
+    .notification-tool {
+      background: white; border: 2px solid var(--gray-200);
+      border-radius: 12px; padding: 20px;
+    }
+    .notif-input-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+      gap: 8px; margin-bottom: 18px;
+    }
+    .notif-input {
+      width: 100%; padding: 10px 6px; border: 2px solid var(--gray-200);
+      border-radius: 8px; font-size: 18px; font-weight: 600;
+      text-align: center; color: var(--gray-900); font-family: monospace;
+      transition: border-color 0.15s;
+    }
+    .notif-input:focus { outline: none; border-color: var(--blue); }
+    .notif-avg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .notif-avg-box {
+      border-radius: 10px; padding: 20px;
+      text-align: center; color: white;
+    }
+    .notif-avg-num { font-size: 52px; font-weight: 900; line-height: 1; }
+    .notif-avg-label { font-size: 13px; opacity: 0.9; margin-top: 6px; }
+
+    .checklist { display: flex; flex-direction: column; gap: 8px; }
+    .checklist-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 14px; border-radius: 10px; cursor: pointer;
+      border: 2px solid var(--gray-200); background: white;
+      transition: all 0.15s; user-select: none;
+    }
+    .checklist-item:hover { border-color: var(--blue-mid); background: var(--blue-light); }
+    .checklist-item.checked { border-color: var(--blue); background: var(--blue-light); }
+    .checklist-cb {
+      width: 22px; height: 22px; border-radius: 5px;
+      border: 2px solid var(--gray-300); flex-shrink: 0; margin-top: 1px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; font-size: 14px; color: white;
+    }
+    .checklist-item.checked .checklist-cb { background: var(--blue); border-color: var(--blue); }
+    .checklist-label { font-size: 14px; color: var(--gray-700); line-height: 1.5; }
+
+    .video-card {
+      border: 1px solid var(--gray-200); border-radius: 10px;
+      padding: 14px 18px; display: flex; align-items: center;
+      justify-content: space-between; gap: 14px;
+      background: white; cursor: pointer; transition: all 0.15s;
+      margin-bottom: 8px; text-decoration: none;
+    }
+    .video-card:hover { border-color: var(--teal); background: var(--teal-light); }
+    .video-card-title { font-size: 14px; font-weight: 600; color: var(--gray-800); }
+    .video-card-desc { font-size: 12px; color: var(--gray-500); margin-top: 3px; }
+    .video-card-note { font-size: 11px; color: var(--orange); margin-top: 3px; }
+    .video-play {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--teal); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+
+    .factor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+    .factor-card {
+      background: white; border-radius: 10px; padding: 18px 20px;
+      border-right: 4px solid var(--blue);
+    }
+    .factor-icon { font-size: 28px; margin-bottom: 8px; }
+    .factor-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .factor-text { font-size: 13px; color: var(--gray-600); line-height: 1.6; }
+
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+    .stat-box {
+      border-radius: 14px; padding: 26px; text-align: center;
+    }
+    .stat-num { font-size: 48px; font-weight: 900; line-height: 1; letter-spacing: -1px; }
+    .stat-unit { font-size: 20px; font-weight: 600; margin-top: 4px; }
+    .stat-label { font-size: 15px; color: var(--gray-700); margin-top: 10px; line-height: 1.5; }
+
+    .reflection-q {
+      background: var(--purple-light); border: 1px solid #c4b5fd;
+      border-radius: 10px; padding: 14px 16px;
+      font-size: 14px; color: var(--gray-800);
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .reflection-q-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--purple); color: white;
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+    .world-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+    .world-card {
+      background: white; border: 1px solid var(--gray-200);
+      border-radius: 10px; padding: 14px 16px;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .world-card:hover { border-color: var(--green); background: var(--green-light); }
+    .world-card.revealed { border-color: var(--green); background: var(--green-light); }
+    .world-card-country { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .world-card-text { font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+    .world-card-hint { font-size: 12px; color: var(--gray-400); }
+
+    .disc-board { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .disc-col { border: 2px solid var(--gray-200); border-radius: 10px; overflow: hidden; }
+    .disc-col.red-col { border-color: var(--red); }
+    .disc-col.orange-col { border-color: var(--orange); }
+    .disc-col.purple-col { border-color: var(--purple); }
+    .disc-col-header { padding: 10px 14px; font-size: 15px; font-weight: 700; color: white; }
+    .red-col .disc-col-header { background: var(--red); }
+    .orange-col .disc-col-header { background: var(--orange); }
+    .purple-col .disc-col-header { background: var(--purple); }
+    .disc-entries {
+      padding: 10px; min-height: 160px; max-height: 360px;
+      overflow-y: auto; display: flex; flex-direction: column; gap: 6px;
+    }
+    .disc-entry {
+      background: var(--gray-50); border: 1px solid var(--gray-200);
+      border-radius: 7px; padding: 7px 10px; font-size: 13px; color: var(--gray-700);
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 6px;
+    }
+    .disc-entry-del {
+      background: none; border: none; color: var(--gray-400);
+      cursor: pointer; font-size: 14px; flex-shrink: 0; line-height: 1; padding: 2px;
+    }
+    .disc-entry-del:hover { color: var(--red); }
+    .disc-input-row {
+      padding: 10px; border-top: 1px solid var(--gray-200);
+      display: flex; gap: 6px;
+    }
+    .disc-input {
+      flex: 1; padding: 7px 10px; border: 2px solid var(--gray-200);
+      border-radius: 7px; font-size: 13px; font-family: inherit;
+      direction: rtl;
+    }
+    .disc-input:focus { outline: none; border-color: var(--blue); }
+    .disc-add-btn {
+      padding: 7px 14px; background: var(--blue); color: white;
+      border: none; border-radius: 7px; cursor: pointer;
+      font-size: 14px; font-weight: 700;
+    }
+
+    .closing-prompt {
+      background: var(--teal-light); border: 1px solid #67e8f9;
+      border-radius: 10px; padding: 12px 16px;
+      font-size: 14px; color: var(--gray-800);
+    }
+    .closing-prompts { display: flex; flex-direction: column; gap: 8px; }
+
+    .policy-item {
+      background: white; border: 1px solid var(--gray-200);
+      border-radius: 10px; padding: 14px 18px;
+    }
+    .policy-q { font-size: 15px; font-weight: 700; color: var(--green); margin-bottom: 8px; }
+    .policy-a {
+      font-size: 14px; color: var(--gray-700);
+      background: var(--gray-50); border: 1px solid var(--gray-200);
+      border-radius: 6px; padding: 10px 12px; line-height: 1.6;
+      min-height: 40px; cursor: text;
+    }
+    .policy-a[contenteditable]:empty::before { content: attr(data-placeholder); color: var(--gray-400); }
+    .policy-a[contenteditable]:focus { outline: 2px solid var(--blue); }
+
+    .nav-buttons {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 22px; border-top: 1px solid var(--gray-100); background: var(--gray-50);
+    }
+    .nav-btn {
+      padding: 9px 20px; border-radius: 8px; border: 1px solid var(--gray-300);
+      background: white; cursor: pointer; font-size: 13px; font-weight: 600;
+      color: var(--gray-700); transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) { background: var(--gray-100); }
+    .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .nav-btn-next { background: var(--blue); color: white; border-color: var(--blue); }
+    .nav-btn-next:hover:not(:disabled) { background: #1d4ed8; }
+
+    .toggle-btn {
+      padding: 8px 14px; border-radius: 8px; border: 1px solid var(--gray-300);
+      background: white; cursor: pointer; font-size: 12px; font-weight: 600;
+      color: var(--gray-700); transition: all 0.15s;
+    }
+    .toggle-btn:hover { background: var(--gray-100); }
+
+    .highlight-box {
+      border-radius: 10px; padding: 14px 18px;
+      font-size: 15px; font-weight: 600; text-align: center; line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .lesson-layout { grid-template-columns: 1fr; }
+      .section-list { display: none; }
+      .disc-board { grid-template-columns: 1fr; }
+      .notif-avg-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div>
+    <div class="header-title">שיעורי קשב — מהלך דיגיטלי</div>
+    <div class="header-subtitle">ארבעה שיעורים של 45 דקות | כיתה ט–יב | מחנך/ת בלבד</div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <button class="toggle-btn" id="toggleNotesBtn" onclick="toggleNotes()">📝 הסתר הנחיות מורה</button>
+  </div>
+</header>
+
+<div class="app-container">
+  <div id="lessonTabs" class="lesson-tabs"></div>
+  <div id="lessonGoal" class="lesson-goal"></div>
+  <div class="lesson-layout">
+    <div id="sectionList" class="section-list"></div>
+    <div id="mainContent"></div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+const LESSONS = [
+  {
+    id: 1,
+    title: 'שיעור 1',
+    subtitle: 'מה קורה לנו',
+    goal: 'לבנות הבנה משותפת על קשב ועל מה שמשפיע עליו. שיעור זה עוסק אך ורק במנגנונים ובהשפעות, בלי לגעת בהחלטה העירונית. הבסיס הזה נחוץ לפני שאפשר לדבר על שינוי.',
+    globalNote: 'זה שיעור שבו נשתמש בטלפון בחלק מהפעילויות ואז נבקש להניח אותו בצד. ברגעים שתלמיד מתקשה לעצור — אפשר להעלות לשיח: "שמתם לב כמה קשה היה לעצור? בדיוק על זה אנחנו מדברים." חשוב שהשיח לא יהיה שיפוטי. בכל רגע שנוצר חיכוך סביב הטלפון אפשר לעצור ולהביא לשיח — השיעור הוא גם שיח על טלפונים וגם שיח שקורה בנוכחותם.',
+    sections: [
+      {
+        id: 's11', title: 'פתיחה חוויתית', duration: 5, type: 'open_q',
+        question: 'מתי בפעם האחרונה פתחתם את הטלפון לעשות משהו ספציפי, ואחרי כמה דקות קלטתם ששכחתם ממנו לגמרי?',
+        instructions: 'נותנים רגע לחשוב לפני שעונים. מה שמחפשים: לא תשובה נכונה — רק לגרום לכולם להיות בנושא מתוך ניסיון אישי לפני שמגיע כל מידע. שניים–שלושה תלמידים מספרים.',
+        teacherNote: 'עיקרון השיקוף: להחזיר למדבר את מה שאמר, בלי להוסיף ובלי לשפוט. לדוגמה: "אז קפצת לבדוק הודעה ומצאת את עצמך 20 דקות אחר כך בוידאו אחר לגמרי". זה שונה ממסקנה, ממחמאה או מניתוח. השיקוף מראה לתלמיד שנשמע, ומזמין את הכיתה להמשיך לדבר.'
+      },
+      {
+        id: 's12', title: 'פעילות: ספירת התראות', duration: 7, type: 'counter',
+        teacherNote: 'הפעילות מגיעה לפני הנתונים — כשמציגים אחר כך את גרף מארק ו-400 ההתראות ביום, כל אחד כבר יודע את המספר שלו. הנתון הסטטיסטי הופך לאישי.'
+      },
+      {
+        id: 's13', title: 'מה זה קשב + 3 גורמים', duration: 10, type: 'factors',
+        teacherNote: 'שאר הגורמים שמופיעים במצגת המקורית לא נפתחים בשיעור זה. הם קיימים כרזרבה אם הכיתה שואלת.',
+        factors: [
+          { icon: '😴', title: 'שינה', text: 'מחסור בשעות שינה פוגע ישירות ביכולת הריכוז ביום למחרת.', color: '#7c3aed' },
+          { icon: '🔔', title: 'התראות', text: 'לא רק ההתראה עצמה, אלא גם הציפייה אליה — גוזלת קיבולת קוגניטיבית.', color: '#dc2626' },
+          { icon: '📱', title: 'נוכחות הטלפון', text: 'גם כשהוא הפוך על השולחן, עצם נוכחותו גוזלת קיבולת קוגניטיבית.', color: '#2563eb' }
+        ]
+      },
+      {
+        id: 's14', title: 'פעילות: מנגנונים ממכרים', duration: 10, type: 'checklist_video',
+        teacherNote: '"כל אחד מהדברים ברשימה לא קרה במקרה. מאחורי כל אפליקציה עומד צוות שלם של מעצבים שתפקידם לגרום לנו להישאר בה כמה שיותר זמן. זה לא חולשה שלנו, זה עיצוב מכוון." לא להוסיף יותר מזה — הסרטון עושה את העבודה.',
+        steps: [
+          'שלב 1 (3 דק׳): כל אחד בוחר אפליקציה שמשתמש בה הכי הרבה. פותח אותה דקה עם שאלה: "מה היא מציעה לי? מה היא גורמת לי להרגיש?"',
+          'שלב 2 (2 דק׳): מסמנים איזה היגדים רלוונטיים לאפליקציה שבחרתם.',
+          'שלב 3 (5 דק׳): צפייה בסרטון — בוחרים אחד מהסרטונים.'
+        ],
+        checks: [
+          'מוחקת מה שאחרים פרסמו אחרי 24 שעות',
+          'מראה לי תוכן שמעניין אותי — גם כשלא ביקשתי',
+          'מראה לי מוצרים שאני עשוי לרצות לקנות',
+          'עוברת לסרטון הבא אוטומטית',
+          'שולחת לי התראה כשמישהו הגיב למה שפרסמתי',
+          'שולחת לי התראה כשמישהו שאני עוקב אחריו פרסם משהו',
+          'מראה לי כמה אנשים הגיבו, שיתפו, לחצו לייק',
+          'מייצרת תוכן חדש כל הזמן — אף פעם לא נגמרת',
+          'מהירה, צבעונית, ומגרה חזותית'
+        ],
+        videos: [
+          { title: 'למה גלילה בפלאפון היא ממכרת?', desc: '5 דק׳ | אינפוגרפיקות + הסבר על המוח | הכי ישיר לנושא', url: 'https://www.youtube.com/results?search_query=Why+scrolling+on+social+media+is+addictive', note: 'הפעל כתוביות עברית ב-YouTube' },
+          { title: 'ניסוי של 30 יום ללא פלאפון', desc: '6 דק׳ | אינפוגרפי | אפשר להראות רק את ההתחלה', url: 'https://www.youtube.com/results?search_query=I+Quit+My+Phone+30+Days+Brain', note: 'הפעל כתוביות עברית ב-YouTube' },
+          { title: '"אני מכור/ה לפלאפון" — בני נוער מדברים', desc: 'רגשי, פחות טכני | מתאים לכיתה שמגיבה לעדויות אישיות', url: 'https://www.youtube.com/results?search_query=teens+feel+addicted+smartphone', note: 'הפעל כתוביות עברית ב-YouTube' },
+          { title: 'למה גלילה גורמת לריקבון מוחי?', desc: 'What the actual science says about "brain rot"', url: 'https://www.youtube.com/results?search_query=brain+rot+actual+science+scrolling', note: 'הפעל כתוביות עברית ב-YouTube' }
+        ]
+      },
+      {
+        id: 's15', title: 'קשב דיגיטלי + נתוני ישראל', duration: 8, type: 'stats',
+        teacherNote: 'כאן נזכרים בממוצע שחישבנו בתחילת השיעור. הנתון הסטטיסטי הופך לאישי.',
+        stats: [
+          { num: '150 → 75 → 47', unit: 'שניות', label: 'זמן ממוצע של קשב רציף — מגמת ירידה מתמדת לפי נתוני מארק', bg: '#fef2f2', text: '#dc2626', border: '#fca5a5' },
+          { num: '400', unit: 'התראות ביום', label: 'ממוצע התראות יומי לבני נוער בישראל', bg: '#fffbeb', text: '#d97706', border: '#fbbf24' }
+        ]
+      },
+      {
+        id: 's16', title: 'סגירה', duration: 5, type: 'close_q',
+        question: 'מה הכי הפתיע אתכם בשיעור הזה?',
+        instructions: 'כל אחד ואחת אומרים מילה אחת או משפט קצר. המורה לא מגיבה ולא מסכמת. השיעור נגמר עם השאלה הזאת פתוחה.',
+        teacherNote: ''
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: 'שיעור 2',
+    subtitle: 'מה קורה לי, ומה קורה בעולם',
+    goal: 'לאפשר לתלמידים להתחבר לחוויה האישית שלהם עם הטלפון, ולהרחיב אותה לתמונה עולמית. הרפלקציה האישית מכינה אותם לשמוע את הסרטון אחרת, ומה שקורה בעולם נותן הקשר למה שהרגישו בעצמם.',
+    globalNote: '',
+    sections: [
+      {
+        id: 's21', title: 'רפלקציה אישית', duration: 10, type: 'reflection',
+        teacherNote: 'הרפלקציה מגיעה לפני הסרטון — חשוב! אחרי סרטון עם דמויות ומסרים, תלמידים נוטים להגיב לסרטון ולא לעצמם. הסדר הזה מבטיח שהשיח יוצא מהחוויה שלהם. מה שכתוב נשאר אצל התלמידים — המורה לא קוראת.',
+        intro: 'פתחו מחברת וכתבו. יש כאן חמש שאלות, אתם יכולים לבחור לענות על כולן או על חלק מהן. מה שכתוב נשאר אצלכם, אני לא אקרא.',
+        questions: [
+          'מתי הטלפון עוזר לך? מתי הוא מפריע?',
+          'יש רגע ביום שהיית מעדיף/ה שהטלפון לא היה שם? איזה רגע?',
+          'מה הדבר האחרון שעשית בטלפון אתמול לפני השינה?',
+          'אם הטלפון שלך היה נעלם לשבוע, מה היית מרגיש/ה?',
+          'יש משהו שאתה/את עושה בטלפון שאחר כך מרגיש/ה פחות טוב ממנו?'
+        ]
+      },
+      {
+        id: 's22', title: 'סרטון', duration: 8, type: 'video',
+        teacherNote: 'לצפות מראש ולבחור לפי הכיתה.',
+        videos: [
+          { title: 'מכינת מפנה × מהפכת הקשב', desc: 'בני נוער נשאלים על ההשפעה של הטלפון על שינה, ריכוז, תפקוד וחרדה', url: 'https://youtu.be/QkGRGeAhzmA', note: '' },
+          { title: 'TED Talk — Tanner Welton', desc: 'נער מדבר על התמכרות לטלפון מנקודת מבטו | הומורי, מתוך ניסיון אישי | באנגלית + כתוביות', url: 'https://www.ted.com/talks/tanner_welton_cell_phone_addiction', note: 'הפעל כתוביות עברית ב-YouTube' }
+        ]
+      },
+      {
+        id: 's23', title: 'שיח על הסרטון', duration: 12, type: 'open_q',
+        question: 'מה אתם אומרים על זה? מסכימים? מזדהים? או שהם/הוא מגזימים/מגזים?',
+        instructions: 'שאלה אחת בלבד — ואז נותנים לשיח לנשום.',
+        teacherNote: 'כלל קריטי: המורה לא מכוונת לתשובה נכונה, לא מנתחת ולא מסיקה מסקנות. ברגע שמנסחים מסקנות — הכיתה מפסיקה לדבר מהבטן.',
+        followUps: [
+          'מי שמתנגד: "ספר. למה לדעתך הם מגזימים?"',
+          'מי שמזדהה: "ספר. מה אצלך נראה דומה?"'
+        ]
+      },
+      {
+        id: 's24', title: 'מה קורה בעולם', duration: 15, type: 'world',
+        teacherNote: 'החלק הזה נותן הקשר: מה שהתלמידים חשו אינו סיפור פרטי שלהם. אפשר להקריא בעל פה, להדפיס ולחלק, או להקרין. לחצו על כל מדינה לחשיפת הפרטים.',
+        closing: 'בשיעור הבא נדבר על מה זה אומר כאן, אצלנו.',
+        examples: [
+          { country: '🇫🇷 צרפת', text: 'אסרה שימוש בטלפונים בבתי ספר כבר ב-2018. ב-2023 הרחיבה את האיסור גם להפסקות.' },
+          { country: '🇦🇺 אוסטרליה', text: 'הנהיגה מדיניות הגבלה בשנים האחרונות, בעקבות ממצאים על שיפור בריכוז ובקשרים חברתיים.' },
+          { country: '🇳🇱 הולנד', text: 'אסרה שימוש בטלפונים בבתי ספר ממניעי ריכוז ובריאות נפשית.' },
+          { country: '🇳🇿 ניו זילנד', text: 'נמדד שיפור משמעותי בריכוז ובאיכות היחסים החברתיים בין תלמידים לאחר ההגבלה.' },
+          { country: '🇺🇸 ארה"ב', text: 'אלפי בתי ספר עברו לכיסי נעילה (Yondr). בחלק מהם תלמידים דיווחו שלאחר שבועות לא רצו לחזור לשיטה הישנה.' },
+          { country: '🇮🇱 ישראל', text: 'משרד החינוך פרסם הנחיות להגבלה. תל אביב היא הרשות הראשונה שמובילה מהלך עירוני שיטתי של הוצאת טלפונים מכל התיכונים.' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: 'שיעור 3',
+    subtitle: 'מה קורה אצלנו',
+    goal: 'לתת לתלמידים מקום אמיתי להגיב על המהלך של הוצאת הטלפונים. לא לשכנע, לא להסביר, לא לטעון. לשמוע. ובסוף, לזרוע זרע אחד קטן.',
+    globalNote: 'חשוב להגיע מוכן/ת לשיעור הזה — לדעת כמה שיותר על: מתי בדיוק מתחילים, איפה הלוקרים, מה קורה בהפסקה הגדולה, מה עם חירום, מה קורה אם נתפסים.',
+    sections: [
+      {
+        id: 's31', title: 'פתיחה', duration: 3, type: 'text',
+        text: 'בשני השיעורים הקודמים דיברנו על מה קורה לנו עם הטלפונים, ועל מה שמדינות בעולם כבר עשו. היום אני רוצה לדבר על מה שהולך לקרות כאן, אצלנו.',
+        teacherNote: ''
+      },
+      {
+        id: 's32', title: 'סרטון רון חולדאי', duration: 4, type: 'video',
+        teacherNote: 'הסרטון נכנס בלי הקדמה ובלי הכנה. המורה לא מפרשת ולא מסכמת אחריו. עוברת ישירות לשיח.',
+        videos: [
+          { title: 'רון חולדאי — ראש עיריית תל אביב', desc: 'מסביר למה תל אביב בוחרת לעשות את המהלך הזה', url: 'https://www.tiktok.com/@drorgloberman/video/7473752317486042376', note: 'פתח ב-TikTok' }
+        ]
+      },
+      {
+        id: 's33', title: 'שיח: מה מפחיד ומה מעצבן', duration: 15, type: 'disc_board',
+        intro: 'הטלפונים עומדים לצאת. אני רוצה לדעת מה קשה לכם עם זה.',
+        teacherNote: 'כל מה שעולה נרשם, מילה במילה. המורה לא מתווכחת, לא מסבירה למה "זה בסדר", לא אומרת "אני מבינה אבל". תפקידה: לתעד ולהנהן. ברגע שהמורה מתחילה להגיב — הכיתה מפסיקה לדבר באמת.',
+        expected: 'מה צפוי לעלות: חשש מהחמצת שיחות • קושי עם קשר עם הורים • תחושה שזה לא הוגן • עצבים על ההחלטה • פחד ממשעמם בהפסקות • תחושה שסומכים עליהם פחות • טענה שאנחנו לא מבינים אותם. כל אלה לגיטימיים.',
+        columns: [
+          { label: 'מה מפחיד', cls: 'red-col' },
+          { label: 'מה מעצבן', cls: 'orange-col' }
+        ]
+      },
+      {
+        id: 's34', title: 'שיח: מה השאלות שלכם', duration: 10, type: 'q_board',
+        intro: 'ועכשיו — מה אתם רוצים לדעת? מה לא ברור לכם? שאלות לוגיסטיות, שאלות עקרוניות, כל שאלה.',
+        closing: 'את השאלות האלה אני לוקחת. חלקן אני יכולה לענות עליהן, חלקן אני צריכה לברר.',
+        teacherNote: 'המורה לא מבטיחה שינוי בהחלטה. היא מבטיחה שהשאלות נשמעות ומגיעות למקום. זה הרבה יותר כנה ויחזיק לאורך זמן.'
+      },
+      {
+        id: 's35', title: 'סגירה', duration: 10, type: 'close_prompts',
+        intro: 'הטלפונים יוצאים. ראינו נתונים וסיבות. זה גם שינוי גדול ולכולנו יש חששות. יש שאלה אחת שאני רוצה שכל אחד יחשוב עליה בראש — לא חייבים לענות בקול.',
+        question: 'האם יש דבר אחד טוב שעשוי לצאת מהמהלך הזה? האם יש סיכוי שכל אחד מאיתנו עשוי להרוויח משהו?',
+        prompts: [
+          'אולי יהיה קל יותר להתרכז בשיעורים שממש אוהבים',
+          'אולי שיחות בהפסקות יהיו קצת אחרות — יותר מצחיקות, פחות כשכולם בפלאפון',
+          'אולי פחות לחץ מהתראות ומה שמישהו כתב ולא ענו לו',
+          'אולי נהיה רגועים יותר — כי כולם מנותקים ביחד',
+          'אולי ההוכחה שהיינו צריכים שאנחנו מסוגלים לחיות שמונה שעות בלי זה',
+          'אולי פשוט לגלות מה קורה כשמנסים'
+        ],
+        closingLine: 'זה מהלך גדול ואנחנו ככיתה נעבור אותו ביחד. מזמינה אתכם לשתף אותי בכל חשש ושאלה — לא בטוחה שאדע לענות על הכל, אבל יש לזה מקום.',
+        teacherNote: 'עצם השאלה נזרעת גם בשקט. מי שרוצה לשתף — משתף. מי שלא — לא.'
+      }
+    ]
+  },
+  {
+    id: 4,
+    title: 'שיעור 4',
+    subtitle: 'איך זה נראה במציאות',
+    goal: 'לעבור מהשיח אל הפרקטיקה. לא לשכנע — זה נעשה בשיעורים הקודמים. לתת מידע ברור, לאפשר שאלות אמיתיות, לתת לתלמידים חוויה קצרה בגוף — ולסיים עם תחושת "אני יודע מה עומד לקרות."',
+    globalNote: 'תנאי מוקדם: המחנכת מגיעה לשיעור הזה מוכנה יותר מכל שיעור אחר. חייבים לדעת לענות על: מתי בדיוק מתחילים, איפה הלוקרים, מה קורה בהפסקה הגדולה, מה עם קפיטריה, מה עם חירום, מה קורה אם נתפסים.',
+    sections: [
+      {
+        id: 's41', title: 'פתיחה — סרטון', duration: 5, type: 'video',
+        teacherNote: 'מציגים רק דקה וחצי ראשונות — את החלק שמתאר את הקשיים ה"התמכרותיים".',
+        videos: [
+          { title: 'ניסוי של 30 יום ללא פלאפון — 1.5 הדקות הראשונות', desc: 'מתאר את כל הקשיים "ההתמכרותיים" בתחילת הניסוי', url: 'https://www.youtube.com/results?search_query=I+Quit+My+Phone+30+Days+Brain', note: 'הראה רק דקה וחצי ראשונות' }
+        ]
+      },
+      {
+        id: 's42', title: 'חזרה מהשיעור הקודם', duration: 5, type: 'text',
+        text: 'בשיעור הקודם כתבנו על הלוח — מה מפחיד, מה מעצבן, ומה השאלות שלכם. אמרתי שאני לוקחת את השאלות. היום ננסה לענות על חלקן.',
+        teacherNote: 'לא לפתוח דיון מחדש — רק להזכיר שנשמעו, ולעבור לתקנון.'
+      },
+      {
+        id: 's43', title: 'תקנון דרך עיניהם', duration: 15, type: 'policy',
+        teacherNote: 'להגיע מוכן/ת עם תשובות ברורות לפי הנושאים שעלו בשיעור הקודם. עדכנו את התשובות בשדות למטה לפני השיעור.',
+        topics: [
+          { q: 'מתי בדיוק מתחילים?', a: '' },
+          { q: 'איפה יאוחסנו הטלפונים?', a: '' },
+          { q: 'מה קורה בהפסקה הגדולה?', a: '' },
+          { q: 'מה עם הקפיטריה?', a: '' },
+          { q: 'מה עם מצב חירום?', a: '' },
+          { q: 'מה קורה אם נתפסים עם הטלפון?', a: '' },
+          { q: 'קשר עם הורים — איך ניתן לפנות?', a: '' }
+        ]
+      },
+      {
+        id: 's44', title: 'שאלות פתוחות', duration: 5, type: 'q_board',
+        intro: 'מה עדיין לא ברור? מה עדיין לא ענינו עליו?',
+        closing: 'אברר ואחזור.',
+        teacherNote: ''
+      },
+      {
+        id: 's45', title: 'התנסות: 10 דקות בלי טלפון', duration: 10, type: 'experience',
+        teacherNote: 'זה לא מבחן. זו חוויה. המטרה היא שיידעו איך זה מרגיש — ושיוכלו לדבר על זה.',
+        instruction: 'עכשיו אנחנו נחיה 10 דקות כמו שזה יהיה. טלפונים בצד.',
+        options: [
+          'שיחה חופשית בקבוצות קטנות',
+          'כתיבה חופשית על ניירות',
+          'פעילות יצירתית קצרה',
+          'שקט ותצפית בכיתה'
+        ]
+      },
+      {
+        id: 's46', title: 'סגירה', duration: 5, type: 'close_q',
+        question: 'משפט אחד — איך היו ה-10 הדקות האלה?',
+        instructions: 'כל אחד אומר משפט אחד. המורה מקשיבה ולא מגיבה.',
+        teacherNote: ''
+      }
+    ]
+  }
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+
+const S = {
+  lesson: 0,
+  section: 0,
+  showNotes: true,
+  timer: { secs: 0, total: 0, running: false, iv: null },
+  checks: {},
+  worlds: {},
+  boards: {}
+};
+
+// ── TIMER ─────────────────────────────────────────────────────────────────────
+
+function timerStart(mins) {
+  clearInterval(S.timer.iv);
+  if (!S.timer.running || S.timer.total !== mins * 60) {
+    S.timer.secs = mins * 60;
+    S.timer.total = mins * 60;
+  }
+  S.timer.running = true;
+  S.timer.iv = setInterval(() => {
+    if (S.timer.secs > 0) { S.timer.secs--; timerUpdate(); }
+    else { clearInterval(S.timer.iv); S.timer.running = false; timerBeep(); }
+  }, 1000);
+  timerUpdate();
+}
+function timerPause() {
+  clearInterval(S.timer.iv); S.timer.running = false; timerUpdate();
+}
+function timerReset(mins) {
+  clearInterval(S.timer.iv); S.timer.running = false;
+  S.timer.secs = mins * 60; S.timer.total = mins * 60; timerUpdate();
+}
+function timerBeep() {
+  try {
+    const c = new AudioContext(), o = c.createOscillator(), g = c.createGain();
+    o.connect(g); g.connect(c.destination);
+    o.frequency.value = 880; g.gain.setValueAtTime(0.3, c.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.6);
+    o.start(c.currentTime); o.stop(c.currentTime + 0.6);
+  } catch(e) {}
+}
+function timerUpdate() {
+  const el = document.getElementById('timerDisp');
+  if (!el) return;
+  const m = String(Math.floor(S.timer.secs / 60)).padStart(2,'0');
+  const s = String(S.timer.secs % 60).padStart(2,'0');
+  el.textContent = `${m}:${s}`;
+  el.className = 'timer-display' + (S.timer.secs <= 30 && S.timer.secs > 0 ? ' danger' : S.timer.secs <= 60 ? ' warning' : '');
+  const pb = document.getElementById('timerPB');
+  if (pb && S.timer.total > 0) pb.style.width = ((1 - S.timer.secs / S.timer.total) * 100) + '%';
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+
+function goLesson(i) { S.lesson = i; S.section = 0; resetToSection(); render(); }
+function goSection(i) { S.section = i; resetToSection(); render(); }
+function resetToSection() { const d = cur().duration; timerReset(d); }
+function nextSec() {
+  const L = LESSONS[S.lesson];
+  if (S.section < L.sections.length - 1) S.section++;
+  else if (S.lesson < LESSONS.length - 1) { S.lesson++; S.section = 0; }
+  resetToSection(); render();
+}
+function prevSec() {
+  if (S.section > 0) S.section--;
+  else if (S.lesson > 0) { S.lesson--; S.section = LESSONS[S.lesson].sections.length - 1; }
+  resetToSection(); render();
+}
+function cur() { return LESSONS[S.lesson].sections[S.section]; }
+function isFirst() { return S.lesson === 0 && S.section === 0; }
+function isLast() {
+  return S.lesson === LESSONS.length - 1 && S.section === LESSONS[S.lesson].sections.length - 1;
+}
+
+// ── NOTES TOGGLE ─────────────────────────────────────────────────────────────
+
+function toggleNotes() {
+  S.showNotes = !S.showNotes;
+  document.getElementById('toggleNotesBtn').textContent = S.showNotes ? '📝 הסתר הנחיות מורה' : '📝 הצג הנחיות מורה';
+  document.querySelectorAll('.tn-wrap').forEach(el => el.style.display = S.showNotes ? '' : 'none');
+}
+
+// ── NOTIFICATION COUNTER ──────────────────────────────────────────────────────
+
+function notifUpdate() {
+  const vals = [];
+  document.querySelectorAll('.notif-n').forEach(inp => {
+    const v = parseInt(inp.value);
+    if (!isNaN(v) && v >= 0) vals.push(v);
+  });
+  const avgEl = document.getElementById('notifAvg');
+  const cntEl = document.getElementById('notifCnt');
+  if (avgEl) avgEl.textContent = vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : '—';
+  if (cntEl) cntEl.textContent = vals.length + ' תלמידים';
+}
+
+// ── CHECKLIST ─────────────────────────────────────────────────────────────────
+
+function toggleCheck(sid, i) {
+  const k = sid + '_' + i;
+  S.checks[k] = !S.checks[k];
+  const el = document.querySelector(`[data-ck="${k}"]`);
+  if (el) { el.classList.toggle('checked', S.checks[k]); el.querySelector('.checklist-cb').textContent = S.checks[k] ? '✓' : ''; }
+}
+
+// ── WORLD CARDS ───────────────────────────────────────────────────────────────
+
+function toggleWorld(sid, i) {
+  const k = sid + '_' + i;
+  S.worlds[k] = !S.worlds[k];
+  renderWorldCard(sid, i);
+}
+function renderWorldCard(sid, i) {
+  const k = sid + '_' + i;
+  const el = document.querySelector(`[data-wk="${k}"]`);
+  if (!el) return;
+  const sec = LESSONS.flatMap(l=>l.sections).find(s=>s.id===sid);
+  if (!sec) return;
+  const e = sec.examples[i];
+  el.className = 'world-card' + (S.worlds[k] ? ' revealed' : '');
+  el.innerHTML = `<div class="world-card-country">${e.country}</div>${S.worlds[k] ? `<div class="world-card-text">${e.text}</div>` : '<div class="world-card-hint">לחצו לחשיפה</div>'}`;
+}
+
+// ── DISCUSSION BOARDS ─────────────────────────────────────────────────────────
+
+function addEntry(bid, col) {
+  const inp = document.getElementById(`dinp_${bid}_${col}`);
+  if (!inp || !inp.value.trim()) return;
+  const txt = inp.value.trim(); inp.value = '';
+  const k = bid + '_' + col;
+  if (!S.boards[k]) S.boards[k] = [];
+  S.boards[k].push(txt);
+  const list = document.getElementById(`dlist_${bid}_${col}`);
+  if (list) {
+    const idx = S.boards[k].length - 1;
+    const d = document.createElement('div');
+    d.className = 'disc-entry';
+    d.innerHTML = `<span>${txt}</span><button class="disc-entry-del" onclick="delEntry('${bid}',${col},${idx},this)">✕</button>`;
+    list.appendChild(d); list.scrollTop = list.scrollHeight;
+  }
+}
+function delEntry(bid, col, idx, btn) {
+  const k = bid + '_' + col;
+  if (S.boards[k]) S.boards[k].splice(idx, 1);
+  btn.closest('.disc-entry').remove();
+}
+
+// ── RENDER HELPERS ────────────────────────────────────────────────────────────
+
+function tn(note) {
+  if (!note) return '';
+  return `<div class="tn-wrap" style="${S.showNotes?'':'display:none'}"><div class="teacher-note"><div class="teacher-note-header">📝 הנחיות למורה</div>${note}</div></div>`;
+}
+
+function timerHtml(dur) {
+  const m = String(Math.floor(S.timer.secs/60)).padStart(2,'0');
+  const s = String(S.timer.secs%60).padStart(2,'0');
+  const pct = S.timer.total ? (1 - S.timer.secs/S.timer.total)*100 : 0;
+  return `<div class="timer-widget">
+    <div>
+      <div id="timerDisp" class="timer-display">${m}:${s}</div>
+      <div class="progress-bar" style="width:180px;margin-top:4px"><div id="timerPB" class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="timer-btn timer-btn-start" onclick="timerStart(${dur})">▶ התחל</button>
+      <button class="timer-btn timer-btn-pause" onclick="timerPause()">⏸ עצור</button>
+      <button class="timer-btn timer-btn-reset" onclick="timerReset(${dur})">↺ איפוס</button>
+    </div>
+    <div style="font-size:12px;color:var(--gray-500)">${dur} דקות</div>
+  </div>`;
+}
+
+function videosHtml(videos) {
+  return videos.map(v => `
+    <a href="${v.url}" target="_blank" class="video-card">
+      <div style="flex:1">
+        <div class="video-card-title">${v.title}</div>
+        <div class="video-card-desc">${v.desc}</div>
+        ${v.note ? `<div class="video-card-note">⚠️ ${v.note}</div>` : ''}
+      </div>
+      <div class="video-play">▶</div>
+    </a>`).join('');
+}
+
+function discColHtml(sec, col) {
+  const entries = (S.boards[`${sec.id}_${col.i}`] || [])
+    .map((e,i) => `<div class="disc-entry"><span>${e}</span><button class="disc-entry-del" onclick="delEntry('${sec.id}',${col.i},${i},this)">✕</button></div>`)
+    .join('');
+  return `<div class="disc-col ${col.cls||''}">
+    <div class="disc-col-header">${col.label}</div>
+    <div class="disc-entries" id="dlist_${sec.id}_${col.i}">${entries}</div>
+    <div class="disc-input-row">
+      <input type="text" id="dinp_${sec.id}_${col.i}" class="disc-input" placeholder="הוסף..."
+             onkeydown="if(event.key==='Enter')addEntry('${sec.id}',${col.i})">
+      <button class="disc-add-btn" onclick="addEntry('${sec.id}',${col.i})">+</button>
+    </div>
+  </div>`;
+}
+
+// ── SECTION RENDERERS ─────────────────────────────────────────────────────────
+
+function renderSection(sec) {
+  switch(sec.type) {
+    case 'open_q':      return renderOpenQ(sec);
+    case 'counter':     return renderCounter(sec);
+    case 'factors':     return renderFactors(sec);
+    case 'checklist_video': return renderChecklistVideo(sec);
+    case 'stats':       return renderStats(sec);
+    case 'close_q':     return renderCloseQ(sec);
+    case 'reflection':  return renderReflection(sec);
+    case 'video':       return renderVideo(sec);
+    case 'world':       return renderWorld(sec);
+    case 'text':        return renderText(sec);
+    case 'disc_board':  return renderDiscBoard(sec);
+    case 'q_board':     return renderQBoard(sec);
+    case 'close_prompts': return renderClosePrompts(sec);
+    case 'policy':      return renderPolicy(sec);
+    case 'experience':  return renderExperience(sec);
+    default: return `<div class="content-body"><pre>${JSON.stringify(sec,null,2)}</pre></div>`;
+  }
+}
+
+function renderOpenQ(sec) {
+  const followUps = sec.followUps ? `<div class="content-section"><div class="content-section-title">תגובות מנחות</div><div class="step-list">${sec.followUps.map(f=>`<div class="step-item"><div class="step-text">${f}</div></div>`).join('')}</div></div>` : '';
+  return `<div class="content-body">
+    <div class="content-section"><div class="question-card">${sec.question}</div></div>
+    ${sec.instructions ? `<div class="content-section"><div class="info-card">${sec.instructions}</div></div>` : ''}
+    ${followUps}
+    ${tn(sec.teacherNote)}
+  </div>`;
+}
+
+function renderCounter(sec) {
+  const inputs = Array.from({length:35},()=>`<input type="number" class="notif-input notif-n" placeholder="—" min="0" max="9999" oninput="notifUpdate()">`).join('');
+  return `<div class="content-body">
+    <div class="content-section">
+      <div class="content-section-title">הוראות לכיתה</div>
+      <div class="step-list">
+        <div class="step-item"><div class="step-num">1</div><div class="step-text">כל תלמיד מוציא טלפון ובודק: <strong>כמה התראות קיבל אתמול לאורך כל היום?</strong> (כל סוגי ההתראות)</div></div>
+        <div class="step-item"><div class="step-num">2</div><div class="step-text">כותב את המספר על פתק (אפשר ללא שם) ומוסר למורה</div></div>
+        <div class="step-item"><div class="step-num">3</div><div class="step-text">המורה מזינה את המספרים כאן — הממוצע מוצג על המסך בזמן אמת</div></div>
+      </div>
+    </div>
+    <div class="content-section">
+      <div class="content-section-title">כלי ספירת התראות — הכנס את המספרים</div>
+      <div class="notification-tool">
+        <div class="notif-input-grid">${inputs}</div>
+        <div class="notif-avg-grid">
+          <div class="notif-avg-box" style="background:var(--blue)"><div class="notif-avg-num" id="notifAvg">—</div><div class="notif-avg-label">ממוצע התראות ביום</div></div>
+          <div class="notif-avg-box" style="background:var(--green)"><div class="notif-avg-num" id="notifCnt">0 תלמידים</div><div class="notif-avg-label">השתתפו בפעילות</div></div>
+        </div>
+      </div>
+    </div>
+    ${tn(sec.teacherNote)}
+  </div>`;
+}
+
+function renderFactors(sec) {
+  const cards = sec.factors.map(f => `
+    <div class="factor-card" style="border-right-color:${f.color}">
+      <div class="factor-icon">${f.icon}</div>
+      <div class="factor-title" style="color:${f.color}">${f.title}</div>
+      <div class="factor-text">${f.text}</div>
+    </div>`).join('');
+  return `<div class="content-body">
+    <div class="content-section">
+      <div class="content-section-title">שלושת הגורמים העיקריים</div>
+      <div class="factor-grid">${cards}</div>
+    </div>
+    ${tn(sec.teacherNote)}
+  </div>`;
+}
+
+function renderChecklistVideo(sec) {
+  const steps = sec.steps.map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`).join('');
+  const items = sec.checks.map((c,i)=>{
+    const k = sec.id+'_'+i, chk = S.checks[k];
+    return `<div class="checklist-item ${chk?'checked':''}" data-ck="${k}" onclick="toggleCheck('${sec.id}',${i})"><div class="checklist-cb">${chk?'✓':''}</div><div class="checklist-label">${c}</div></div>`;
+  }).join('');
+  return `<div class="content-body">
+    <div class="content-section"><div class="content-section-title">שלבי הפעילות</div><div class="step-list">${steps}</div></div>
+    <div class="content-section">
+      <div class="content-section-title">שקף ההיגדים — סמנו כל היגד רלוונטי לאפליקציה שבחרתם</div>
+      <div class="checklist">${items}</div>
+    </div>
+    <div class="content-section"><div class="content-section-title">סרטונים לבחירה</div>${videosHtml(sec.videos)}</div>
+    ${tn(sec.teacherNote)}
+  </div>`;
+}
+
+function renderStats(sec) {
+  const boxes = sec.stats.map(s=>`
+    <div class="stat-box" style="background:${s.bg};border:2px solid ${s.border}">
+      <div class="stat-num" style="color:${s.text}">${s.num}</div>
+      ${s.unit ? `<div class="stat-unit" style="color:${s.text}">${s.unit}</div>` : ''}
+      <div class="stat-label">${s.label}</div>
+    </div>`).join('');
+  return `<div class="content-body">
+    <div class="stat-grid">${boxes}</div>
+    ${tn(sec.teacherNote)}
+  </div>`;
+}
+
+function renderCloseQ(sec) {
+  return `<div class="content-body">
+    <div class="content-section"><div class="question-card" style="font-size:24px;padding:30px">${sec.question}</div></div>
+    <div class="content-section"><div class="info-card">${sec.instructions}</div></div>
+    ${tn(sec.teacherNote)}
+  </div>`;
+}
+
+function renderReflection(sec) {
+  const qs = sec.questions.map((q,i)=>`<div class="reflection-q"><div class="reflection-q-num">${i+1}</div><div>${q}</div></div>`).join('');
+  return `<div class="content-body">
+    <div class="content-section"><div class="question-card" style="background:var(--purple-light);border-color:#c4b5fd;font-size:16px">${sec.intro}</div></div>
+    <div class="content-section">
+      <div class="content-section-title">שאלות לכתיבה: מערכת היחסים שלי עם הטלפון</div>
+      <div style="display:flex;flex-direction:column;gap:8px">${qs}</div>
+    </div>
+    ${tn(sec.teacherNote)}
+  </div>`;
+}
+
+function renderVideo(sec) {
+  return `<div class="content-body">
+    <div class="content-section"><div class="content-section-title">סרטונים לבחירה</div>${videosHtml(sec.videos)}</div>
+    ${tn(sec.teacherNote)}
+  </div>`;
+}
+
+function renderWorld(sec) {
+  const cards = sec.examples.map((e,i)=>{
+    const k = sec.id+'_'+i, rev = S.worlds[k];
+    return `<div class="world-card ${rev?'revealed':''}" data-wk="${k}" onclick="toggleWorld('${sec.id}',${i})"><div class="world-card-country">${e.country}</div>${rev?`<div class="world-card-text">${e.text}</div>`:'<div class="world-card-hint">לחצו לחשיפה</div>'}</div>`;
+  }).join('');
+  return `<div class="content-body">
+    <div class="content-section">
+      <div class="content-section-title">מדינות שפעלו — לחצו על כל מדינה לחשיפת הפרטים</div>
+      <div class="world-grid">${cards}</div>
+    </div>
+    ${sec.closing ? `<div class="highlight-box" style="background:var(--green-light);border:1px solid #6ee7b7;color:#166534;margin-top:16px">${sec.closing}</div>` : ''}
+    ${tn(sec.teacherNote)}
+  </div>`;
+}
+
+function renderText(sec) {
+  return `<div class="content-body">
+    <div class="question-card" style="font-size:20px;line-height:1.8;padding:30px">${sec.text}</div>
+    ${tn(sec.teacherNote)}
+  </div>`;
+}
+
+function renderDiscBoard(sec) {
+  const cols = sec.columns.map((col,i)=>discColHtml(sec, {...col, i})).join('');
+  return `<div class="content-body">
+    <div class="content-section"><div class="question-card" style="font-size:18px">${sec.intro}</div></div>
+    <div class="content-section"><div class="disc-board">${cols}</div></div>
+    ${sec.expected ? `<div class="tn-wrap" style="${S.showNotes?'':'display:none'}"><div class="teacher-note"><div class="teacher-note-header">📋 מה צפוי לעלות</div>${sec.expected}</div></div>` : ''}
+    ${tn(sec.teacherNote)}
+  </div>`;
+}
+
+function renderQBoard(sec) {
+  const entries = (S.boards[`${sec.id}_0`]||[])
+    .map((e,i)=>`<div class="disc-entry"><span>${e}</span><button class="disc-entry-del" onclick="delEntry('${sec.id}',0,${i},this)">✕</button></div>`)
+    .join('');
+  return `<div class="content-body">
+    <div class="content-section"><div class="question-card" style="background:var(--purple-light);border-color:#c4b5fd;font-size:18px">${sec.intro}</div></div>
+    <div class="content-section">
+      <div class="disc-col purple-col">
+        <div class="disc-col-header">שאלות הכיתה</div>
+        <div class="disc-entries" id="dlist_${sec.id}_0">${entries}</div>
+        <div class="disc-input-row">
+          <input type="text" id="dinp_${sec.id}_0" class="disc-input" placeholder="הוסף שאלה..."
+                 onkeydown="if(event.key==='Enter')addEntry('${sec.id}',0)">
+          <button class="disc-add-btn" onclick="addEntry('${sec.id}',0)">+</button>
+        </div>
+      </div>
+    </div>
+    ${sec.closing ? `<div class="info-card" style="margin-top:12px">${sec.closing}</div>` : ''}
+    ${tn(sec.teacherNote)}
+  </div>`;
+}
+
+function renderClosePrompts(sec) {
+  const prompts = sec.prompts.map(p=>`<div class="closing-prompt">${p}</div>`).join('');
+  return `<div class="content-body">
+    <div class="content-section"><div class="info-card">${sec.intro}</div></div>
+    <div class="content-section"><div class="question-card" style="font-size:20px">${sec.question}</div></div>
+    <div class="content-section">
+      <div class="content-section-title">כיוונים לפתיחת שיח</div>
+      <div class="closing-prompts">${prompts}</div>
+    </div>
+    <div class="highlight-box" style="background:var(--green-light);border:1px solid #6ee7b7;color:#166534">${sec.closingLine}</div>
+    ${tn(sec.teacherNote)}
+  </div>`;
+}
+
+function renderPolicy(sec) {
+  const topics = sec.topics.map((t,i)=>`
+    <div class="policy-item">
+      <div class="policy-q">❓ ${t.q}</div>
+      <div class="policy-a" contenteditable="true" data-placeholder="השלם תשובה...">${t.a}</div>
+    </div>`).join('');
+  return `<div class="content-body">
+    ${tn(sec.teacherNote)}
+    <div class="content-section">
+      <div class="content-section-title">נושאים מהתקנון — ניתן לערוך את התשובות ישירות</div>
+      <div style="display:flex;flex-direction:column;gap:10px">${topics}</div>
+    </div>
+  </div>`;
+}
+
+function renderExperience(sec) {
+  const opts = sec.options.map(o=>`<div class="closing-prompt">${o}</div>`).join('');
+  return `<div class="content-body">
+    <div class="content-section"><div class="question-card" style="font-size:22px;padding:30px">${sec.instruction}</div></div>
+    <div class="content-section">
+      <div class="content-section-title">אפשרויות לפעילות</div>
+      <div class="closing-prompts">${opts}</div>
+    </div>
+    <div style="background:var(--red-light);border:2px solid #fca5a5;border-radius:12px;padding:20px;margin-top:4px">
+      <div style="font-size:13px;color:var(--gray-500);margin-bottom:10px">טיימר לפעילות — 10 דקות בלי טלפון</div>
+      ${timerHtml(10)}
+    </div>
+    ${tn(sec.teacherNote)}
+  </div>`;
+}
+
+// ── MAIN RENDER ───────────────────────────────────────────────────────────────
+
+function render() {
+  const lesson = LESSONS[S.lesson];
+  const sec = cur();
+
+  // Tabs
+  document.getElementById('lessonTabs').innerHTML = LESSONS.map((l,i)=>
+    `<div class="lesson-tab ${i===S.lesson?'active':''}" onclick="goLesson(${i})">${l.title}: ${l.subtitle}</div>`
+  ).join('');
+
+  // Goal
+  document.getElementById('lessonGoal').innerHTML = `<strong>מטרת השיעור:</strong> ${lesson.goal}`;
+
+  // Section list
+  const totalDur = lesson.sections.reduce((a,s)=>a+s.duration,0);
+  const elapsed = lesson.sections.slice(0,S.section).reduce((a,s)=>a+s.duration,0);
+  const progress = Math.round(elapsed/totalDur*100);
+
+  document.getElementById('sectionList').innerHTML = `
+    <div class="section-list-header">חלקי השיעור</div>
+    ${lesson.sections.map((s,i)=>`
+      <div class="section-item ${i===S.section?'active':''}" onclick="goSection(${i})">
+        <div class="section-item-num">${i+1}</div>
+        <div><div class="section-item-title">${s.title}</div><div class="section-item-duration">${s.duration} דקות</div></div>
+      </div>`).join('')}
+    ${lesson.globalNote ? `<div class="tn-wrap" style="${S.showNotes?'':'display:none'};padding:12px"><div class="teacher-note" style="font-size:12px"><div class="teacher-note-header">📝 הנחיות כלליות לשיעור</div>${lesson.globalNote}</div></div>` : ''}
+  `;
+
+  // Main content
+  document.getElementById('mainContent').innerHTML = `
+    <div class="section-card">
+      <div class="section-header">
+        <div>
+          <div class="section-title">${sec.title}</div>
+          <div style="font-size:12px;color:var(--gray-500);margin-top:3px">חלק ${S.section+1} מתוך ${lesson.sections.length} | ${progress}% מהשיעור עבר</div>
+        </div>
+        <div class="section-badge">${sec.duration} דקות</div>
+      </div>
+      <div style="padding:14px 22px 0">
+        ${timerHtml(sec.duration)}
+        <div class="progress-bar" style="margin-top:10px">
+          <div class="progress-fill" style="width:${progress}%;background:var(--green)"></div>
+        </div>
+      </div>
+      ${renderSection(sec)}
+      <div class="nav-buttons">
+        <button class="nav-btn" onclick="prevSec()" ${isFirst()?'disabled':''}>← חלק קודם</button>
+        <span style="font-size:13px;color:var(--gray-500)">${S.section+1} / ${lesson.sections.length}</span>
+        <button class="nav-btn nav-btn-next" onclick="nextSec()" ${isLast()?'disabled':''}>חלק הבא →</button>
+      </div>
+    </div>
+  `;
+
+  timerUpdate();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+S.timer.secs = LESSONS[0].sections[0].duration * 60;
+S.timer.total = S.timer.secs;
+render();
+</script>
+</body>
+</html>
