@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Activity, TrendingUp, Zap, Server, Globe, MessageSquare, Send, X, BarChart2, PieChart, Activity as ActivityIcon, LineChart as LineChartIcon, Sun, Moon, Play, Pause, Info } from 'lucide-react';
+import { Activity, TrendingUp, Zap, Server, Globe, MessageSquare, Send, X, BarChart2, PieChart, Activity as ActivityIcon, LineChart as LineChartIcon, Sun, Moon, Play, Pause, Info, FileText } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceDot, CartesianGrid } from 'recharts';
 import './index.css';
 
@@ -91,7 +91,17 @@ const translations = {
     event: "אירוע מרכזי",
     podcastTitle: "הדופק של השוק",
     nextBroadcast: "השידור הבא בעוד:",
-    archive: "ארכיון מהדורות (48 שעות)"
+    archive: "ארכיון מהדורות (48 שעות)",
+    subtitleTool: "תרגום כתוביות",
+    subtitleUpload: "העלה קובץ SRT באנגלית",
+    subtitleLayout: "פורמט פלט",
+    subtitleLayoutBilingual: "דו-לשוני (עברית מתחת)",
+    subtitleLayoutHeOnly: "עברית בלבד",
+    subtitleTranslate: "תרגם",
+    subtitleTranslating: "מתרגם...",
+    subtitleDownload: "הורד SRT מתורגם",
+    subtitleError: "שגיאה בתרגום. נסה שנית.",
+    subtitleDone: "הכתוביות מוכנות!"
   },
   en: {
     title: "ALPHA TERMINAL",
@@ -117,7 +127,17 @@ const translations = {
     event: "Key Event",
     podcastTitle: "The Pulse of the Market",
     nextBroadcast: "Next broadcast in:",
-    archive: "Edition Archive (48 Hours)"
+    archive: "Edition Archive (48 Hours)",
+    subtitleTool: "Subtitle Translator",
+    subtitleUpload: "Upload English SRT file",
+    subtitleLayout: "Output format",
+    subtitleLayoutBilingual: "Bilingual (Hebrew below)",
+    subtitleLayoutHeOnly: "Hebrew only",
+    subtitleTranslate: "Translate",
+    subtitleTranslating: "Translating...",
+    subtitleDownload: "Download Translated SRT",
+    subtitleError: "Translation error. Please try again.",
+    subtitleDone: "Subtitles are ready!"
   }
 };
 
@@ -201,6 +221,15 @@ function App() {
 
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [selectedStock, setSelectedStock] = useState<ScreenerResult | null>(null);
+
+  // Subtitle translator state
+  const [subtitleOpen, setSubtitleOpen] = useState(false);
+  const [subtitleFile, setSubtitleFile] = useState<File | null>(null);
+  const [subtitleLayout, setSubtitleLayout] = useState<'he_below' | 'he_only'>('he_below');
+  const [subtitleLoading, setSubtitleLoading] = useState(false);
+  const [subtitleResult, setSubtitleResult] = useState<string | null>(null);
+  const [subtitleError, setSubtitleError] = useState<string | null>(null);
+  const subtitleFileRef = useRef<HTMLInputElement>(null);
 
   // Audio Player State
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -414,6 +443,39 @@ function App() {
     }
   };
 
+  const handleSubtitleTranslate = async () => {
+    if (!subtitleFile) return;
+    setSubtitleLoading(true);
+    setSubtitleError(null);
+    setSubtitleResult(null);
+    try {
+      const form = new FormData();
+      form.append('file', subtitleFile);
+      form.append('layout', subtitleLayout);
+      form.append('output', 'bilingual');
+      const res = await axios.post('/api/subtitles/translate', form, {
+        responseType: 'text',
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setSubtitleResult(res.data as string);
+    } catch {
+      setSubtitleError(t.subtitleError);
+    } finally {
+      setSubtitleLoading(false);
+    }
+  };
+
+  const handleSubtitleDownload = () => {
+    if (!subtitleResult || !subtitleFile) return;
+    const blob = new Blob([subtitleResult], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = subtitleFile.name.replace('.srt', '_bilingual.srt');
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const [selectedThesis, setSelectedThesis] = useState<InvestmentThesis | null>(null);
   const [thesisModalOpen, setThesisModalOpen] = useState(false);
   const [thesisLoading, setThesisLoading] = useState(false);
@@ -457,6 +519,9 @@ function App() {
         </button>
         <button className="lang-btn-modern" onClick={toggleLang}>
           <Globe size={16} /> <span>{t.langToggle}</span>
+        </button>
+        <button className="lang-btn-modern" onClick={() => { setSubtitleOpen(true); setSubtitleResult(null); setSubtitleError(null); }} title={t.subtitleTool}>
+          <FileText size={16} /> <span style={{ fontSize: '0.75rem' }}>{t.subtitleTool}</span>
         </button>
       </div>
 
@@ -903,6 +968,89 @@ function App() {
               ) : (
                 <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--danger)' }}>
                   {lang === 'he' ? 'שגיאה בטעינת הנתונים.' : 'Error loading thesis data.'}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Subtitle Translator Modal */}
+      {subtitleOpen && (
+        <div className="modal-backdrop" onClick={() => setSubtitleOpen(false)}>
+          <div className="modal-content thesis-popup" style={{ maxWidth: '500px', direction: lang === 'he' ? 'rtl' : 'ltr' }} onClick={e => e.stopPropagation()}>
+            <div className="thesis-popup-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <FileText size={18} /> {t.subtitleTool}
+              </span>
+              <button className="modal-close-btn" onClick={() => setSubtitleOpen(false)}><X size={18} /></button>
+            </div>
+
+            <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+              {/* File picker */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  {t.subtitleUpload}
+                </label>
+                <input
+                  ref={subtitleFileRef}
+                  type="file"
+                  accept=".srt"
+                  style={{ display: 'none' }}
+                  onChange={e => { setSubtitleFile(e.target.files?.[0] ?? null); setSubtitleResult(null); setSubtitleError(null); }}
+                />
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                  <button className="lang-btn-modern" onClick={() => subtitleFileRef.current?.click()} style={{ flex: 'none' }}>
+                    {subtitleFile ? subtitleFile.name : '+ SRT'}
+                  </button>
+                  {subtitleFile && <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>{(subtitleFile.size / 1024).toFixed(1)} KB</span>}
+                </div>
+              </div>
+
+              {/* Layout selector */}
+              <div>
+                <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  {t.subtitleLayout}
+                </label>
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  {(['he_below', 'he_only'] as const).map(opt => (
+                    <button
+                      key={opt}
+                      onClick={() => setSubtitleLayout(opt)}
+                      className="lang-btn-modern"
+                      style={{ background: subtitleLayout === opt ? 'var(--accent)' : undefined, color: subtitleLayout === opt ? '#000' : undefined }}
+                    >
+                      {opt === 'he_below' ? t.subtitleLayoutBilingual : t.subtitleLayoutHeOnly}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Translate button */}
+              <button
+                className="lang-btn-modern"
+                disabled={!subtitleFile || subtitleLoading}
+                onClick={handleSubtitleTranslate}
+                style={{ fontWeight: 700, padding: '0.65rem 1.5rem', opacity: (!subtitleFile || subtitleLoading) ? 0.5 : 1 }}
+              >
+                {subtitleLoading ? t.subtitleTranslating : t.subtitleTranslate}
+              </button>
+
+              {/* Error */}
+              {subtitleError && (
+                <div style={{ color: 'var(--danger)', fontSize: '0.9rem' }}>{subtitleError}</div>
+              )}
+
+              {/* Success + download */}
+              {subtitleResult && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <div style={{ color: 'var(--accent)', fontWeight: 600 }}>{t.subtitleDone}</div>
+                  <button className="lang-btn-modern" onClick={handleSubtitleDownload} style={{ fontWeight: 700 }}>
+                    ⬇ {t.subtitleDownload}
+                  </button>
+                  <pre style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '6px', padding: '0.75rem', fontSize: '0.75rem', maxHeight: '200px', overflowY: 'auto', whiteSpace: 'pre-wrap', color: 'var(--text-main)' }}>
+                    {subtitleResult.slice(0, 800)}{subtitleResult.length > 800 ? '\n...' : ''}
+                  </pre>
                 </div>
               )}
             </div>

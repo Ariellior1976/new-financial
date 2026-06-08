@@ -1,8 +1,10 @@
-from fastapi import FastAPI, BackgroundTasks
+from fastapi import FastAPI, BackgroundTasks, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 import sqlite3
 from pydantic import BaseModel
 import os
+import tempfile
 from fastapi.staticfiles import StaticFiles
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import backend.news_engine as news_engine
@@ -359,6 +361,49 @@ def get_historical_chart_data(ticker: str):
             data.append(data_point)
             
     return data
+
+@app.post("/api/subtitles/translate")
+async def translate_subtitles(
+    file: UploadFile = File(...),
+    layout: str = Form("he_below"),
+    output: str = Form("bilingual"),  # "bilingual" | "hebrew" | "both"
+):
+    """
+    Upload an English SRT file → returns translated SRT.
+    layout:  he_below | he_above | he_only
+    output:  bilingual | hebrew | both  (when both, returns bilingual)
+    """
+    from backend.subtitle_translator import parse_srt, translate_blocks, merge_bilingual, blocks_to_srt, SubtitleBlock
+
+    if not file.filename or not file.filename.lower().endswith(".srt"):
+        raise HTTPException(status_code=400, detail="Please upload a .srt file")
+
+    content = (await file.read()).decode("utf-8", errors="replace")
+
+    blocks = parse_srt(content)
+    if not blocks:
+        raise HTTPException(status_code=422, detail="No valid subtitle blocks found in the file")
+
+    hebrew_texts = translate_blocks(blocks)
+
+    if output == "hebrew":
+        he_blocks = [
+            SubtitleBlock(index=b.index, start=b.start, end=b.end, text=he)
+            for b, he in zip(blocks, hebrew_texts)
+        ]
+        srt_out = blocks_to_srt(he_blocks)
+        filename = file.filename.replace(".srt", "_he.srt")
+    else:
+        bilingual = merge_bilingual(blocks, hebrew_texts, layout)
+        srt_out = blocks_to_srt(bilingual)
+        filename = file.filename.replace(".srt", "_bilingual.srt")
+
+    return Response(
+        content=srt_out.encode("utf-8"),
+        media_type="text/plain; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
 
 @app.get("/api/podcasts")
 def get_podcasts(background_tasks: BackgroundTasks):
