@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>שיעורי קשב — מורה</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/lesson-data.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
+    :root {
+      --blue:#2563eb; --blue-l:#eff6ff; --blue-m:#bfdbfe;
+      --purple:#7c3aed; --purple-l:#f5f3ff;
+      --teal:#0891b2; --teal-l:#ecfeff;
+      --green:#059669; --green-l:#ecfdf5;
+      --orange:#d97706; --orange-l:#fffbeb;
+      --red:#dc2626; --red-l:#fef2f2;
+      --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb;
+      --g300:#d1d5db; --g400:#9ca3af; --g500:#6b7280;
+      --g600:#4b5563; --g700:#374151; --g800:#1f2937; --g900:#111827;
+    }
+    body { font-family:'Segoe UI',Arial,sans-serif; background:var(--g50); color:var(--g900); direction:rtl; }
+
+    /* ── SETUP SCREEN ── */
+    #setupScreen {
+      min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px;
+      background:linear-gradient(135deg,#eff6ff,#f5f3ff);
+    }
+    .setup-card {
+      background:white; border-radius:20px; padding:48px 40px;
+      max-width:480px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.1); text-align:center;
+    }
+    .setup-logo { font-size:48px; margin-bottom:16px; }
+    .setup-title { font-size:26px; font-weight:800; margin-bottom:8px; }
+    .setup-sub { font-size:14px; color:var(--g500); margin-bottom:32px; }
+    .setup-btn {
+      width:100%; padding:16px; border-radius:12px; border:none;
+      font-size:17px; font-weight:700; cursor:pointer; transition:all 0.2s;
+    }
+    .btn-create { background:var(--blue); color:white; margin-bottom:12px; }
+    .btn-create:hover { background:#1d4ed8; }
+    .setup-or { color:var(--g400); font-size:13px; margin:8px 0; }
+    .rejoin-row { display:flex; gap:8px; }
+    .rejoin-input {
+      flex:1; padding:12px 14px; border:2px solid var(--g200); border-radius:10px;
+      font-size:16px; font-family:monospace; text-align:center; text-transform:uppercase;
+      letter-spacing:3px;
+    }
+    .rejoin-input:focus { outline:none; border-color:var(--blue); }
+    .btn-rejoin { padding:12px 18px; background:var(--g100); border:1px solid var(--g300); border-radius:10px; font-size:14px; font-weight:600; cursor:pointer; }
+    .btn-rejoin:hover { background:var(--g200); }
+
+    /* ── MAIN LAYOUT ── */
+    #mainScreen { display:none; min-height:100vh; }
+    .top-bar {
+      background:white; border-bottom:1px solid var(--g200);
+      padding:10px 20px; display:flex; align-items:center; gap:16px;
+      position:sticky; top:0; z-index:100; box-shadow:0 1px 3px rgba(0,0,0,0.08);
+    }
+    .session-badge {
+      background:var(--blue); color:white; padding:6px 14px;
+      border-radius:8px; font-size:13px; font-weight:700;
+    }
+    .session-code { font-size:22px; font-weight:900; letter-spacing:3px; font-family:monospace; }
+    .students-badge {
+      background:var(--green-l); color:var(--green); padding:6px 12px;
+      border-radius:8px; font-size:13px; font-weight:700; display:flex; align-items:center; gap:6px;
+    }
+    .top-bar-right { margin-right:auto; display:flex; gap:8px; align-items:center; }
+    .small-btn {
+      padding:7px 12px; border-radius:7px; border:1px solid var(--g200);
+      background:white; cursor:pointer; font-size:12px; font-weight:600; color:var(--g600);
+    }
+    .small-btn:hover { background:var(--g100); }
+
+    .main-layout {
+      display:grid; grid-template-columns:220px 1fr 280px; gap:0;
+      min-height:calc(100vh - 57px);
+    }
+
+    /* ── LEFT: SECTION LIST ── */
+    .sidebar-left {
+      background:white; border-left:1px solid var(--g200);
+      overflow-y:auto; height:calc(100vh - 57px); position:sticky; top:57px;
+    }
+    .sl-lesson {
+      padding:10px 14px 6px; font-size:11px; font-weight:700;
+      color:var(--g400); text-transform:uppercase; letter-spacing:0.5px;
+      background:var(--g50); border-bottom:1px solid var(--g100);
+      border-top:1px solid var(--g200); margin-top:4px;
+    }
+    .sl-section {
+      padding:9px 14px; cursor:pointer; display:flex; align-items:center; gap:9px;
+      border-bottom:1px solid var(--g100); transition:background 0.1s;
+    }
+    .sl-section:hover { background:var(--g50); }
+    .sl-section.active { background:var(--blue-l); border-left:3px solid var(--blue); }
+    .sl-num {
+      width:22px; height:22px; border-radius:50%; background:var(--g100);
+      display:flex; align-items:center; justify-content:center;
+      font-size:10px; font-weight:700; flex-shrink:0;
+    }
+    .sl-section.active .sl-num { background:var(--blue); color:white; }
+    .sl-title { font-size:12px; font-weight:600; color:var(--g700); }
+    .sl-section.active .sl-title { color:var(--blue); }
+    .sl-dur { font-size:10px; color:var(--g400); }
+
+    /* ── CENTER: CONTENT ── */
+    .center-col { padding:20px; overflow-y:auto; }
+
+    .section-card {
+      background:white; border-radius:12px; border:1px solid var(--g200); overflow:hidden;
+    }
+    .sc-header {
+      padding:16px 20px; border-bottom:1px solid var(--g100);
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .sc-title { font-size:20px; font-weight:700; }
+    .sc-badge { padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700; background:var(--g100); color:var(--g600); }
+
+    .timer-row {
+      padding:12px 20px 0; display:flex; align-items:center; gap:12px;
+    }
+    .timer-disp {
+      font-size:34px; font-weight:800; font-family:monospace;
+      color:var(--g900); letter-spacing:2px; min-width:85px;
+    }
+    .timer-disp.warn { color:var(--orange); }
+    .timer-disp.danger { color:var(--red); animation:blink 1s step-end infinite; }
+    @keyframes blink { 50%{opacity:0.5;} }
+    .timer-btns { display:flex; gap:6px; }
+    .tbtn {
+      padding:7px 13px; border-radius:6px; border:none;
+      cursor:pointer; font-size:12px; font-weight:700;
+    }
+    .tbtn-go { background:var(--green); color:white; }
+    .tbtn-pause { background:var(--orange); color:white; }
+    .tbtn-reset { background:var(--g200); color:var(--g700); }
+    .timer-prog { margin:8px 20px 0; height:4px; background:var(--g200); border-radius:2px; overflow:hidden; }
+    .timer-fill { height:100%; background:var(--blue); transition:width 0.3s; }
+
+    .sc-body { padding:20px; }
+
+    /* Content elements */
+    .question-box {
+      background:var(--blue-l); border:2px solid var(--blue-m);
+      border-radius:12px; padding:20px 24px;
+      font-size:20px; font-weight:600; color:var(--g800);
+      text-align:center; line-height:1.6;
+    }
+    .info-box {
+      background:var(--g50); border:1px solid var(--g200);
+      border-radius:10px; padding:14px 18px;
+      font-size:14px; line-height:1.7; color:var(--g700);
+    }
+    .tn-box {
+      background:var(--orange-l); border:1px solid #fbbf24;
+      border-radius:10px; padding:12px 16px;
+      font-size:13px; line-height:1.7; color:var(--g700);
+    }
+    .tn-label { font-size:11px; font-weight:700; color:var(--orange); margin-bottom:5px; }
+    .factor-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px; }
+    .factor-card {
+      background:white; border-radius:10px; padding:16px 18px;
+      border-right:4px solid var(--blue);
+    }
+    .factor-icon { font-size:26px; margin-bottom:6px; }
+    .factor-title { font-size:16px; font-weight:700; margin-bottom:5px; }
+    .factor-text { font-size:13px; color:var(--g600); line-height:1.5; }
+    .stat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; }
+    .stat-box { border-radius:14px; padding:24px; text-align:center; }
+    .stat-num { font-size:44px; font-weight:900; line-height:1; }
+    .stat-unit { font-size:18px; font-weight:600; margin-top:3px; }
+    .stat-label { font-size:14px; color:var(--g700); margin-top:8px; }
+    .world-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px; }
+    .world-card {
+      border:1px solid var(--g200); border-radius:10px; padding:12px 14px;
+      cursor:pointer; transition:all 0.15s;
+    }
+    .world-card:hover,.world-card.on { border-color:var(--green); background:var(--green-l); }
+    .world-country { font-size:15px; font-weight:700; margin-bottom:4px; }
+    .world-text { font-size:12px; color:var(--g700); line-height:1.5; }
+    .world-hint { font-size:12px; color:var(--g400); }
+    .step-list { display:flex; flex-direction:column; gap:8px; }
+    .step-item {
+      display:flex; align-items:flex-start; gap:12px;
+      padding:10px 14px; background:var(--g50); border:1px solid var(--g200); border-radius:9px;
+    }
+    .step-num {
+      width:26px; height:26px; border-radius:50%; background:var(--blue); color:white;
+      font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
+    .step-text { font-size:13px; color:var(--g700); line-height:1.5; padding-top:3px; }
+    .video-link {
+      border:1px solid var(--g200); border-radius:9px; padding:12px 16px;
+      display:flex; align-items:center; gap:12px; background:white;
+      cursor:pointer; transition:all 0.15s; text-decoration:none; margin-bottom:7px;
+    }
+    .video-link:hover { border-color:var(--teal); background:var(--teal-l); }
+    .video-title { font-size:13px; font-weight:600; color:var(--g800); }
+    .video-desc { font-size:11px; color:var(--g500); margin-top:2px; }
+    .video-note { font-size:11px; color:var(--orange); margin-top:2px; }
+    .video-play { width:36px; height:36px; border-radius:50%; background:var(--teal); color:white; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+    .checklist { display:flex; flex-direction:column; gap:7px; }
+    .check-item {
+      display:flex; align-items:center; gap:10px; padding:10px 12px;
+      border:2px solid var(--g200); border-radius:9px; background:white; cursor:pointer;
+    }
+    .check-item:hover,.check-item.on { border-color:var(--blue); background:var(--blue-l); }
+    .check-box {
+      width:20px; height:20px; border-radius:4px; border:2px solid var(--g300);
+      display:flex; align-items:center; justify-content:center;
+      font-size:12px; color:white; flex-shrink:0;
+    }
+    .check-item.on .check-box { background:var(--blue); border-color:var(--blue); }
+    .check-label { font-size:13px; color:var(--g700); }
+    .refl-q {
+      background:var(--purple-l); border:1px solid #c4b5fd;
+      border-radius:9px; padding:12px 14px; font-size:13px; color:var(--g800);
+      display:flex; align-items:flex-start; gap:9px;
+    }
+    .refl-num {
+      width:24px; height:24px; border-radius:50%; background:var(--purple); color:white;
+      font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    }
+    .disc-board { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .disc-col { border:2px solid var(--g200); border-radius:9px; overflow:hidden; }
+    .disc-col.red-col { border-color:var(--red); }
+    .disc-col.orange-col { border-color:var(--orange); }
+    .disc-col.purple-col { border-color:var(--purple); }
+    .disc-header { padding:9px 13px; font-size:14px; font-weight:700; color:white; }
+    .red-col .disc-header { background:var(--red); }
+    .orange-col .disc-header { background:var(--orange); }
+    .purple-col .disc-header { background:var(--purple); }
+    .disc-entries { padding:9px; min-height:120px; max-height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:5px; }
+    .disc-entry {
+      background:var(--g50); border:1px solid var(--g200); border-radius:6px;
+      padding:6px 9px; font-size:12px; color:var(--g700);
+      display:flex; align-items:flex-start; justify-content:space-between; gap:5px;
+    }
+    .disc-del { background:none; border:none; color:var(--g400); cursor:pointer; font-size:13px; flex-shrink:0; }
+    .disc-del:hover { color:var(--red); }
+    .disc-inp-row { padding:9px; border-top:1px solid var(--g200); display:flex; gap:6px; }
+    .disc-inp {
+      flex:1; padding:7px 9px; border:2px solid var(--g200); border-radius:7px;
+      font-size:12px; font-family:inherit; direction:rtl;
+    }
+    .disc-inp:focus { outline:none; border-color:var(--blue); }
+    .disc-add { padding:7px 13px; background:var(--blue); color:white; border:none; border-radius:7px; cursor:pointer; font-size:13px; font-weight:700; }
+    .policy-item { background:white; border:1px solid var(--g200); border-radius:9px; padding:12px 16px; margin-bottom:8px; }
+    .policy-q { font-size:14px; font-weight:700; color:var(--green); margin-bottom:6px; }
+    .policy-a {
+      font-size:13px; color:var(--g700); background:var(--g50); border:1px solid var(--g200);
+      border-radius:6px; padding:9px 12px; min-height:36px;
+    }
+    .policy-a[contenteditable]:empty::before { content:attr(data-ph); color:var(--g400); }
+    .policy-a[contenteditable]:focus { outline:2px solid var(--blue); }
+    .close-prompt { background:var(--teal-l); border:1px solid #67e8f9; border-radius:9px; padding:11px 14px; font-size:13px; color:var(--g800); margin-bottom:7px; }
+
+    .nav-row {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:12px 20px; border-top:1px solid var(--g100); background:var(--g50);
+    }
+    .nav-btn {
+      padding:9px 18px; border-radius:8px; border:1px solid var(--g300);
+      background:white; cursor:pointer; font-size:13px; font-weight:600; color:var(--g700);
+    }
+    .nav-btn:hover:not(:disabled) { background:var(--g100); }
+    .nav-btn:disabled { opacity:0.35; cursor:not-allowed; }
+    .nav-btn-next { background:var(--blue); color:white; border-color:var(--blue); }
+    .nav-btn-next:hover:not(:disabled) { background:#1d4ed8; }
+    .nav-btn-advance { background:var(--green); color:white; border-color:var(--green); }
+    .nav-btn-advance:hover:not(:disabled) { background:#047857; }
+
+    /* ── RIGHT: STUDENTS + CONTROLS ── */
+    .sidebar-right {
+      background:white; border-right:1px solid var(--g200);
+      height:calc(100vh - 57px); position:sticky; top:57px;
+      overflow-y:auto; display:flex; flex-direction:column;
+    }
+    .sr-section { padding:14px 16px; border-bottom:1px solid var(--g100); }
+    .sr-label { font-size:11px; font-weight:700; color:var(--g400); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; }
+    .share-url {
+      background:var(--g50); border:1px solid var(--g200); border-radius:8px;
+      padding:10px 12px; font-size:12px; color:var(--g600); word-break:break-all;
+      font-family:monospace; margin-bottom:8px;
+    }
+    .copy-btn {
+      width:100%; padding:8px; background:var(--g100); border:1px solid var(--g200);
+      border-radius:7px; cursor:pointer; font-size:12px; font-weight:600; color:var(--g600);
+    }
+    .copy-btn:hover { background:var(--g200); }
+    .qr-container { text-align:center; margin-top:8px; }
+    .student-count { font-size:32px; font-weight:800; color:var(--blue); text-align:center; }
+    .student-sub { font-size:13px; color:var(--g500); text-align:center; margin-top:3px; }
+    .submit-bar {
+      background:var(--g100); border-radius:8px; padding:10px 12px;
+      display:flex; align-items:center; justify-content:space-between; margin-top:10px;
+    }
+    .submit-text { font-size:13px; color:var(--g600); }
+    .submit-pct { font-size:20px; font-weight:800; color:var(--green); }
+    .submit-prog { height:6px; background:var(--g200); border-radius:3px; overflow:hidden; margin-top:8px; }
+    .submit-fill { height:100%; background:var(--green); transition:width 0.3s; }
+    .student-list { display:flex; flex-direction:column; gap:5px; margin-top:10px; max-height:200px; overflow-y:auto; }
+    .student-row {
+      display:flex; align-items:center; gap:8px; padding:6px 10px;
+      border-radius:7px; background:var(--g50);
+    }
+    .student-dot { width:8px; height:8px; border-radius:50%; background:var(--green); }
+    .student-dot.pending { background:var(--g300); }
+    .student-name { font-size:12px; color:var(--g700); flex:1; }
+    .student-done { font-size:10px; color:var(--green); font-weight:700; }
+
+    /* Controls */
+    .ctrl-btns { display:flex; flex-direction:column; gap:8px; }
+    .ctrl-btn {
+      width:100%; padding:12px; border-radius:10px; border:none;
+      font-size:14px; font-weight:700; cursor:pointer; transition:all 0.15s;
+    }
+    .ctrl-btn:disabled { opacity:0.4; cursor:not-allowed; }
+    .ctrl-collect { background:var(--blue); color:white; }
+    .ctrl-collect:hover:not(:disabled) { background:#1d4ed8; }
+    .ctrl-results { background:var(--purple); color:white; }
+    .ctrl-results:hover:not(:disabled) { background:#6d28d9; }
+    .ctrl-advance { background:var(--green); color:white; }
+    .ctrl-advance:hover:not(:disabled) { background:#047857; }
+
+    /* Results panel */
+    #resultsPanel { padding:14px 16px; border-bottom:1px solid var(--g100); }
+    .res-title { font-size:13px; font-weight:700; color:var(--purple); margin-bottom:10px; }
+    .res-avg { text-align:center; background:var(--purple-l); border-radius:10px; padding:16px; margin-bottom:10px; }
+    .res-avg-num { font-size:44px; font-weight:900; color:var(--purple); line-height:1; }
+    .res-avg-label { font-size:12px; color:var(--g500); margin-top:4px; }
+    .res-bar-item { margin-bottom:6px; }
+    .res-bar-label { font-size:12px; color:var(--g700); margin-bottom:3px; }
+    .res-bar-track { height:18px; background:var(--g100); border-radius:4px; overflow:hidden; }
+    .res-bar-fill { height:100%; background:var(--blue); transition:width 0.5s; display:flex; align-items:center; padding-right:6px; font-size:11px; color:white; font-weight:700; }
+    .res-text-item {
+      background:var(--g50); border:1px solid var(--g200); border-radius:6px;
+      padding:7px 10px; font-size:12px; color:var(--g700); margin-bottom:5px;
+    }
+    .res-done { text-align:center; font-size:32px; font-weight:800; color:var(--green); }
+
+    /* Phase badge */
+    .phase-badge {
+      display:inline-block; padding:3px 10px; border-radius:12px;
+      font-size:11px; font-weight:700;
+    }
+    .phase-active { background:var(--green-l); color:var(--green); }
+    .phase-collecting { background:#fef9c3; color:#b45309; }
+    .phase-results { background:var(--purple-l); color:var(--purple); }
+  </style>
+</head>
+<body>
+
+<!-- SETUP SCREEN -->
+<div id="setupScreen">
+  <div class="setup-card">
+    <div class="setup-logo">👩‍🏫</div>
+    <div class="setup-title">ממשק מורה</div>
+    <p class="setup-sub">צרי סשן חדש לכיתה, או הצטרפי לסשן קיים</p>
+    <button class="setup-btn btn-create" onclick="createSession()">+ צור סשן חדש</button>
+    <div class="setup-or">— או הצטרפי לסשן קיים —</div>
+    <div class="rejoin-row">
+      <input type="text" id="rejoinInput" class="rejoin-input" placeholder="קוד" maxlength="6">
+      <button class="btn-rejoin" onclick="rejoinSession()">הצטרפי</button>
+    </div>
+    <p id="setupError" style="color:#dc2626;font-size:13px;margin-top:12px;display:none"></p>
+  </div>
+</div>
+
+<!-- MAIN SCREEN -->
+<div id="mainScreen">
+  <div class="top-bar">
+    <div class="session-badge">קוד סשן:</div>
+    <div class="session-code" id="codeDisplay">——</div>
+    <div class="students-badge">
+      👥 <span id="studentCountTop">0</span> תלמידים
+    </div>
+    <div class="top-bar-right">
+      <span id="phaseBadge" class="phase-badge phase-active">פעיל</span>
+      <button class="small-btn" onclick="toggleNotes()">📝 הנחיות מורה</button>
+    </div>
+  </div>
+
+  <div class="main-layout">
+
+    <!-- Left sidebar: section list -->
+    <div class="sidebar-left" id="sectionList"></div>
+
+    <!-- Center: content -->
+    <div class="center-col">
+      <div class="section-card" id="sectionCard">
+        <div class="sc-header">
+          <div>
+            <div class="sc-title" id="scTitle">—</div>
+            <div style="font-size:12px;color:var(--g500);margin-top:3px" id="scMeta"></div>
+          </div>
+          <div class="sc-badge" id="scBadge">—</div>
+        </div>
+        <div class="timer-row">
+          <div id="timerDisp" class="timer-disp">00:00</div>
+          <div class="timer-btns">
+            <button class="tbtn tbtn-go" id="tbtnStart">▶</button>
+            <button class="tbtn tbtn-pause" onclick="timerPause()">⏸</button>
+            <button class="tbtn tbtn-reset" id="tbtnReset">↺</button>
+          </div>
+          <div style="font-size:12px;color:var(--g500)" id="timerLabel"></div>
+        </div>
+        <div class="timer-prog"><div id="timerFill" class="timer-fill" style="width:0%"></div></div>
+        <div class="sc-body" id="scBody"></div>
+        <div class="nav-row" id="navRow"></div>
+      </div>
+    </div>
+
+    <!-- Right sidebar: students + controls -->
+    <div class="sidebar-right">
+
+      <!-- Share URL -->
+      <div class="sr-section">
+        <div class="sr-label">שתף עם התלמידים</div>
+        <div class="share-url" id="shareUrl">—</div>
+        <button class="copy-btn" onclick="copyUrl()">📋 העתק קישור</button>
+        <div class="qr-container" id="qrContainer"></div>
+      </div>
+
+      <!-- Students -->
+      <div class="sr-section">
+        <div class="sr-label">תלמידים בסשן</div>
+        <div class="student-count" id="studentCount">0</div>
+        <div class="student-sub">תלמידים מחוברים</div>
+        <div id="submitBar" style="display:none">
+          <div class="submit-bar">
+            <div class="submit-text">הגישו תשובה</div>
+            <div class="submit-pct" id="submitPct">0/0</div>
+          </div>
+          <div class="submit-prog"><div id="submitFill" class="submit-fill" style="width:0%"></div></div>
+        </div>
+        <div id="studentList" class="student-list"></div>
+      </div>
+
+      <!-- Controls -->
+      <div class="sr-section">
+        <div class="sr-label">שלטי שיעור</div>
+        <div class="ctrl-btns">
+          <button id="btnCollect" class="ctrl-btn ctrl-collect" onclick="startCollect()">📊 התחל איסוף תשובות</button>
+          <button id="btnResults" class="ctrl-btn ctrl-results" onclick="showResults()" disabled>📈 הצג תוצאות לכיתה</button>
+          <button id="btnAdvance" class="ctrl-btn ctrl-advance" onclick="advanceSection()" disabled>⏭ המשך לשלב הבא</button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div id="resultsPanel" style="display:none">
+        <div class="res-title">📊 תוצאות</div>
+        <div id="resultsContent"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const socket = io();
+let SESSION_CODE = '';
+let curLesson = 0, curSection = 0;
+let phase = 'active';
+let studentsData = { total: 0, submitted: 0, students: [] };
+let showNotes = true;
+let localChecks = {};
+let localWorlds = {};
+let localBoards = {};
+
+// ── Timer ─────────────────────────────────────────────────────────────────────
+let timerSecs = 0, timerTotal = 0, timerRunning = false, timerIv = null;
+function timerStart(mins) {
+  if (!timerRunning || timerTotal !== mins * 60) {
+    timerSecs = mins * 60; timerTotal = mins * 60;
+  }
+  timerRunning = true;
+  clearInterval(timerIv);
+  timerIv = setInterval(() => {
+    if (timerSecs > 0) { timerSecs--; timerRender(); }
+    else { clearInterval(timerIv); timerRunning = false; timerBeep(); }
+  }, 1000);
+  timerRender();
+}
+function timerPause() { clearInterval(timerIv); timerRunning = false; }
+function timerReset(mins) {
+  clearInterval(timerIv); timerRunning = false;
+  timerSecs = mins * 60; timerTotal = mins * 60; timerRender();
+}
+function timerBeep() {
+  try {
+    const c = new AudioContext(), o = c.createOscillator(), g = c.createGain();
+    o.connect(g); g.connect(c.destination); o.frequency.value = 880;
+    g.gain.setValueAtTime(0.3, c.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime+0.6);
+    o.start(); o.stop(c.currentTime+0.6);
+  } catch(e){}
+}
+function timerRender() {
+  const el = document.getElementById('timerDisp');
+  if (!el) return;
+  const m = String(Math.floor(timerSecs/60)).padStart(2,'0');
+  const s = String(timerSecs%60).padStart(2,'0');
+  el.textContent = `${m}:${s}`;
+  el.className = 'timer-disp' + (timerSecs<=30&&timerSecs>0?' danger':timerSecs<=60?' warn':'');
+  const pct = timerTotal ? (1-timerSecs/timerTotal)*100 : 0;
+  const f = document.getElementById('timerFill');
+  if (f) f.style.width = pct + '%';
+}
+
+// ── Setup ─────────────────────────────────────────────────────────────────────
+function createSession() {
+  socket.emit('teacher:create', (res) => {
+    if (res.error) return showSetupError(res.error);
+    SESSION_CODE = res.code;
+    enterMain();
+  });
+}
+function rejoinSession() {
+  const code = document.getElementById('rejoinInput').value.trim().toUpperCase();
+  if (code.length < 4) return showSetupError('קוד לא תקין');
+  socket.emit('teacher:rejoin', { code }, (res) => {
+    if (res.error) return showSetupError(res.error);
+    SESSION_CODE = code;
+    curLesson = res.lesson; curSection = res.section; phase = res.phase;
+    studentsData = res.students;
+    enterMain();
+    if (res.results) renderResults(res.results);
+  });
+}
+function showSetupError(msg) {
+  const el = document.getElementById('setupError');
+  el.textContent = msg; el.style.display = '';
+}
+function enterMain() {
+  document.getElementById('setupScreen').style.display = 'none';
+  document.getElementById('mainScreen').style.display = '';
+  document.getElementById('codeDisplay').textContent = SESSION_CODE;
+  const url = `${location.origin}/student?code=${SESSION_CODE}`;
+  document.getElementById('shareUrl').textContent = url;
+  buildSectionList();
+  renderSection();
+  renderStudents();
+  buildQR(url);
+}
+
+// ── QR Code (simple canvas-based) ────────────────────────────────────────────
+function buildQR(url) {
+  // Use a free QR API (no external JS needed)
+  const img = document.createElement('img');
+  img.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
+  img.style.cssText = 'width:150px;height:150px;margin-top:8px;border-radius:8px;border:1px solid #e5e7eb';
+  img.alt = 'QR Code';
+  document.getElementById('qrContainer').innerHTML = '';
+  document.getElementById('qrContainer').appendChild(img);
+}
+
+// ── Section list ─────────────────────────────────────────────────────────────
+function buildSectionList() {
+  let html = '';
+  LESSONS.forEach((l, li) => {
+    html += `<div class="sl-lesson">${l.title}: ${l.subtitle}</div>`;
+    l.sections.forEach((s, si) => {
+      const active = li === curLesson && si === curSection;
+      html += `<div class="sl-section ${active?'active':''}" onclick="jumpTo(${li},${si})">
+        <div class="sl-num">${si+1}</div>
+        <div><div class="sl-title">${s.title}</div><div class="sl-dur">${s.duration} דקות</div></div>
+      </div>`;
+    });
+  });
+  document.getElementById('sectionList').innerHTML = html;
+}
+function jumpTo(li, si) {
+  socket.emit('teacher:advance', { lesson: li, section: si });
+  curLesson = li; curSection = si; phase = 'active';
+  timerReset(cur().duration);
+  buildSectionList(); renderSection(); renderStudents();
+  clearResults();
+}
+
+// ── Current section ───────────────────────────────────────────────────────────
+function cur() { return LESSONS[curLesson].sections[curSection]; }
+
+function renderSection() {
+  const sec = cur();
+  const lesson = LESSONS[curLesson];
+  const totalDur = lesson.sections.reduce((a,s)=>a+s.duration,0);
+  const elapsed = lesson.sections.slice(0,curSection).reduce((a,s)=>a+s.duration,0);
+  const pct = Math.round(elapsed/totalDur*100);
+
+  document.getElementById('scTitle').textContent = sec.title;
+  document.getElementById('scMeta').textContent = `${lesson.title} | חלק ${curSection+1}/${lesson.sections.length} | ${pct}% מהשיעור עבר`;
+  document.getElementById('scBadge').textContent = `${sec.duration} דקות`;
+  document.getElementById('timerLabel').textContent = `${sec.duration} דקות`;
+
+  const startBtn = document.getElementById('tbtnStart');
+  const resetBtn = document.getElementById('tbtnReset');
+  startBtn.onclick = () => timerStart(sec.duration);
+  resetBtn.onclick = () => timerReset(sec.duration);
+  timerReset(sec.duration);
+
+  document.getElementById('scBody').innerHTML = buildSectionHtml(sec);
+  document.getElementById('navRow').innerHTML = buildNavRow();
+  updateControls();
+
+  // Restore boards
+  Object.entries(localBoards).forEach(([key, entries]) => {
+    const [boardKey, col] = key.rsplit ? key.rsplit('_',1) : key.split(/_(?=[^_]*$)/);
+    // re-render boards from localBoards
+  });
+}
+
+function buildSectionHtml(sec) {
+  const tnHtml = (note) => note && showNotes ? `<div class="tn-box" style="margin-top:16px"><div class="tn-label">📝 הנחיות למורה</div>${note}</div>` : '';
+
+  switch(sec.type) {
+    case 'open_q': return `
+      <div class="question-box">${sec.question}</div>
+      ${sec.instructions ? `<div class="info-box" style="margin-top:12px">${sec.instructions}</div>` : ''}
+      ${sec.followUps ? `<div style="margin-top:12px"><div style="font-size:12px;font-weight:700;color:var(--g600);margin-bottom:8px">תגובות מנחות</div><div class="step-list">${sec.followUps.map(f=>`<div class="step-item"><div class="step-text">${f}</div></div>`).join('')}</div></div>` : ''}
+      ${tnHtml(sec.teacherNote)}`;
+
+    case 'counter': return `
+      <div class="info-box">כל תלמיד בודק כמה התראות קיבל אתמול ושולח את המספר דרך הטלפון שלו. התוצאות יופיעו כאן בזמן אמת.</div>
+      ${tnHtml(sec.teacherNote)}`;
+
+    case 'factors': return `
+      <div class="factor-grid">${sec.factors.map(f=>`<div class="factor-card" style="border-right-color:${f.color}"><div class="factor-icon">${f.icon}</div><div class="factor-title" style="color:${f.color}">${f.title}</div><div class="factor-text">${f.text}</div></div>`).join('')}</div>
+      ${tnHtml(sec.teacherNote)}`;
+
+    case 'checklist_video': return `
+      <div style="margin-bottom:14px"><div style="font-size:13px;font-weight:700;color:var(--g600);margin-bottom:8px">שלבי הפעילות</div><div class="step-list">${sec.steps.map((s,i)=>`<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`).join('')}</div></div>
+      <div style="margin-bottom:14px"><div style="font-size:13px;font-weight:700;color:var(--g600);margin-bottom:8px">שקף ההיגדים — סמנו את המסומנים על ידי התלמידים</div><div class="checklist">${sec.checks.map((c,i)=>{const k=`${sec.id}_${i}`,on=localChecks[k];return `<div class="check-item ${on?'on':''}" onclick="toggleLocalCheck('${sec.id}',${i},${sec.checks.length})"><div class="check-box">${on?'✓':''}</div><div class="check-label">${c}</div></div>`;}).join('')}</div></div>
+      <div><div style="font-size:13px;font-weight:700;color:var(--g600);margin-bottom:8px">סרטונים לבחירה</div>${sec.videos.map(v=>`<a href="${v.url}" target="_blank" class="video-link"><div style="flex:1"><div class="video-title">${v.title}</div>${v.note?`<div class="video-note">⚠️ ${v.note}</div>`:''}</div><div class="video-play">▶</div></a>`).join('')}</div>
+      ${tnHtml(sec.teacherNote)}`;
+
+    case 'stats': return `
+      <div class="stat-grid">${sec.stats.map(s=>`<div class="stat-box" style="background:${s.bg};border:2px solid ${s.border}"><div class="stat-num" style="color:${s.text}">${s.num}</div>${s.unit?`<div class="stat-unit" style="color:${s.text}">${s.unit}</div>`:''}<div class="stat-label">${s.label}</div></div>`).join('')}</div>
+      ${tnHtml(sec.teacherNote)}`;
+
+    case 'close_q': return `
+      <div class="question-box" style="font-size:24px;padding:28px">${sec.question}</div>
+      <div class="info-box" style="margin-top:12px">${sec.instructions}</div>
+      ${tnHtml(sec.teacherNote)}`;
+
+    case 'reflection': {
+      const qs = sec.questions.map((q,i)=>`<div class="refl-q"><div class="refl-num">${i+1}</div><div>${q}</div></div>`).join('');
+      return `<div class="question-box" style="background:var(--purple-l);border-color:#c4b5fd;font-size:15px">${sec.intro}</div><div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">${qs}</div>${tnHtml(sec.teacherNote)}`;
+    }
+
+    case 'video': return `
+      <div><div style="font-size:13px;font-weight:700;color:var(--g600);margin-bottom:8px">סרטונים לבחירה</div>${sec.videos.map(v=>`<a href="${v.url}" target="_blank" class="video-link"><div style="flex:1"><div class="video-title">${v.title}</div>${v.note?`<div class="video-note">⚠️ ${v.note}</div>`:''}</div><div class="video-play">▶</div></a>`).join('')}</div>
+      ${tnHtml(sec.teacherNote)}`;
+
+    case 'world': return `
+      <div class="world-grid">${sec.examples.map((e,i)=>{const k=`${sec.id}_${i}`,on=localWorlds[k];return `<div class="world-card ${on?'on':''}" onclick="toggleWorld('${sec.id}',${i})"><div class="world-country">${e.country}</div>${on?`<div class="world-text">${e.text}</div>`:'<div class="world-hint">לחץ לחשיפה</div>'}</div>`;}).join('')}</div>
+      ${sec.closing?`<div style="background:var(--green-l);border:1px solid #6ee7b7;border-radius:9px;padding:14px 18px;font-size:15px;font-weight:600;color:#166534;text-align:center;margin-top:12px">${sec.closing}</div>`:''}
+      ${tnHtml(sec.teacherNote)}`;
+
+    case 'text': return `
+      <div class="question-box" style="font-size:18px;line-height:1.8;padding:28px">${sec.text}</div>
+      ${tnHtml(sec.teacherNote)}`;
+
+    case 'disc_board': {
+      const cols = sec.columns.map(col => {
+        const k = `${sec.id}_${col.i}`;
+        const entries = (localBoards[k]||[]).map((e,i)=>`<div class="disc-entry"><span>${e}</span><button class="disc-del" onclick="boardDel('${sec.id}',${col.i},${i})">✕</button></div>`).join('');
+        return `<div class="disc-col ${col.cls}"><div class="disc-header">${col.label}</div><div class="disc-entries" id="db_${sec.id}_${col.i}">${entries}</div><div class="disc-inp-row"><input type="text" id="di_${sec.id}_${col.i}" class="disc-inp" placeholder="הוסף..." onkeydown="if(event.key==='Enter')boardAdd('${sec.id}',${col.i})"><button class="disc-add" onclick="boardAdd('${sec.id}',${col.i})">+</button></div></div>`;
+      }).join('');
+      return `<div class="question-box" style="font-size:16px;margin-bottom:14px">${sec.intro}</div>
+        <div class="disc-board">${cols}</div>
+        ${sec.expected?`<div class="tn-box" style="margin-top:12px"><div class="tn-label">📋 מה צפוי לעלות</div>${sec.expected}</div>`:''}
+        ${tnHtml(sec.teacherNote)}`;
+    }
+
+    case 'q_board': {
+      const k = `${sec.id}_0`;
+      const entries = (localBoards[k]||[]).map((e,i)=>`<div class="disc-entry"><span>${e}</span><button class="disc-del" onclick="boardDel('${sec.id}',0,${i})">✕</button></div>`).join('');
+      return `<div class="question-box" style="background:var(--purple-l);border-color:#c4b5fd;font-size:16px">${sec.intro}</div>
+        <div class="disc-col purple-col" style="margin-top:14px"><div class="disc-header">שאלות הכיתה</div><div class="disc-entries" id="db_${sec.id}_0">${entries}</div><div class="disc-inp-row"><input type="text" id="di_${sec.id}_0" class="disc-inp" placeholder="הוסף שאלה..." onkeydown="if(event.key==='Enter')boardAdd('${sec.id}',0)"><button class="disc-add" onclick="boardAdd('${sec.id}',0)">+</button></div></div>
+        ${sec.closing?`<div class="info-box" style="margin-top:10px">${sec.closing}</div>`:''}
+        ${tnHtml(sec.teacherNote)}`;
+    }
+
+    case 'close_prompts': return `
+      <div class="info-box" style="margin-bottom:12px">${sec.intro}</div>
+      <div class="question-box" style="font-size:18px;margin-bottom:12px">${sec.question}</div>
+      ${sec.prompts.map(p=>`<div class="close-prompt">${p}</div>`).join('')}
+      <div style="background:var(--green-l);border:1px solid #6ee7b7;border-radius:9px;padding:12px 16px;font-size:14px;font-weight:600;color:#166534;margin-top:8px">${sec.closingLine}</div>
+      ${tnHtml(sec.teacherNote)}`;
+
+    case 'policy': return `
+      ${tnHtml(sec.teacherNote)}
+      <div style="margin-top:12px">${sec.topics.map(t=>`<div class="policy-item"><div class="policy-q">❓ ${t.q}</div><div class="policy-a" contenteditable="true" data-ph="השלם תשובה...">${t.a}</div></div>`).join('')}</div>`;
+
+    case 'experience': return `
+      <div class="question-box" style="font-size:20px;padding:28px">${sec.instruction}</div>
+      <div style="margin-top:14px">${sec.options.map(o=>`<div class="close-prompt">${o}</div>`).join('')}</div>
+      ${tnHtml(sec.teacherNote)}`;
+
+    default: return `<pre style="font-size:11px;padding:12px;background:#f9fafb;border-radius:8px">${JSON.stringify(sec,null,2)}</pre>`;
+  }
+}
+
+function buildNavRow() {
+  const isFirst = curLesson === 0 && curSection === 0;
+  const isLast = !nextIds(curLesson, curSection);
+  const next = nextIds(curLesson, curSection);
+  const nextLabel = next ? `המשך — ${LESSONS[next.lesson].sections[next.section].title} →` : 'שיעור הסתיים';
+  return `
+    <button class="nav-btn" onclick="jumpTo(${curLesson===0&&curSection===0?0:curSection>0?curLesson:curLesson-1}, ${curSection>0?curSection-1:curLesson>0?LESSONS[curLesson-1].sections.length-1:0})" ${isFirst?'disabled':''}>← קודם</button>
+    <span style="font-size:12px;color:var(--g500)">${curSection+1}/${LESSONS[curLesson].sections.length}</span>
+    <button id="navAdvance" class="nav-btn nav-btn-advance" onclick="advanceSection()" ${isLast?'disabled':''}>
+      ${nextLabel}
+    </button>`;
+}
+
+// ── Local interactive helpers ─────────────────────────────────────────────────
+function toggleLocalCheck(sid, i) {
+  const k = `${sid}_${i}`;
+  localChecks[k] = !localChecks[k];
+  const el = document.querySelector(`[onclick*="toggleLocalCheck('${sid}',${i}"]`);
+  if (el) { el.classList.toggle('on', localChecks[k]); el.querySelector('.check-box').textContent = localChecks[k]?'✓':''; }
+}
+function toggleWorld(sid, i) {
+  const k = `${sid}_${i}`;
+  localWorlds[k] = !localWorlds[k];
+  const el = document.querySelector(`[onclick*="toggleWorld('${sid}',${i}"]`);
+  if (!el) return;
+  const sec = LESSONS.flatMap(l=>l.sections).find(s=>s.id===sid);
+  if (!sec) return;
+  const e = sec.examples[i];
+  el.className = 'world-card' + (localWorlds[k]?' on':'');
+  el.innerHTML = `<div class="world-country">${e.country}</div>${localWorlds[k]?`<div class="world-text">${e.text}</div>`:'<div class="world-hint">לחץ לחשיפה</div>'}`;
+}
+function boardAdd(sid, col) {
+  const inp = document.getElementById(`di_${sid}_${col}`);
+  if (!inp || !inp.value.trim()) return;
+  const text = inp.value.trim(); inp.value = '';
+  socket.emit('teacher:boardAdd', { boardKey: sid, col, text });
+  const k = `${sid}_${col}`;
+  if (!localBoards[k]) localBoards[k] = [];
+  const idx = localBoards[k].length;
+  localBoards[k].push(text);
+  const list = document.getElementById(`db_${sid}_${col}`);
+  if (list) {
+    const d = document.createElement('div');
+    d.className = 'disc-entry';
+    d.innerHTML = `<span>${text}</span><button class="disc-del" onclick="boardDel('${sid}',${col},${idx})">✕</button>`;
+    list.appendChild(d); list.scrollTop = list.scrollHeight;
+  }
+}
+function boardDel(sid, col, idx) {
+  socket.emit('teacher:boardRemove', { boardKey: sid, col, idx });
+  const k = `${sid}_${col}`;
+  if (localBoards[k]) localBoards[k].splice(idx, 1);
+  // Re-render section to update indices
+  document.getElementById('scBody').innerHTML = buildSectionHtml(cur());
+}
+
+// ── Controls ──────────────────────────────────────────────────────────────────
+function updateControls() {
+  const sec = cur();
+  const isInteractive = sec.interactive;
+  document.getElementById('btnCollect').disabled = !isInteractive || phase !== 'active';
+  document.getElementById('btnResults').disabled = phase !== 'collecting' || studentsData.submitted === 0;
+  document.getElementById('btnAdvance').disabled = isLast();
+  updatePhaseBadge();
+}
+function isLast() { return !nextIds(curLesson, curSection); }
+function updatePhaseBadge() {
+  const el = document.getElementById('phaseBadge');
+  if (phase === 'active') { el.className = 'phase-badge phase-active'; el.textContent = 'פעיל'; }
+  else if (phase === 'collecting') { el.className = 'phase-badge phase-collecting'; el.textContent = 'איסוף תשובות'; }
+  else { el.className = 'phase-badge phase-results'; el.textContent = 'תוצאות'; }
+}
+function startCollect() {
+  socket.emit('teacher:startCollect');
+  phase = 'collecting';
+  updateControls();
+  document.getElementById('submitBar').style.display = '';
+  clearResults();
+}
+function showResults() {
+  socket.emit('teacher:showResults');
+  phase = 'results';
+  updateControls();
+}
+function advanceSection() {
+  const next = nextIds(curLesson, curSection);
+  if (!next) return;
+  curLesson = next.lesson; curSection = next.section;
+  phase = 'active';
+  socket.emit('teacher:advance', { lesson: curLesson, section: curSection });
+  timerReset(cur().duration);
+  buildSectionList(); renderSection(); renderStudents();
+  clearResults();
+  document.getElementById('submitBar').style.display = 'none';
+}
+function clearResults() {
+  document.getElementById('resultsPanel').style.display = 'none';
+  document.getElementById('resultsContent').innerHTML = '';
+}
+
+// ── Students panel ────────────────────────────────────────────────────────────
+function renderStudents() {
+  const { total, submitted, students } = studentsData;
+  document.getElementById('studentCount').textContent = total;
+  document.getElementById('studentCountTop').textContent = total;
+  const pct = total ? Math.round(submitted/total*100) : 0;
+  document.getElementById('submitPct').textContent = `${submitted}/${total}`;
+  document.getElementById('submitFill').style.width = pct + '%';
+  document.getElementById('studentList').innerHTML = students.map(s =>
+    `<div class="student-row">
+      <div class="student-dot ${s.submitted?'':'pending'}"></div>
+      <div class="student-name">${s.name}</div>
+      ${s.submitted ? '<div class="student-done">✓</div>' : ''}
+    </div>`
+  ).join('');
+  // Enable results button if any submitted
+  document.getElementById('btnResults').disabled = phase !== 'collecting' || submitted === 0;
+}
+
+// ── Results rendering ─────────────────────────────────────────────────────────
+function renderResults(res) {
+  const panel = document.getElementById('resultsPanel');
+  const content = document.getElementById('resultsContent');
+  panel.style.display = '';
+  if (!res || res.type === 'empty') { content.innerHTML = '<p style="font-size:13px;color:var(--g500)">אין תשובות עדיין</p>'; return; }
+  if (res.type === 'counter') {
+    content.innerHTML = `
+      <div class="res-avg"><div class="res-avg-num">${res.avg}</div><div class="res-avg-label">ממוצע התראות ביום</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <div style="background:var(--green-l);border-radius:8px;padding:10px;text-align:center"><div style="font-size:22px;font-weight:800;color:var(--green)">${res.min}</div><div style="font-size:11px;color:var(--g500)">מינימום</div></div>
+        <div style="background:var(--red-l);border-radius:8px;padding:10px;text-align:center"><div style="font-size:22px;font-weight:800;color:var(--red)">${res.max}</div><div style="font-size:11px;color:var(--g500)">מקסימום</div></div>
+      </div>
+      <div style="font-size:12px;color:var(--g500)">השתתפו ${res.count} תלמידים</div>`;
+  } else if (res.type === 'checklist') {
+    const sec = cur();
+    const checks = sec.checks || [];
+    const barItems = checks.map((c,i) => {
+      const cnt = res.totals[i] || 0;
+      const pct = res.count ? Math.round(cnt/res.count*100) : 0;
+      return `<div class="res-bar-item"><div class="res-bar-label">${c}</div><div class="res-bar-track"><div class="res-bar-fill" style="width:${pct}%">${pct>10?pct+'%':''}</div></div></div>`;
+    }).join('');
+    content.innerHTML = `<div style="font-size:12px;color:var(--g500);margin-bottom:8px">השתתפו ${res.count} תלמידים</div>${barItems}`;
+  } else if (res.type === 'text') {
+    content.innerHTML = `<div style="font-size:12px;color:var(--g500);margin-bottom:8px">השתתפו ${res.count} תלמידים</div>${res.texts.map(t=>`<div class="res-text-item">${t}</div>`).join('')}`;
+  } else if (res.type === 'done') {
+    content.innerHTML = `<div class="res-done">${res.done}/${res.total}</div><div style="font-size:13px;color:var(--g500);text-align:center;margin-top:6px">סיימו</div>`;
+  }
+}
+
+// ── Notes toggle ──────────────────────────────────────────────────────────────
+function toggleNotes() {
+  showNotes = !showNotes;
+  document.getElementById('scBody').innerHTML = buildSectionHtml(cur());
+}
+
+// ── Copy URL ──────────────────────────────────────────────────────────────────
+function copyUrl() {
+  const url = document.getElementById('shareUrl').textContent;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✅ הועתק!';
+    setTimeout(() => { btn.textContent = '📋 העתק קישור'; }, 2000);
+  });
+}
+
+// ── Socket events ─────────────────────────────────────────────────────────────
+socket.on('students:update', (data) => {
+  studentsData = data;
+  renderStudents();
+});
+socket.on('results:show', (results) => {
+  phase = 'results';
+  renderResults(results);
+  updateControls();
+});
+socket.on('board:add', ({ boardKey, col, text }) => {
+  // already handled locally
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>שיעורי קשב — כניסה</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      direction: rtl;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 48px 40px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .logo { font-size: 48px; margin-bottom: 16px; }
+    h1 { font-size: 28px; font-weight: 800; color: #111827; margin-bottom: 8px; }
+    .subtitle { font-size: 15px; color: #6b7280; margin-bottom: 40px; line-height: 1.5; }
+    .btn-group { display: flex; flex-direction: column; gap: 14px; }
+    .btn {
+      padding: 16px 24px; border-radius: 12px; border: none;
+      font-size: 17px; font-weight: 700; cursor: pointer;
+      text-decoration: none; display: block;
+      transition: all 0.2s;
+    }
+    .btn-teacher {
+      background: #2563eb; color: white;
+    }
+    .btn-teacher:hover { background: #1d4ed8; transform: translateY(-1px); }
+    .btn-student {
+      background: #059669; color: white;
+    }
+    .btn-student:hover { background: #047857; transform: translateY(-1px); }
+    .btn-sub { font-size: 12px; opacity: 0.8; display: block; margin-top: 3px; font-weight: 400; }
+    .divider { color: #9ca3af; font-size: 13px; margin: 8px 0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">🧠</div>
+    <h1>שיעורי קשב דיגיטלי</h1>
+    <p class="subtitle">ארבעה שיעורים של 45 דקות<br>כיתה ט–יב | מחנך/ת בלבד</p>
+    <div class="btn-group">
+      <a href="/teacher" class="btn btn-teacher">
+        👩‍🏫 כניסה למורה
+        <span class="btn-sub">צור סשן וניהל את השיעור</span>
+      </a>
+      <div class="divider">— או —</div>
+      <a href="/student" class="btn btn-student">
+        🎓 כניסה לתלמיד
+        <span class="btn-sub">הצטרף לסשן עם קוד מהמורה</span>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

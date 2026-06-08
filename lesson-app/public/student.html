@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>שיעורי קשב — תלמיד</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/lesson-data.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    * { margin: 0; padding: 0; }
+    :root {
+      --blue:#2563eb; --blue-l:#eff6ff;
+      --purple:#7c3aed; --purple-l:#f5f3ff;
+      --green:#059669; --green-l:#ecfdf5;
+      --orange:#d97706;
+      --red:#dc2626; --red-l:#fef2f2;
+      --g50:#f9fafb; --g100:#f3f4f6; --g200:#e5e7eb;
+      --g400:#9ca3af; --g500:#6b7280; --g700:#374151; --g900:#111827;
+    }
+    html, body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--g50);
+      color: var(--g900);
+      direction: rtl;
+      min-height: 100vh;
+    }
+
+    /* ── JOIN SCREEN ── */
+    #joinScreen {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #eff6ff, #ecfdf5);
+      padding: 24px;
+    }
+    .join-card {
+      background: white; border-radius: 20px; padding: 40px 32px;
+      max-width: 400px; width: 100%; box-shadow: 0 16px 48px rgba(0,0,0,0.1);
+    }
+    .join-logo { font-size: 48px; text-align: center; margin-bottom: 14px; }
+    .join-title { font-size: 24px; font-weight: 800; text-align: center; margin-bottom: 6px; }
+    .join-sub { font-size: 14px; color: var(--g500); text-align: center; margin-bottom: 28px; }
+    .join-label { font-size: 13px; font-weight: 700; color: var(--g700); margin-bottom: 6px; }
+    .join-input {
+      width: 100%; padding: 14px; border: 2px solid var(--g200); border-radius: 10px;
+      font-size: 16px; font-family: inherit; margin-bottom: 14px;
+    }
+    .join-input:focus { outline: none; border-color: var(--blue); }
+    .join-code {
+      text-align: center; letter-spacing: 6px; font-size: 28px;
+      font-family: monospace; text-transform: uppercase; font-weight: 700;
+    }
+    .join-btn {
+      width: 100%; padding: 16px; border-radius: 12px; border: none;
+      font-size: 17px; font-weight: 700; background: var(--green); color: white;
+      cursor: pointer; margin-top: 6px;
+    }
+    .join-btn:hover { background: #047857; }
+    .join-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .join-error { color: var(--red); font-size: 13px; text-align: center; margin-top: 8px; }
+
+    /* ── MAIN APP ── */
+    #appScreen { display: none; min-height: 100vh; padding-bottom: 80px; }
+
+    .top-bar {
+      background: white; border-bottom: 1px solid var(--g200);
+      padding: 10px 16px; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .tb-left { font-size: 13px; }
+    .tb-lesson { font-weight: 700; color: var(--g900); }
+    .tb-section { color: var(--g500); font-size: 12px; margin-top: 2px; }
+    .tb-badge {
+      padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700;
+    }
+    .badge-active { background: var(--green-l); color: var(--green); }
+    .badge-collecting { background: #fef9c3; color: #b45309; }
+    .badge-waiting { background: #f3e8ff; color: var(--purple); }
+    .badge-results { background: var(--purple-l); color: var(--purple); }
+
+    .content-area { padding: 16px; }
+
+    /* Phase screens */
+    .phase { display: none; }
+    .phase.show { display: block; }
+
+    /* Content display */
+    .content-card {
+      background: white; border-radius: 14px; border: 1px solid var(--g200);
+      padding: 20px; margin-bottom: 14px;
+    }
+    .content-title { font-size: 16px; font-weight: 700; color: var(--g900); margin-bottom: 12px; }
+    .big-question {
+      background: var(--blue-l); border: 2px solid #bfdbfe;
+      border-radius: 12px; padding: 18px 20px;
+      font-size: 18px; font-weight: 600; color: var(--g800);
+      text-align: center; line-height: 1.6;
+    }
+    .info-text { font-size: 14px; color: var(--g700); line-height: 1.7; }
+    .factor-item {
+      border-right: 3px solid var(--blue);
+      padding: 12px 14px; background: white;
+      border-radius: 8px; margin-bottom: 10px;
+    }
+    .factor-icon { font-size: 22px; margin-bottom: 4px; }
+    .factor-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .factor-text { font-size: 13px; color: var(--g500); line-height: 1.5; }
+    .stat-item {
+      border-radius: 12px; padding: 18px; text-align: center; margin-bottom: 10px;
+    }
+    .stat-num { font-size: 40px; font-weight: 900; line-height: 1; }
+    .stat-unit { font-size: 16px; font-weight: 600; margin-top: 3px; }
+    .stat-label { font-size: 13px; color: var(--g700); margin-top: 8px; }
+    .refl-q {
+      background: var(--purple-l); border: 1px solid #c4b5fd;
+      border-radius: 9px; padding: 12px 14px;
+      font-size: 14px; color: var(--g800);
+      display: flex; align-items: flex-start; gap: 9px; margin-bottom: 8px;
+    }
+    .refl-num {
+      width: 24px; height: 24px; border-radius: 50%; background: var(--purple); color: white;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .world-item {
+      border: 1px solid var(--g200); border-radius: 9px; padding: 12px 14px;
+      margin-bottom: 8px; cursor: pointer;
+    }
+    .world-item.on { border-color: var(--green); background: var(--green-l); }
+    .world-country { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+    .world-text { font-size: 12px; color: var(--g700); line-height: 1.5; }
+    .world-hint { font-size: 12px; color: var(--g400); }
+    .video-item {
+      border: 1px solid var(--g200); border-radius: 9px; padding: 13px 14px;
+      display: flex; align-items: center; gap: 12px; margin-bottom: 8px;
+      background: white; text-decoration: none;
+    }
+    .video-item:hover { background: #ecfeff; border-color: #0891b2; }
+    .video-title { font-size: 14px; font-weight: 600; color: var(--g900); }
+    .video-note { font-size: 11px; color: var(--orange); margin-top: 2px; }
+    .video-play-btn {
+      width: 38px; height: 38px; border-radius: 50%; background: #0891b2;
+      color: white; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0;
+    }
+    .policy-item { background: white; border: 1px solid var(--g200); border-radius: 9px; padding: 12px 14px; margin-bottom: 8px; }
+    .policy-q { font-size: 13px; font-weight: 700; color: var(--green); margin-bottom: 5px; }
+    .policy-a { font-size: 13px; color: var(--g700); line-height: 1.5; }
+    .prompt-item { background: #ecfeff; border: 1px solid #67e8f9; border-radius: 9px; padding: 12px 14px; font-size: 14px; color: var(--g800); margin-bottom: 7px; }
+    .disc-entry-s { background: var(--g50); border: 1px solid var(--g200); border-radius: 7px; padding: 8px 12px; font-size: 13px; color: var(--g700); margin-bottom: 5px; }
+
+    /* Response form */
+    .response-card {
+      background: white; border-radius: 14px;
+      border: 2px solid var(--blue); padding: 20px; margin-bottom: 14px;
+    }
+    .response-prompt { font-size: 16px; font-weight: 600; color: var(--g800); margin-bottom: 14px; line-height: 1.5; }
+    .response-input {
+      width: 100%; padding: 14px; border: 2px solid var(--g200); border-radius: 10px;
+      font-size: 16px; font-family: inherit; direction: rtl;
+      resize: none; min-height: 80px;
+    }
+    .response-input:focus { outline: none; border-color: var(--blue); }
+    .response-number {
+      width: 100%; padding: 16px; border: 2px solid var(--g200); border-radius: 10px;
+      font-size: 32px; font-weight: 700; text-align: center; font-family: monospace;
+    }
+    .response-number:focus { outline: none; border-color: var(--blue); }
+    .check-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 13px 14px; border: 2px solid var(--g200); border-radius: 10px;
+      background: white; cursor: pointer; margin-bottom: 8px;
+      transition: all 0.15s; user-select: none;
+    }
+    .check-item:hover, .check-item.on { border-color: var(--blue); background: var(--blue-l); }
+    .check-box {
+      width: 22px; height: 22px; border-radius: 5px; border: 2px solid var(--g200);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: white; flex-shrink: 0;
+    }
+    .check-item.on .check-box { background: var(--blue); border-color: var(--blue); }
+    .check-label { font-size: 14px; color: var(--g700); line-height: 1.4; padding-top: 2px; }
+
+    .submit-btn {
+      width: 100%; padding: 16px; border-radius: 12px; border: none;
+      font-size: 17px; font-weight: 700; background: var(--blue); color: white;
+      cursor: pointer; margin-top: 10px;
+    }
+    .submit-btn:hover { background: #1d4ed8; }
+    .submit-btn.done { background: var(--green); }
+
+    /* Waiting screen */
+    #waitScreen {
+      min-height: 60vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 32px 24px;
+    }
+    .wait-icon { font-size: 64px; margin-bottom: 16px; animation: spin 2s linear infinite; }
+    @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+    .wait-title { font-size: 22px; font-weight: 700; color: var(--g900); text-align: center; margin-bottom: 8px; }
+    .wait-sub { font-size: 15px; color: var(--g500); text-align: center; line-height: 1.6; }
+
+    /* Results screen */
+    #resultsScreen { padding: 16px; }
+    .results-card {
+      background: white; border-radius: 14px; border: 1px solid var(--g200);
+      padding: 20px; margin-bottom: 14px;
+    }
+    .results-title { font-size: 18px; font-weight: 700; color: var(--purple); margin-bottom: 14px; text-align: center; }
+    .res-avg { text-align: center; background: var(--purple-l); border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+    .res-avg-num { font-size: 56px; font-weight: 900; color: var(--purple); line-height: 1; }
+    .res-avg-label { font-size: 14px; color: var(--g500); margin-top: 6px; }
+    .res-bar-item { margin-bottom: 10px; }
+    .res-bar-label { font-size: 13px; color: var(--g700); margin-bottom: 4px; line-height: 1.3; }
+    .res-bar-track { height: 22px; background: var(--g100); border-radius: 5px; overflow: hidden; }
+    .res-bar-fill { height: 100%; background: var(--blue); transition: width 0.6s; display: flex; align-items: center; padding-right: 8px; font-size: 12px; color: white; font-weight: 700; }
+    .res-text-item { background: var(--g50); border: 1px solid var(--g200); border-radius: 7px; padding: 9px 12px; font-size: 14px; color: var(--g700); margin-bottom: 7px; }
+    .res-done-big { font-size: 48px; font-weight: 900; color: var(--green); text-align: center; }
+    .next-btn {
+      width: 100%; padding: 16px; border-radius: 12px; border: none;
+      font-size: 17px; font-weight: 700; background: var(--green); color: white;
+      cursor: pointer; margin-top: 10px; display: none;
+    }
+    .next-btn.show { display: block; }
+
+    /* Progress dots */
+    .progress-dots {
+      display: flex; gap: 4px; justify-content: center;
+      padding: 8px 16px 0;
+    }
+    .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--g200); transition: all 0.3s;
+    }
+    .dot.active { background: var(--blue); transform: scale(1.4); }
+    .dot.done { background: var(--green); }
+  </style>
+</head>
+<body>
+
+<!-- JOIN SCREEN -->
+<div id="joinScreen">
+  <div class="join-card">
+    <div class="join-logo">🎓</div>
+    <div class="join-title">כניסה לשיעור</div>
+    <p class="join-sub">הכנס/י את הקוד שמסרה המורה</p>
+    <div class="join-label">קוד שיעור</div>
+    <input type="text" id="codeInput" class="join-input join-code" placeholder="———" maxlength="6"
+           oninput="this.value=this.value.toUpperCase()">
+    <div class="join-label">שם (אופציונלי)</div>
+    <input type="text" id="nameInput" class="join-input" placeholder="תלמיד/ה">
+    <button class="join-btn" id="joinBtn" onclick="joinSession()">כניסה לשיעור →</button>
+    <p id="joinError" class="join-error" style="display:none"></p>
+  </div>
+</div>
+
+<!-- APP SCREEN -->
+<div id="appScreen">
+  <div class="top-bar">
+    <div class="tb-left">
+      <div class="tb-lesson" id="tbLesson">—</div>
+      <div class="tb-section" id="tbSection">—</div>
+    </div>
+    <div id="tbBadge" class="tb-badge badge-active">פעיל</div>
+  </div>
+
+  <!-- Progress dots -->
+  <div class="progress-dots" id="progressDots"></div>
+
+  <!-- CONTENT PHASE: show section content + possibly form -->
+  <div id="contentPhase" class="content-area">
+    <div id="contentDisplay"></div>
+    <div id="formArea"></div>
+  </div>
+
+  <!-- WAITING PHASE: after submit, waiting for teacher -->
+  <div id="waitPhase" style="display:none">
+    <div id="waitScreen">
+      <div class="wait-icon">⏳</div>
+      <div class="wait-title">תשובתך נשמרה!</div>
+      <div class="wait-sub">ממתין/ת לתוצאות הכיתה…<br>המורה תציג אותן בקרוב.</div>
+    </div>
+  </div>
+
+  <!-- RESULTS PHASE -->
+  <div id="resultsPhase" style="display:none">
+    <div id="resultsScreen">
+      <div class="results-card">
+        <div class="results-title">📊 תוצאות הכיתה</div>
+        <div id="resultsContent"></div>
+      </div>
+      <button id="nextBtn" class="next-btn" onclick="requestNext()">המשך לשלב הבא →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const socket = io();
+let SESSION_CODE = '';
+let MY_NAME = '';
+let curLesson = 0, curSection = 0;
+let phase = 'active'; // 'active' | 'collecting' | 'waiting' | 'results' | 'advancing'
+let submitted = false;
+let localWorlds = {};
+let checks = {};
+
+// Auto-fill code from URL param
+const urlCode = new URLSearchParams(location.search).get('code');
+if (urlCode) document.getElementById('codeInput').value = urlCode.toUpperCase();
+
+function joinSession() {
+  const code = document.getElementById('codeInput').value.trim().toUpperCase();
+  const name = document.getElementById('nameInput').value.trim() || 'תלמיד';
+  if (code.length < 4) return showJoinError('הכנס/י קוד תקין');
+  document.getElementById('joinBtn').disabled = true;
+  socket.emit('student:join', { code, name }, (res) => {
+    if (res.error) { showJoinError(res.error); document.getElementById('joinBtn').disabled = false; return; }
+    SESSION_CODE = code; MY_NAME = name;
+    curLesson = res.lesson; curSection = res.section;
+    phase = res.phase === 'collecting' ? 'active' : res.phase;
+    if (res.boards) { /* restore boards */ }
+    enterApp();
+    if (res.results) showResultsScreen(res.results);
+  });
+}
+function showJoinError(msg) {
+  const el = document.getElementById('joinError');
+  el.textContent = msg; el.style.display = '';
+}
+function enterApp() {
+  document.getElementById('joinScreen').style.display = 'none';
+  document.getElementById('appScreen').style.display = '';
+  renderCurrent();
+}
+
+// ── Render current section ────────────────────────────────────────────────────
+function cur() { return LESSONS[curLesson]?.sections[curSection]; }
+
+function renderCurrent() {
+  const sec = cur();
+  if (!sec) return;
+  const lesson = LESSONS[curLesson];
+  submitted = false;
+
+  // Top bar
+  document.getElementById('tbLesson').textContent = `${lesson.title}: ${lesson.subtitle}`;
+  document.getElementById('tbSection').textContent = sec.title;
+  setBadge('active');
+
+  // Progress dots
+  const dots = lesson.sections.map((s, i) =>
+    `<div class="dot ${i < curSection ? 'done' : i === curSection ? 'active' : ''}"></div>`
+  ).join('');
+  document.getElementById('progressDots').innerHTML = dots;
+
+  // Show content phase
+  showPhase('content');
+
+  // Build content
+  document.getElementById('contentDisplay').innerHTML = buildContent(sec);
+
+  // Build form if interactive
+  if (sec.interactive) {
+    document.getElementById('formArea').innerHTML = buildForm(sec);
+  } else {
+    document.getElementById('formArea').innerHTML = `
+      <button class="submit-btn done" onclick="ackSection()" style="background:var(--g500)">
+        קראתי / ראיתי — אוכל להמשיך
+      </button>`;
+  }
+}
+
+// ── Content builders ──────────────────────────────────────────────────────────
+function buildContent(sec) {
+  switch(sec.type) {
+    case 'open_q': return `
+      <div class="content-card">
+        <div class="big-question">${sec.question}</div>
+        ${sec.instructions ? `<p class="info-text" style="margin-top:12px">${sec.instructions}</p>` : ''}
+      </div>`;
+
+    case 'counter': return `
+      <div class="content-card">
+        <div class="content-title">📱 ספירת התראות</div>
+        <p class="info-text">${sec.studentPrompt}</p>
+      </div>`;
+
+    case 'factors': return `
+      <div class="content-card">
+        <div class="content-title">3 גורמים שמשפיעים על הקשב</div>
+        ${sec.factors.map(f=>`<div class="factor-item" style="border-right-color:${f.color}"><div class="factor-icon">${f.icon}</div><div class="factor-title" style="color:${f.color}">${f.title}</div><div class="factor-text">${f.text}</div></div>`).join('')}
+      </div>`;
+
+    case 'checklist_video': return `
+      <div class="content-card">
+        <div class="content-title">🔍 המנגנונים של האפליקציות</div>
+        <p class="info-text">${sec.studentPrompt}</p>
+      </div>
+      ${sec.videos.length ? `<div class="content-card"><div class="content-title">📺 סרטון</div>${sec.videos.map(v=>`<a href="${v.url}" target="_blank" class="video-item"><div style="flex:1"><div class="video-title">${v.title}</div>${v.note?`<div class="video-note">⚠️ ${v.note}</div>`:''}</div><div class="video-play-btn">▶</div></a>`).join('')}</div>` : ''}`;
+
+    case 'stats': return `
+      <div class="content-card">
+        <div class="content-title">📊 נתונים</div>
+        ${sec.stats.map(s=>`<div class="stat-item" style="background:${s.bg};border:2px solid ${s.border}"><div class="stat-num" style="color:${s.text}">${s.num}</div>${s.unit?`<div class="stat-unit" style="color:${s.text}">${s.unit}</div>`:''}<div class="stat-label">${s.label}</div></div>`).join('')}
+      </div>`;
+
+    case 'close_q': return `
+      <div class="content-card">
+        <div class="big-question" style="font-size:20px">${sec.question}</div>
+        ${sec.instructions ? `<p class="info-text" style="margin-top:10px">${sec.instructions}</p>` : ''}
+      </div>`;
+
+    case 'reflection': return `
+      <div class="content-card">
+        <div class="content-title">✍️ רפלקציה אישית</div>
+        <p class="info-text" style="margin-bottom:14px">${sec.intro}</p>
+        ${sec.questions.map((q,i)=>`<div class="refl-q"><div class="refl-num">${i+1}</div><div>${q}</div></div>`).join('')}
+      </div>`;
+
+    case 'video': return `
+      <div class="content-card">
+        <div class="content-title">📺 סרטון</div>
+        ${sec.videos.map(v=>`<a href="${v.url}" target="_blank" class="video-item"><div style="flex:1"><div class="video-title">${v.title}</div>${v.note?`<div class="video-note">⚠️ ${v.note}</div>`:''}</div><div class="video-play-btn">▶</div></a>`).join('')}
+      </div>`;
+
+    case 'world': return `
+      <div class="content-card">
+        <div class="content-title">🌍 מה קורה בעולם</div>
+        ${sec.examples.map((e,i)=>{const k=`${sec.id}_${i}`,on=localWorlds[k];return `<div class="world-item ${on?'on':''}" onclick="toggleWorldS('${sec.id}',${i})"><div class="world-country">${e.country}</div>${on?`<div class="world-text">${e.text}</div>`:'<div class="world-hint">לחץ לחשיפה</div>'}</div>`;}).join('')}
+        ${sec.closing?`<p style="font-size:14px;font-weight:600;color:var(--green);margin-top:12px;text-align:center">${sec.closing}</p>`:''}
+      </div>`;
+
+    case 'text': return `
+      <div class="content-card">
+        <div class="big-question" style="font-size:18px;line-height:1.8">${sec.text}</div>
+      </div>`;
+
+    case 'disc_board': return `
+      <div class="content-card">
+        <div class="big-question" style="font-size:16px">${sec.intro}</div>
+        <div id="discBoardStudent" style="margin-top:12px"></div>
+      </div>`;
+
+    case 'q_board': return `
+      <div class="content-card">
+        <div class="big-question" style="background:var(--purple-l);border-color:#c4b5fd;font-size:16px">${sec.intro}</div>
+        <div id="qBoardStudent" style="margin-top:12px"></div>
+      </div>`;
+
+    case 'close_prompts': return `
+      <div class="content-card">
+        <p class="info-text" style="margin-bottom:12px">${sec.intro}</p>
+        <div class="big-question" style="font-size:17px;margin-bottom:12px">${sec.question}</div>
+        ${sec.prompts.map(p=>`<div class="prompt-item">${p}</div>`).join('')}
+        <p style="font-size:14px;font-weight:600;color:var(--green);margin-top:10px;text-align:center">${sec.closingLine}</p>
+      </div>`;
+
+    case 'policy': return `
+      <div class="content-card">
+        <div class="content-title">📋 תקנון</div>
+        ${sec.topics.map(t=>`<div class="policy-item"><div class="policy-q">❓ ${t.q}</div><div class="policy-a">${t.a||'המורה תעדכן בשיעור'}</div></div>`).join('')}
+      </div>`;
+
+    case 'experience': return `
+      <div class="content-card">
+        <div class="big-question" style="font-size:18px;padding:24px">${sec.instruction}</div>
+        ${sec.options.map(o=>`<div class="prompt-item">${o}</div>`).join('')}
+        <p style="font-size:13px;color:var(--g400);text-align:center;margin-top:8px">${sec.studentPrompt}</p>
+      </div>`;
+
+    default: return `<div class="content-card"><p class="info-text">חלק: ${sec.title}</p></div>`;
+  }
+}
+
+// ── Form builders ─────────────────────────────────────────────────────────────
+function buildForm(sec) {
+  if (!sec.interactive) return '';
+  switch(sec.responseType) {
+    case 'number': return `
+      <div class="response-card">
+        <div class="response-prompt">${sec.studentPrompt}</div>
+        <input type="number" id="respNum" class="response-number" placeholder="0" min="0" max="9999">
+        <button class="submit-btn" onclick="submitNumber()">שלח →</button>
+      </div>`;
+    case 'checklist': return `
+      <div class="response-card">
+        <div class="response-prompt">${sec.studentPrompt}</div>
+        <div id="checklistForm">${sec.checks.map((c,i)=>`<div class="check-item" id="ci_${i}" onclick="toggleCheck(${i},${sec.checks.length})"><div class="check-box" id="cb_${i}"></div><div class="check-label">${c}</div></div>`).join('')}</div>
+        <button class="submit-btn" onclick="submitChecklist()">שלח →</button>
+      </div>`;
+    case 'text': return `
+      <div class="response-card">
+        <div class="response-prompt">${sec.studentPrompt}</div>
+        <textarea id="respText" class="response-input" placeholder="${sec.studentInput||'כתוב כאן'}" rows="3"></textarea>
+        <button class="submit-btn" onclick="submitText(${sec.type==='close_prompts'})">שלח →</button>
+      </div>`;
+    case 'done': return `
+      <div class="response-card" style="text-align:center">
+        <div class="response-prompt">${sec.studentPrompt||'כשתסיים את הפעילות — לחץ/י כאן'}</div>
+        <button class="submit-btn done" onclick="submitDone()">✅ סיימתי</button>
+      </div>`;
+    default: return '';
+  }
+}
+
+// ── Form submissions ──────────────────────────────────────────────────────────
+function submitNumber() {
+  const v = parseInt(document.getElementById('respNum').value);
+  if (isNaN(v) || v < 0) { alert('נא להכניס מספר תקין'); return; }
+  doSubmit(v);
+}
+function submitChecklist() {
+  const checked = Array.from(document.querySelectorAll('.check-item.on'))
+    .map(el => parseInt(el.id.replace('ci_','')));
+  doSubmit(checked);
+}
+function submitText(optional = false) {
+  const v = document.getElementById('respText').value.trim();
+  if (!optional && !v) { alert('נא לכתוב משהו'); return; }
+  doSubmit(v || '');
+}
+function submitDone() { doSubmit(true); }
+function ackSection() {
+  // For non-interactive sections, just mark as "seen" — no socket emit needed
+  // Teacher controls advancement
+  showPhase('wait');
+  setBadge('waiting');
+  document.getElementById('waitScreen').querySelector('.wait-title').textContent = 'ממתין/ת להמשך…';
+  document.getElementById('waitScreen').querySelector('.wait-sub').textContent = 'המורה תפתח את השלב הבא בקרוב.';
+}
+function doSubmit(response) {
+  socket.emit('student:submit', { response }, (res) => {
+    submitted = true;
+    showPhase('wait');
+    setBadge('waiting');
+  });
+}
+
+// ── World cards ───────────────────────────────────────────────────────────────
+function toggleWorldS(sid, i) {
+  const k = `${sid}_${i}`;
+  localWorlds[k] = !localWorlds[k];
+  const sec = LESSONS.flatMap(l=>l.sections).find(s=>s.id===sid);
+  if (!sec) return;
+  const el = document.querySelectorAll('.world-item')[i];
+  if (!el) return;
+  el.className = 'world-item' + (localWorlds[k]?' on':'');
+  el.innerHTML = `<div class="world-country">${sec.examples[i].country}</div>${localWorlds[k]?`<div class="world-text">${sec.examples[i].text}</div>`:'<div class="world-hint">לחץ לחשיפה</div>'}`;
+}
+
+// ── Check toggles ──────────────────────────────────────────────────────────────
+function toggleCheck(i) {
+  checks[i] = !checks[i];
+  const item = document.getElementById(`ci_${i}`);
+  const box = document.getElementById(`cb_${i}`);
+  if (!item || !box) return;
+  item.classList.toggle('on', checks[i]);
+  box.textContent = checks[i] ? '✓' : '';
+  box.style.background = checks[i] ? 'var(--blue)' : '';
+  box.style.borderColor = checks[i] ? 'var(--blue)' : '';
+  box.style.color = checks[i] ? 'white' : '';
+}
+
+// ── Phase switching ───────────────────────────────────────────────────────────
+function showPhase(p) {
+  document.getElementById('contentPhase').style.display = p === 'content' ? '' : 'none';
+  document.getElementById('waitPhase').style.display = p === 'wait' ? '' : 'none';
+  document.getElementById('resultsPhase').style.display = p === 'results' ? '' : 'none';
+}
+function setBadge(p) {
+  const el = document.getElementById('tbBadge');
+  const map = {
+    active: ['badge-active', 'פעיל'],
+    collecting: ['badge-collecting', 'שלח תשובה'],
+    waiting: ['badge-waiting', 'ממתין…'],
+    results: ['badge-results', 'תוצאות']
+  };
+  const [cls, text] = map[p] || map.active;
+  el.className = `tb-badge ${cls}`;
+  el.textContent = text;
+}
+function showResultsScreen(results) {
+  showPhase('results');
+  setBadge('results');
+  document.getElementById('resultsContent').innerHTML = buildResultsHtml(results, cur());
+}
+function buildResultsHtml(res, sec) {
+  if (!res || res.type === 'empty') return '<p style="text-align:center;color:var(--g400)">אין תוצאות עדיין</p>';
+  if (res.type === 'counter') return `
+    <div class="res-avg"><div class="res-avg-num">${res.avg}</div><div class="res-avg-label">ממוצע התראות ביום של הכיתה</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="background:var(--green-l);border-radius:10px;padding:14px;text-align:center"><div style="font-size:28px;font-weight:800;color:var(--green)">${res.min}</div><div style="font-size:12px;color:var(--g500)">מינימום</div></div>
+      <div style="background:var(--red-l);border-radius:10px;padding:14px;text-align:center"><div style="font-size:28px;font-weight:800;color:var(--red)">${res.max}</div><div style="font-size:12px;color:var(--g500)">מקסימום</div></div>
+    </div>
+    <p style="font-size:13px;color:var(--g500);text-align:center;margin-top:10px">השתתפו ${res.count} תלמידים</p>`;
+  if (res.type === 'checklist') {
+    const checks = sec?.checks || [];
+    return `<p style="font-size:13px;color:var(--g500);margin-bottom:10px">השתתפו ${res.count} תלמידים</p>` +
+      checks.map((c,i)=>{
+        const cnt = res.totals[i]||0;
+        const pct = res.count ? Math.round(cnt/res.count*100) : 0;
+        return `<div class="res-bar-item"><div class="res-bar-label">${c}</div><div class="res-bar-track"><div class="res-bar-fill" style="width:${pct}%">${pct>10?pct+'%':''}</div></div></div>`;
+      }).join('');
+  }
+  if (res.type === 'text') return `
+    <p style="font-size:13px;color:var(--g500);margin-bottom:10px">השתתפו ${res.count} תלמידים</p>
+    ${res.texts.map(t=>`<div class="res-text-item">${t}</div>`).join('')}`;
+  if (res.type === 'done') return `
+    <div class="res-done-big">${res.done}/${res.total}</div>
+    <p style="font-size:14px;color:var(--g500);text-align:center;margin-top:8px">סיימו את הפעילות</p>`;
+  return '';
+}
+function requestNext() {
+  // Teacher controls advance — this button shows but teacher is the one advancing
+  document.getElementById('nextBtn').textContent = 'ממתין/ת שהמורה תמשיך…';
+  document.getElementById('nextBtn').disabled = true;
+}
+
+// ── Socket events ─────────────────────────────────────────────────────────────
+socket.on('phase:state', ({ phase: p }) => {
+  if (p === 'collecting') {
+    setBadge('collecting');
+  }
+});
+
+socket.on('results:show', (results) => {
+  showResultsScreen(results);
+  // Show "next" button if teacher will advance
+  setTimeout(() => { document.getElementById('nextBtn').classList.add('show'); }, 500);
+});
+
+socket.on('phase:advance', ({ lesson, section }) => {
+  curLesson = lesson; curSection = section;
+  checks = {}; localWorlds = {};
+  submitted = false;
+  renderCurrent();
+  document.getElementById('nextBtn').classList.remove('show');
+});
+
+socket.on('board:add', ({ boardKey, col, text }) => {
+  const listId = col === 0 ? 'discBoardStudent' : 'discBoardStudent';
+  const board = document.getElementById('discBoardStudent') || document.getElementById('qBoardStudent');
+  if (board) {
+    const d = document.createElement('div');
+    d.className = 'disc-entry-s';
+    d.textContent = text;
+    board.appendChild(d);
+  }
+});
+</script>
+</body>
+</html>
