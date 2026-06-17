@@ -1,0 +1,85 @@
+/* deck-edit-mode toolbar and editing styles */
+#dem-toolbar {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 999999;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(20, 20, 24, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+
+#dem-toolbar button {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #2a2a32;
+  color: #f2f2f5;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+#dem-toolbar button:hover {
+  background: #383842;
+}
+
+#dem-toolbar button[data-active="true"] {
+  background: #4f7cff;
+  border-color: #4f7cff;
+}
+
+#dem-toolbar .dem-hint {
+  align-self: center;
+  color: #b5b5bd;
+  padding: 0 4px;
+}
+
+body.dem-edit-active [data-dem-editable] {
+  outline: 1px dashed transparent;
+  cursor: text;
+  transition: outline-color 0.1s ease;
+}
+
+body.dem-edit-active [data-dem-editable]:hover {
+  outline-color: rgba(79, 124, 255, 0.6);
+}
+
+body.dem-edit-active [data-dem-editable]:focus {
+  outline: 2px solid #4f7cff;
+  outline-offset: 2px;
+}
+
+body.dem-edit-active [data-dem-draggable] {
+  position: relative;
+}
+
+.dem-drag-handle {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: #4f7cff;
+  color: #fff;
+  font-size: 11px;
+  line-height: 18px;
+  text-align: center;
+  cursor: grab;
+  z-index: 999998;
+  user-select: none;
+}
+
+.dem-drag-handle:active {
+  cursor: grabbing;
+}
+
+[data-dem-dragging="true"] {
+  opacity: 0.85;
+  z-index: 999997;
+}
