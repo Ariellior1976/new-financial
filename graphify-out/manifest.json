@@ -1,0 +1,146 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1790697145.5108807,
+    "seen": 1790697170.0806437,
+    "ast_hash": "cbaf2b3390ea3e622938b2e9c1c65eed",
+    "semantic_hash": "cbaf2b3390ea3e622938b2e9c1c65eed"
+  },
+  "stock_screener_app/backend/archive/edition_1779828373.json": {
+    "mtime": 1790697109.3630223,
+    "seen": 1790697170.0806482,
+    "ast_hash": "bd29409f70ec1b1f2f994a43dcc1d1da",
+    "semantic_hash": "bd29409f70ec1b1f2f994a43dcc1d1da"
+  },
+  "stock_screener_app/backend/archive/edition_1779888895.json": {
+    "mtime": 1790697109.3633091,
+    "seen": 1790697170.08065,
+    "ast_hash": "f6f9fa68c10027a40c3d85375c5706b0",
+    "semantic_hash": "f6f9fa68c10027a40c3d85375c5706b0"
+  },
+  "stock_screener_app/backend/archive/edition_1779901843.json": {
+    "mtime": 1790697109.3633091,
+    "seen": 1790697170.080651,
+    "ast_hash": "68651249d640ca2d7a48af5e71caefc7",
+    "semantic_hash": "68651249d640ca2d7a48af5e71caefc7"
+  },
+  "stock_screener_app/backend/main.py": {
+    "mtime": 1790697109.3641717,
+    "seen": 1790697170.0806522,
+    "ast_hash": "e1211193cdb50445ea6521ffc34ba73b",
+    "semantic_hash": "e1211193cdb50445ea6521ffc34ba73b"
+  },
+  "stock_screener_app/backend/news_engine.py": {
+    "mtime": 1790697109.3641717,
+    "seen": 1790697170.0806534,
+    "ast_hash": "ed4672d4c1a03a9a10a6ac078ed9e7da",
+    "semantic_hash": "ed4672d4c1a03a9a10a6ac078ed9e7da"
+  },
+  "stock_screener_app/backend/screener.py": {
+    "mtime": 1790697109.3641717,
+    "seen": 1790697170.0806546,
+    "ast_hash": "942eabdd7a1cdedba7a04179398dd90c",
+    "semantic_hash": "942eabdd7a1cdedba7a04179398dd90c"
+  },
+  "stock_screener_app/database.py": {
+    "mtime": 1790697109.3641717,
+    "seen": 1790697170.080664,
+    "ast_hash": "6fa6b9473edabd2bb09d1de0a68272f5",
+    "semantic_hash": "6fa6b9473edabd2bb09d1de0a68272f5"
+  },
+  "stock_screener_app/frontend/eslint.config.js": {
+    "mtime": 1790697109.3801718,
+    "seen": 1790697170.0806656,
+    "ast_hash": "0355276bc79439afe3c53e3a2470ca1e",
+    "semantic_hash": "0355276bc79439afe3c53e3a2470ca1e"
+  },
+  "stock_screener_app/frontend/package.json": {
+    "mtime": 1790697109.3801718,
+    "seen": 1790697170.0806668,
+    "ast_hash": "6e7a7e8e63b859627eac5a0687993040",
+    "semantic_hash": "6e7a7e8e63b859627eac5a0687993040"
+  },
+  "stock_screener_app/frontend/src/App.tsx": {
+    "mtime": 1790697109.4037437,
+    "seen": 1790697170.0806677,
+    "ast_hash": "f0f5e70ffa1750a63b412e33f12d48fb",
+    "semantic_hash": "f0f5e70ffa1750a63b412e33f12d48fb"
+  },
+  "stock_screener_app/frontend/src/main.tsx": {
+    "mtime": 1790697109.4043512,
+    "seen": 1790697170.080669,
+    "ast_hash": "787e5a07efeb2bf6209d5937195f2f68",
+    "semantic_hash": "787e5a07efeb2bf6209d5937195f2f68"
+  },
+  "stock_screener_app/frontend/tsconfig.app.json": {
+    "mtime": 1790697109.4043512,
+    "seen": 1790697170.0806699,
+    "ast_hash": "136630b5accce1ca50663df229534a26",
+    "semantic_hash": "136630b5accce1ca50663df229534a26"
+  },
+  "stock_screener_app/frontend/tsconfig.json": {
+    "mtime": 1790697109.4043512,
+    "seen": 1790697170.0806708,
+    "ast_hash": "a3d39fa780ebff65444de257f291ce6c",
+    "semantic_hash": "a3d39fa780ebff65444de257f291ce6c"
+  },
+  "stock_screener_app/frontend/tsconfig.node.json": {
+    "mtime": 1790697109.4043512,
+    "seen": 1790697170.0806718,
+    "ast_hash": "70bdd0a673bcfc0e828080b306e7c680",
+    "semantic_hash": "70bdd0a673bcfc0e828080b306e7c680"
+  },
+  "stock_screener_app/frontend/vite.config.ts": {
+    "mtime": 1790697109.4043512,
+    "seen": 1790697170.0806725,
+    "ast_hash": "88439104b3c207f17d33ef3160e3b080",
+    "semantic_hash": "88439104b3c207f17d33ef3160e3b080"
+  },
+  "stock_screener_app/screener.py": {
+    "mtime": 1790697109.4043512,
+    "seen": 1790697170.0806732,
+    "ast_hash": "27740027a3cb2aa5aa3f3a213955670b",
+    "semantic_hash": "27740027a3cb2aa5aa3f3a213955670b"
+  },
+  "stock_screener_app/test_api.py": {
+    "mtime": 1790697109.4043512,
+    "seen": 1790697170.0806744,
+    "ast_hash": "1114c3710f3e60c1cfbfa6996318c5b6",
+    "semantic_hash": "1114c3710f3e60c1cfbfa6996318c5b6"
+  },
+  "stock_screener_app/universe.py": {
+    "mtime": 1790697109.4043512,
+    "seen": 1790697170.0806751,
+    "ast_hash": "d4dfeabbca90f5dc6ffda6a842b3f61e",
+    "semantic_hash": "d4dfeabbca90f5dc6ffda6a842b3f61e"
+  },
+  "stock_screener_app/backend/archive/edition_1779828373.mp3": {
+    "mtime": 1790697109.3633091,
+    "seen": 1790697170.080676,
+    "ast_hash": "5e319c8e2906b94b45e6bbc2fd43dcad",
+    "semantic_hash": "5e319c8e2906b94b45e6bbc2fd43dcad"
+  },
+  "stock_screener_app/backend/archive/edition_1779888895.mp3": {
+    "mtime": 1790697109.3633091,
+    "seen": 1790697170.0806768,
+    "ast_hash": "ead5bc5d19e266583c296950faf780e5",
+    "semantic_hash": "ead5bc5d19e266583c296950faf780e5"
+  },
+  "stock_screener_app/backend/archive/edition_1779901843.mp3": {
+    "mtime": 1790697109.3633091,
+    "seen": 1790697170.0806777,
+    "ast_hash": "ead5bc5d19e266583c296950faf780e5",
+    "semantic_hash": "ead5bc5d19e266583c296950faf780e5"
+  },
+  "stock_screener_app/test.mp3": {
+    "mtime": 1790697109.4043512,
+    "seen": 1790697170.0806808,
+    "ast_hash": "e4295fde524c9d4d248890754ddb5fd7",
+    "semantic_hash": "e4295fde524c9d4d248890754ddb5fd7"
+  },
+  "stock_screener_app/test_gtts.mp3": {
+    "mtime": 1790697109.4043512,
+    "seen": 1790697170.0806818,
+    "ast_hash": "70a02ca892f7e26facc36441776d58d2",
+    "semantic_hash": "70a02ca892f7e26facc36441776d58d2"
+  }
+}
