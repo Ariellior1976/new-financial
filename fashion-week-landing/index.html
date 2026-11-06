@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fashion Week · אורט סינגאלובסקי</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="הזמנה אישית לבנות שכבת י' אורט סינגאלובסקי לתצוגת אופנה ייחודית בשבוע האופנה תל אביב 2026, והרשמה להסעה מבית הספר.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,600;1,6..96,400;1,6..96,500&family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Assistant:wght@300;400;600;700&display=swap">
+<style>
+/* Layout: one narrow catwalk column down the centre of a dark hall, lit from above; landing and registration are two screens of the same runway. */
+:root {
+  --hall: #0c0b0c;          /* the dark show hall */
+  --hall-2: #161416;        /* raised surfaces */
+  --hall-3: #221f22;        /* inputs, chips */
+  --ivory: #f2ece3;         /* type, like the invitation */
+  --ivory-dim: #b9b2a8;     /* secondary type */
+  --ivory-faint: #7a746d;   /* captions */
+  --rule: rgba(242, 236, 227, .16);
+  --blush: #f2b8cf;         /* the invitation's pink */
+  --blush-deep: #e48fb1;
+  --ink-on-blush: #1d0f15;
+  --danger: #ff8f8f;
+
+  --f-display: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --f-he-display: "Frank Ruhl Libre", "David", "Times New Roman", serif;
+  --f-body: "Assistant", "Segoe UI", Arial, sans-serif;
+
+  --col: 640px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--hall); scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--hall);
+  color: var(--ivory);
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+[hidden] { display: none !important; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--blush); outline-offset: 3px; }
+
+/* spotlight from the rig above */
+.hall-light {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 45% at 50% -8%, rgba(255,255,255,.16), transparent 70%),
+    radial-gradient(ellipse 30% 70% at 50% 0%, rgba(255,255,255,.05), transparent 75%);
+}
+
+.wrap {
+  position: relative; z-index: 1;
+  width: 100%;
+  max-width: var(--col);
+  margin-inline: auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- masthead ---------- */
+.masthead { text-align: center; padding-block: 44px 28px; }
+.eyebrow {
+  font-family: var(--f-body); font-weight: 600;
+  font-size: 12px; letter-spacing: .42em; text-transform: uppercase;
+  color: var(--ivory-dim);
+  direction: ltr;
+}
+.wordmark {
+  direction: ltr;
+  font-family: var(--f-display);
+  font-weight: 400;
+  line-height: .86;
+  margin: 18px 0 0;
+  color: var(--ivory);
+}
+.wordmark .w1 { display: block; font-size: clamp(64px, 19vw, 118px); letter-spacing: -.01em; font-weight: 600; }
+.wordmark .w2 { display: block; font-size: clamp(60px, 17vw, 108px); font-style: italic; font-weight: 400; margin-top: 4px; }
+.city {
+  direction: ltr;
+  display: flex; align-items: center; gap: 18px; justify-content: center;
+  margin-top: 22px;
+  font-weight: 700; font-size: 14px; letter-spacing: .45em; color: var(--ivory);
+}
+.city::before, .city::after { content: ""; height: 1px; flex: 1; max-width: 120px; background: var(--rule); }
+
+/* ---------- hero image ---------- */
+.stage { position: relative; z-index: 1; margin-top: 8px; }
+.stage-img {
+  position: relative;
+  max-width: 1080px; margin-inline: auto;
+  aspect-ratio: 1079 / 510;
+  overflow: hidden;
+}
+.stage-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(1) contrast(1.05);
+  animation: settle 2.4s ease-out both;
+}
+.stage-img::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    linear-gradient(to bottom, var(--hall) 0%, transparent 22%, transparent 55%, var(--hall) 100%),
+    linear-gradient(to right, var(--hall) 0%, transparent 12%, transparent 88%, var(--hall) 100%);
+}
+@keyframes settle { from { transform: scale(1.06); opacity: .55; } to { transform: scale(1); opacity: 1; } }
+
+/* ---------- invitation copy ---------- */
+.invite { text-align: right; margin-top: -36px; position: relative; z-index: 2; }
+.pill {
+  display: inline-block;
+  background: var(--blush); color: var(--ink-on-blush);
+  font-weight: 700; font-size: 15px;
+  padding: 6px 18px; border-radius: 999px;
+}
+.invite .to {
+  font-family: var(--f-body); font-weight: 700;
+  font-size: clamp(20px, 5.4vw, 26px);
+  margin: 16px 0 0; line-height: 1.3;
+}
+.invite .verb { font-size: clamp(18px, 4.8vw, 23px); color: var(--ivory-dim); margin: 2px 0 0; font-weight: 400; }
+.invite h1 {
+  font-family: var(--f-he-display);
+  font-weight: 900;
+  font-size: clamp(44px, 13vw, 76px);
+  line-height: 1.02;
+  margin: 10px 0 0;
+  text-wrap: balance;
+}
+.invite h1 em { font-style: normal; color: var(--blush); display: block; }
+
+.cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 30px; }
+.btn {
+  appearance: none; border: 0; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  font-family: var(--f-body); font-weight: 700; font-size: 19px;
+  text-decoration: none;
+  background: var(--ivory); color: var(--hall);
+  padding: 16px 34px; border-radius: 999px;
+  transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+  box-shadow: 0 0 0 0 rgba(242,184,207,0);
+}
+.btn:hover { background: #fff; transform: translateY(-1px); box-shadow: 0 10px 40px -12px rgba(242,184,207,.55); }
+.btn .arr { font-size: 22px; line-height: 1; transform: translateY(-1px); }
+.btn-ghost { background: transparent; color: var(--ivory); border: 1px solid var(--rule); }
+.btn-ghost:hover { background: rgba(255,255,255,.06); box-shadow: none; }
+.runway-script { font-family: var(--f-display); font-style: italic; color: var(--blush); font-size: 22px; direction: ltr; }
+
+/* ---------- facts ---------- */
+.facts {
+  margin-top: 52px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+}
+.fact { padding: 22px 0 24px; min-width: 0; }
+.fact + .fact { border-inline-start: 1px solid var(--rule); padding-inline-start: 22px; }
+.fact .k { font-size: 13px; letter-spacing: .32em; color: var(--ivory-faint); }
+.fact .v {
+  font-family: var(--f-body); font-weight: 700;
+  font-size: clamp(38px, 11vw, 56px); line-height: 1.05; margin-top: 6px;
+  direction: ltr; text-align: right; font-variant-numeric: tabular-nums; letter-spacing: -.01em;
+}
+.fact .s { font-size: 16px; margin-top: 6px; }
+.fact .s2 { font-size: 15px; color: var(--blush); margin-top: 2px; }
+.place { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 18px; padding: 16px 0; border-bottom: 1px solid var(--rule); }
+.place .he { font-weight: 600; }
+.place .en { font-family: var(--f-display); font-style: italic; color: var(--ivory-faint); direction: ltr; }
+
+/* ---------- countdown ---------- */
+.count { margin-top: 44px; text-align: center; }
+.count .label { font-size: 13px; letter-spacing: .32em; color: var(--ivory-faint); }
+.clock { direction: ltr; display: flex; justify-content: center; gap: clamp(10px, 4vw, 28px); margin-top: 12px; }
+.clock div { min-width: 64px; }
+.clock b { display: block; font-family: var(--f-display); font-weight: 400; font-size: clamp(38px, 11vw, 58px); line-height: 1; font-variant-numeric: tabular-nums lining-nums; }
+.clock span { display: block; font-size: 12px; color: var(--ivory-faint); margin-top: 6px; direction: rtl; letter-spacing: .1em; }
+
+/* ---------- notes (tickets / departure) ---------- */
+.notes { display: grid; gap: 14px; margin-top: 48px; }
+.note {
+  display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; align-items: start;
+  padding: 22px 22px 24px;
+  background: var(--hall-2);
+  border: 1px solid var(--rule);
+}
+.note .ico {
+  grid-row: span 2;
+  width: 46px; height: 46px; border-radius: 50%;
+  display: grid; place-items: center;
+  border: 1px solid var(--blush); color: var(--blush);
+}
+.note h3 { margin: 0; font-family: var(--f-he-display); font-weight: 700; font-size: 23px; line-height: 1.25; }
+.note p { margin: 0; color: var(--ivory-dim); font-size: 16px; }
+.note.urgent { background: var(--blush); color: var(--ink-on-blush); border-color: var(--blush); }
+.note.urgent .ico { border-color: var(--ink-on-blush); color: var(--ink-on-blush); }
+.note.urgent p { color: var(--ink-on-blush); opacity: .82; }
+
+/* ---------- invitation poster ---------- */
+.poster { margin-top: 64px; text-align: center; }
+.poster h2, .reg-head h2 { font-family: var(--f-he-display); font-weight: 700; font-size: 28px; margin: 0; }
+.poster .sub { color: var(--ivory-faint); font-size: 15px; margin-top: 4px; }
+.poster figure { margin: 22px auto 0; max-width: 360px; transform: rotate(-1.5deg); box-shadow: 0 40px 80px -30px rgba(0,0,0,.9), 0 0 0 1px var(--rule); }
+.poster figure img { width: 100%; }
+
+.final-cta { text-align: center; margin-top: 56px; display: grid; justify-items: center; gap: 14px; }
+.final-cta .runway-script { font-size: 26px; }
+
+footer {
+  margin-top: 72px; padding-block: 26px 40px; text-align: center;
+  border-top: 1px solid var(--rule); color: var(--ivory-faint); font-size: 13px;
+}
+footer .partners { direction: ltr; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 22px; font-weight: 700; letter-spacing: .18em; font-size: 12px; color: var(--ivory-dim); margin-bottom: 10px; }
+
+/* ---------- registration ---------- */
+.reg { padding-block: 26px 40px; }
+.back { display: inline-flex; align-items: center; gap: 8px; color: var(--ivory-dim); text-decoration: none; font-size: 15px; padding: 6px 0; }
+.back:hover { color: var(--ivory); }
+.reg-head { margin-top: 18px; }
+.reg-head .eyebrow { direction: rtl; letter-spacing: .3em; }
+.reg-head h2 { font-size: clamp(34px, 9vw, 48px); font-weight: 900; line-height: 1.08; margin-top: 10px; }
+.reg-head h2 em { font-style: normal; color: var(--blush); }
+.reg-head p { color: var(--ivory-dim); margin: 10px 0 0; }
+
+.terms { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 26px; }
+.term { padding: 16px 16px 18px; border: 1px solid var(--rule); background: var(--hall-2); min-width: 0; }
+.term .k { font-size: 12px; letter-spacing: .24em; color: var(--ivory-faint); }
+.term .v { font-weight: 700; font-size: 18px; line-height: 1.3; margin-top: 4px; }
+.term.hot { background: var(--blush); border-color: var(--blush); color: var(--ink-on-blush); }
+.term.hot .k { color: var(--ink-on-blush); opacity: .7; }
+.term.hot .v { font-size: 24px; }
+.term .v .t { direction: ltr; display: inline-block; }
+
+form { margin-top: 30px; display: grid; gap: 20px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.field { display: grid; gap: 7px; min-width: 0; }
+.field label, .field legend { font-weight: 600; font-size: 15px; color: var(--ivory); padding: 0; }
+.field .req { color: var(--blush); }
+.field input {
+  width: 100%;
+  font: inherit; font-size: 18px; color: var(--ivory);
+  background: var(--hall-3);
+  border: 1px solid transparent; border-bottom: 1px solid var(--rule);
+  padding: 13px 14px; border-radius: 0;
+  transition: border-color .2s, background .2s;
+}
+.field input::placeholder { color: var(--ivory-faint); }
+.field input:focus { outline: none; border-color: var(--blush); background: #2a262a; }
+.field input.ltr { direction: ltr; text-align: right; font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+.field input.ltr:placeholder-shown { direction: rtl; }
+.field .err { color: var(--danger); font-size: 14px; min-height: 0; }
+.field.bad input { border-color: var(--danger); }
+.field .hint { color: var(--ivory-faint); font-size: 13px; }
+
+fieldset.field { border: 0; margin: 0; padding: 0; }
+.classes { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 2px; }
+.classes label { position: relative; cursor: pointer; }
+.classes input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.classes span {
+  display: grid; place-items: center;
+  height: 54px;
+  font-family: var(--f-he-display); font-weight: 700; font-size: 22px;
+  background: var(--hall-3); border: 1px solid var(--rule); color: var(--ivory);
+  transition: background .15s, color .15s, border-color .15s, transform .15s;
+}
+.classes label:hover span { border-color: var(--ivory-dim); }
+.classes input:checked + span { background: var(--ivory); color: var(--hall); border-color: var(--ivory); transform: translateY(-2px); }
+.classes input:focus-visible + span { outline: 2px solid var(--blush); outline-offset: 2px; }
+fieldset.bad .classes span { border-color: var(--danger); }
+
+.confirm {
+  display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start;
+  padding: 16px; border: 1px solid var(--rule); cursor: pointer; font-size: 16px; color: var(--ivory-dim);
+}
+.confirm input { width: 22px; height: 22px; accent-color: var(--blush); margin: 2px 0 0; }
+.confirm b { color: var(--ivory); }
+.confirm.bad { border-color: var(--danger); }
+
+.submit { width: 100%; font-size: 20px; padding: 18px; margin-top: 4px; }
+.submit[disabled] { opacity: .6; cursor: progress; transform: none; }
+.form-msg { text-align: center; font-size: 15px; color: var(--danger); }
+.demo-note { font-size: 13px; color: var(--ivory-faint); text-align: center; border: 1px dashed var(--rule); padding: 10px; }
+
+/* ---------- boarding pass (success) ---------- */
+.pass {
+  margin-top: 26px;
+  background: var(--ivory); color: var(--hall);
+  position: relative;
+  animation: rise .7s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes rise { from { transform: translateY(18px); opacity: 0; } to { transform: none; opacity: 1; } }
+.pass-top { padding: 26px 24px 22px; text-align: center; }
+.pass-top .brand { direction: ltr; font-family: var(--f-display); font-size: 34px; line-height: 1; }
+.pass-top .brand i { font-weight: 400; }
+.pass-top .sub { direction: ltr; font-size: 11px; letter-spacing: .4em; font-weight: 700; margin-top: 8px; color: #5c5650; }
+.pass-tear { height: 0; border-top: 2px dashed rgba(12,11,12,.25); margin-inline: 18px; position: relative; }
+.pass-tear::before, .pass-tear::after { content: ""; position: absolute; top: -13px; width: 24px; height: 24px; border-radius: 50%; background: var(--hall); }
+.pass-tear::before { right: -30px; } .pass-tear::after { left: -30px; }
+.pass-body { padding: 22px 24px 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px 18px; }
+.pass-body .k { font-size: 12px; letter-spacing: .2em; color: #6d665f; }
+.pass-body .v { font-weight: 700; font-size: 20px; line-height: 1.25; overflow-wrap: anywhere; }
+.pass-body .full { grid-column: 1 / -1; }
+.pass-body .big { font-family: var(--f-he-display); font-size: 30px; font-weight: 900; }
+.pass-body .t { direction: ltr; display: inline-block; }
+.pass-foot { background: var(--blush); color: var(--ink-on-blush); text-align: center; font-weight: 700; padding: 14px 18px; font-size: 16px; }
+.success-copy { text-align: center; margin-top: 26px; color: var(--ivory-dim); }
+.success-copy h2 { font-family: var(--f-he-display); font-weight: 900; font-size: 34px; color: var(--ivory); margin: 0 0 6px; }
+
+/* ---------- small screens ---------- */
+@media (max-width: 480px) {
+  .classes { grid-template-columns: repeat(3, 1fr); }
+  .row2 { grid-template-columns: 1fr; }
+  .fact + .fact { padding-inline-start: 16px; }
+  .note { padding: 18px; gap: 6px 14px; }
+  .note .ico { width: 40px; height: 40px; }
+  .btn { width: 100%; }
+  .cta-row { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+<div class="hall-light" aria-hidden="true"></div>
+
+<!-- =================== LANDING =================== -->
+<main id="view-home">
+  <header class="wrap masthead">
+    <div class="eyebrow">Israel · Canada presents</div>
+    <h2 class="wordmark" aria-label="Fashion Week"><span class="w1">Fashion</span><span class="w2">Week</span></h2>
+    <div class="city">TEL AVIV 2026</div>
+  </header>
+
+  <div class="stage">
+    <div class="stage-img"><img src="assets/runway.jpg" alt="דוגמניות צועדות על המסלול בתצוגת אופנה, לצד נגן עוד"></div>
+  </div>
+
+  <section class="wrap invite">
+    <span class="pill">הזמנה אישית</span>
+    <p class="to">בנות שכבת י' אורט סינגאלובסקי</p>
+    <p class="verb">מוזמנות לקחת חלק</p>
+    <h1>בחוויית אופנה <em>ייחודית</em></h1>
+
+    <div class="cta-row">
+      <a class="btn" href="#register">להרשמה להסעה <span class="arr" aria-hidden="true">←</span></a>
+      <span class="runway-script">see you on the runway</span>
+    </div>
+
+    <div class="facts">
+      <div class="fact">
+        <div class="k">יום שני</div>
+        <div class="v">9.11.26</div>
+        <div class="s">תאריך האירוע</div>
+      </div>
+      <div class="fact">
+        <div class="k">שעה</div>
+        <div class="v">14:30</div>
+        <div class="s">יציאה מבית הספר לאירוע</div>
+        <div class="s2">חזרה מהאירוע – עצמאית</div>
+      </div>
+    </div>
+    <div class="place">
+      <span class="he"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-inline-end:6px;color:var(--blush)" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>קרמניצקי 7, תל אביב</span>
+      <span class="en">Kremenetski 7, Tel Aviv</span>
+    </div>
+
+    <div class="count" id="count">
+      <div class="label">ההסעה יוצאת בעוד</div>
+      <div class="clock" aria-live="off">
+        <div><b id="cd-d">--</b><span>ימים</span></div>
+        <div><b id="cd-h">--</b><span>שעות</span></div>
+        <div><b id="cd-m">--</b><span>דקות</span></div>
+        <div><b id="cd-s">--</b><span>שניות</span></div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note">
+        <div class="ico" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v12" stroke-dasharray="2 2"/></svg>
+        </div>
+        <h3>הכרטיסים לאירוע – על חשבון בית הספר</h3>
+        <p>אין צורך לרכוש כרטיס ואין תשלום. כל מה שצריך הוא להירשם להסעה.</p>
+      </div>
+      <div class="note urgent">
+        <div class="ico" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <h3>ההסעה יוצאת בדיוק ב־<bdi>14:30</bdi></h3>
+        <p>ההסעה לא תמתין למאחרות. כדאי להגיע לנקודת האיסוף כמה דקות לפני.</p>
+      </div>
+    </div>
+
+    <section class="poster">
+      <h2>ההזמנה</h2>
+      <div class="sub">שבוע האופנה תל אביב 2026</div>
+      <figure><img src="assets/invitation.jpg" alt="ההזמנה הרשמית לתצוגת האופנה, 9.11.26, יציאה ב־14:30 מבית הספר"></figure>
+    </section>
+
+    <div class="final-cta">
+      <span class="runway-script">Don't miss it</span>
+      <a class="btn" href="#register">אל תחמיצו! להרשמה <span class="arr" aria-hidden="true">←</span></a>
+    </div>
+  </section>
+
+  <footer class="wrap">
+    <div class="partners"><span>ISRAEL CANADA</span><span>TEL AVIV FASHION WEEK 2026</span><span>ORT SINGALOVSKI</span></div>
+    אורט סינגאלובסקי · שכבת י'
+  </footer>
+</main>
+
+<!-- =================== REGISTRATION =================== -->
+<main id="view-register" hidden>
+  <section class="wrap reg">
+    <a class="back" href="#">→ חזרה להזמנה</a>
+
+    <div id="reg-form-wrap">
+      <div class="reg-head">
+        <div class="eyebrow">רישום להסעה · 9.11.26</div>
+        <h2>שריינו מקום <em>בהסעה</em></h2>
+        <p>ההרשמה לבנות שכבת י' אורט סינגאלובסקי בלבד.</p>
+      </div>
+
+      <div class="terms">
+        <div class="term hot">
+          <div class="k">יציאה מבית הספר</div>
+          <div class="v">בדיוק ב־<span class="t">14:30</span></div>
+        </div>
+        <div class="term">
+          <div class="k">כרטיס לאירוע</div>
+          <div class="v">על חשבון בית הספר</div>
+        </div>
+        <div class="term">
+          <div class="k">יעד</div>
+          <div class="v">קרמניצקי 7, תל אביב</div>
+        </div>
+        <div class="term">
+          <div class="k">חזרה</div>
+          <div class="v">עצמאית</div>
+        </div>
+      </div>
+
+      <form id="reg-form" novalidate>
+        <div class="row2">
+          <div class="field" data-f="firstName">
+            <label for="firstName">שם פרטי <span class="req">*</span></label>
+            <input id="firstName" name="firstName" autocomplete="given-name" required maxlength="40">
+            <div class="err" role="alert"></div>
+          </div>
+          <div class="field" data-f="lastName">
+            <label for="lastName">שם משפחה <span class="req">*</span></label>
+            <input id="lastName" name="lastName" autocomplete="family-name" required maxlength="40">
+            <div class="err" role="alert"></div>
+          </div>
+        </div>
+
+        <div class="field" data-f="idNumber">
+          <label for="idNumber">תעודת זהות <span class="req">*</span></label>
+          <input id="idNumber" name="idNumber" class="ltr" inputmode="numeric" autocomplete="off" required maxlength="9" placeholder="9 ספרות כולל ספרת ביקורת">
+          <div class="err" role="alert"></div>
+        </div>
+
+        <div class="field" data-f="phone">
+          <label for="phone">מספר טלפון נייד <span class="req">*</span></label>
+          <input id="phone" name="phone" class="ltr" type="tel" inputmode="tel" autocomplete="tel" required maxlength="13" placeholder="050-0000000">
+          <div class="err" role="alert"></div>
+        </div>
+
+        <fieldset class="field" data-f="classRoom">
+          <legend>כיתה <span class="req">*</span></legend>
+          <div class="classes">
+            <label><input type="radio" name="classRoom" id="c1" value="י1"><span>י1</span></label>
+            <label><input type="radio" name="classRoom" id="c2" value="י2"><span>י2</span></label>
+            <label><input type="radio" name="classRoom" id="c3" value="י3"><span>י3</span></label>
+            <label><input type="radio" name="classRoom" id="c4" value="י4"><span>י4</span></label>
+            <label><input type="radio" name="classRoom" id="c5" value="י5"><span>י5</span></label>
+            <label><input type="radio" name="classRoom" id="c6" value="י6"><span>י6</span></label>
+          </div>
+          <div class="err" role="alert"></div>
+        </fieldset>
+
+        <label class="confirm" id="confirm-wrap" for="confirm">
+          <input type="checkbox" id="confirm" name="confirm">
+          <span>ידוע לי שההסעה יוצאת <b>בדיוק ב־14:30</b> ולא תמתין, ושהחזרה מהאירוע עצמאית.</span>
+        </label>
+
+        <button class="btn submit" id="submit" type="submit">שליחת הרשמה</button>
+        <div class="form-msg" id="form-msg" role="alert"></div>
+        <div class="demo-note" id="demo-note" hidden>מצב תצוגה: טרם חובר גיליון רישום, ולכן הפרטים לא נשמרים.</div>
+      </form>
+    </div>
+
+    <!-- success -->
+    <div id="reg-done" hidden>
+      <div class="success-copy">
+        <h2>נרשמת בהצלחה!</h2>
+        <p id="done-text">המקום שלך בהסעה שמור. נתראה על המסלול.</p>
+      </div>
+      <div class="pass" aria-label="אישור הרשמה להסעה">
+        <div class="pass-top">
+          <div class="brand">Fashion <i>Week</i></div>
+          <div class="sub">TEL AVIV 2026 · SHUTTLE PASS</div>
+        </div>
+        <div class="pass-tear" aria-hidden="true"></div>
+        <div class="pass-body">
+          <div class="full"><div class="k">שם</div><div class="v big" id="p-name"></div></div>
+          <div><div class="k">כיתה</div><div class="v" id="p-class"></div></div>
+          <div><div class="k">תאריך</div><div class="v"><span class="t">9.11.26</span> · יום שני</div></div>
+          <div><div class="k">יציאה</div><div class="v"><span class="t">14:30</span> בדיוק</div></div>
+          <div><div class="k">כרטיס</div><div class="v">על חשבון בית הספר</div></div>
+        </div>
+        <div class="pass-foot">להגיע כמה דקות לפני <bdi>14:30</bdi> · ההסעה לא תמתין</div>
+      </div>
+      <div class="final-cta" style="margin-top:28px">
+        <a class="btn btn-ghost" href="#">חזרה להזמנה</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ===== הגדרות =====
+   הדביקו כאן את כתובת ה-Web App של Google Apps Script (ראו README.md).
+   כל עוד הכתובת ריקה הדף עובד במצב תצוגה ולא שומר נתונים. */
+const CONFIG = {
+  endpoint: ""
+};
+const DEPARTURE = new Date("2026-11-09T14:30:00+02:00");
+
+/* ---------- views ---------- */
+const home = document.getElementById("view-home");
+const reg = document.getElementById("view-register");
+function route() {
+  const isReg = location.hash === "#register";
+  home.hidden = isReg;
+  reg.hidden = !isReg;
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+route();
+
+/* ---------- countdown ---------- */
+const pad = n => String(n).padStart(2, "0");
+function tick() {
+  let ms = DEPARTURE - Date.now();
+  const box = document.getElementById("count");
+  if (ms <= 0) {
+    box.querySelector(".label").textContent = "ההסעה כבר יצאה לדרך";
+    box.querySelector(".clock").hidden = true;
+    return;
+  }
+  const s = Math.floor(ms / 1000);
+  document.getElementById("cd-d").textContent = Math.floor(s / 86400);
+  document.getElementById("cd-h").textContent = pad(Math.floor(s % 86400 / 3600));
+  document.getElementById("cd-m").textContent = pad(Math.floor(s % 3600 / 60));
+  document.getElementById("cd-s").textContent = pad(s % 60);
+  setTimeout(tick, 1000 - (Date.now() % 1000));
+}
+tick();
+
+/* ---------- validation ---------- */
+function validIsraeliId(raw) {
+  const id = String(raw).trim();
+  if (!/^\d{5,9}$/.test(id)) return false;
+  const d = id.padStart(9, "0");
+  let sum = 0;
+  for (let i = 0; i < 9; i++) {
+    let n = Number(d[i]) * ((i % 2) + 1);
+    sum += n > 9 ? n - 9 : n;
+  }
+  return sum % 10 === 0;
+}
+const normPhone = p => String(p).replace(/[\s\-()]/g, "").replace(/^\+972/, "0");
+
+const form = document.getElementById("reg-form");
+const idInput = document.getElementById("idNumber");
+idInput.addEventListener("input", () => { idInput.value = idInput.value.replace(/\D/g, "").slice(0, 9); });
+
+function setErr(name, msg) {
+  const f = form.querySelector(`[data-f="${name}"]`);
+  f.classList.toggle("bad", !!msg);
+  f.querySelector(".err").textContent = msg || "";
+}
+function collect() {
+  const fd = new FormData(form);
+  return {
+    firstName: (fd.get("firstName") || "").trim(),
+    lastName: (fd.get("lastName") || "").trim(),
+    idNumber: (fd.get("idNumber") || "").trim(),
+    phone: normPhone(fd.get("phone") || ""),
+    classRoom: fd.get("classRoom") || "",
+    confirm: !!fd.get("confirm")
+  };
+}
+function validate(d) {
+  let ok = true;
+  const nameRe = /^[֐-׿a-zA-Z'"\-\s]{2,40}$/;
+  const check = (name, cond, msg) => { setErr(name, cond ? "" : msg); if (!cond) ok = false; };
+  check("firstName", nameRe.test(d.firstName), "יש להזין שם פרטי");
+  check("lastName", nameRe.test(d.lastName), "יש להזין שם משפחה");
+  check("idNumber", validIsraeliId(d.idNumber), d.idNumber ? "מספר תעודת הזהות אינו תקין. יש לבדוק את הספרות ואת ספרת הביקורת" : "יש להזין מספר תעודת זהות");
+  check("phone", /^05\d{8}$/.test(d.phone), d.phone ? "יש להזין מספר נייד בן 10 ספרות שמתחיל ב־05" : "יש להזין מספר טלפון");
+  check("classRoom", !!d.classRoom, "יש לבחור כיתה");
+  const cw = document.getElementById("confirm-wrap");
+  cw.classList.toggle("bad", !d.confirm);
+  if (!d.confirm) ok = false;
+  return ok;
+}
+form.addEventListener("input", e => {
+  const f = e.target.closest("[data-f]");
+  if (f && f.classList.contains("bad")) setErr(f.dataset.f, "");
+  if (e.target.id === "confirm") document.getElementById("confirm-wrap").classList.remove("bad");
+});
+
+if (!CONFIG.endpoint) document.getElementById("demo-note").hidden = false;
+
+async function send(d) {
+  const payload = JSON.stringify({
+    firstName: d.firstName, lastName: d.lastName,
+    idNumber: d.idNumber.padStart(9, "0"), phone: d.phone, classRoom: d.classRoom
+  });
+  if (!CONFIG.endpoint) {
+    await new Promise(r => setTimeout(r, 700));
+    return { ok: true, demo: true };
+  }
+  try {
+    const res = await fetch(CONFIG.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: payload
+    });
+    return await res.json();
+  } catch (err) {
+    // Fallback when the response can't be read (CORS): the row is still written.
+    await fetch(CONFIG.endpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: payload });
+    return { ok: true };
+  }
+}
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  const msg = document.getElementById("form-msg");
+  msg.textContent = "";
+  const d = collect();
+  if (!validate(d)) {
+    msg.textContent = "יש לתקן את השדות המסומנים";
+    const first = form.querySelector(".bad input, .confirm.bad input");
+    if (first) first.focus();
+    return;
+  }
+  const btn = document.getElementById("submit");
+  btn.disabled = true; btn.textContent = "שולחת…";
+  try {
+    const r = await send(d);
+    if (!r || !r.ok) throw new Error((r && r.error) || "save_failed");
+    showDone(d, r);
+  } catch (err) {
+    msg.textContent = "ההרשמה לא נשלחה. כדאי לבדוק את החיבור לאינטרנט ולנסות שוב.";
+  } finally {
+    btn.disabled = false; btn.textContent = "שליחת הרשמה";
+  }
+});
+
+function showDone(d, r) {
+  document.getElementById("p-name").textContent = d.firstName + " " + d.lastName;
+  document.getElementById("p-class").textContent = d.classRoom;
+  const t = document.getElementById("done-text");
+  if (r.duplicate) t.textContent = "כבר היית רשומה להסעה, והפרטים עודכנו. נתראה על המסלול.";
+  else if (r.demo) t.textContent = "זהו מצב תצוגה, והפרטים לא נשמרו. לאחר חיבור הגיליון ההרשמה תישמר.";
+  else t.textContent = "המקום שלך בהסעה שמור. נתראה על המסלול.";
+  document.getElementById("reg-form-wrap").hidden = true;
+  document.getElementById("reg-done").hidden = false;
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
