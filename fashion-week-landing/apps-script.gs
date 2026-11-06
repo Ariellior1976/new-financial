@@ -59,6 +59,7 @@ function doPost(e) {
       }
     }
     sh.appendRow(row);
+    sh.getRange(sh.getLastRow(), 1, 1, row.length).setHorizontalAlignment('center');
     return json_({ ok: true });
   } catch (err) {
     return json_({ ok: false, error: String(err) });
