@@ -8,7 +8,7 @@ const HEADERS = ['תאריך הרשמה', 'שם פרטי', 'שם משפחה', '�
 const CLASSES = ['י1', 'י2', 'י3', 'י4', 'י5', 'י6'];
 
 function getSheet_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SpreadsheetApp.openById('1SRAFAGCxLjkL575M2STZ4oLxvGazxblMc-9upPQdiPg');
   let sh = ss.getSheetByName(SHEET_NAME);
   if (!sh) sh = ss.insertSheet(SHEET_NAME);
   if (sh.getLastRow() === 0) {
